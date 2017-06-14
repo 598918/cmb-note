@@ -1,0 +1,651 @@
+<html lang="en" ng-app="app" class="ng-scope"><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}</style>
+<meta charset="utf-8">
+<title>外包管理系统</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Pragma" content="No-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style type="text/css">
+	.loading {
+	    left: 50%;
+	    position: fixed;
+	    top: 40%;
+	    z-index: 99999;
+	}
+	.backdrop{
+	    width: 100%;
+	    height: 100%;
+		opacity: 0.5;
+	    bottom: 0;
+	    left: 0;
+	    position: fixed;
+	    right: 0;
+	    top: 0;
+	    z-index:99998;
+	}
+</style>
+<link rel="stylesheet" href="js/ueditor/themes/default/_css/ueditor_all.css" type="text/css">
+<link href="http://oms01sz.itc.cmbchina.cn/time/skin/WdatePicker.css" rel="stylesheet" type="text/css"><link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css"><link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="css/layout.css" rel="stylesheet" type="text/css"><link href="css/select2.css" rel="stylesheet" type="text/css"><link href="css/amazonmenu.css" rel="stylesheet" type="text/css"><style>@font-face{font-family:uc-nexus-iconfont;src:url(chrome-extension://pogijhnlcfmcppgimcaccdkmbedjkmhi/res/font_9qmmi8b8jsxxbt9.woff) format('woff'),url(chrome-extension://pogijhnlcfmcppgimcaccdkmbedjkmhi/res/font_9qmmi8b8jsxxbt9.ttf) format('truetype')}</style></head>
+<body ng-controller="commonController" ng-class="{true:'body-bg-show',false:'body-bg-hide'}[show]" class="ng-scope body-bg-show">
+	<script src="js/dateUtil.js?_v=20170605"></script>
+	<!-- jQuery -->
+	<script src="js/jquery/jquery-1.8.3.min.js"></script>
+	<script src="js/jquery/jquery.form.js"></script>
+	<script src="js/jquery/jquery-ui.js"></script>
+	<!-- Angular -->
+	<script src="js/angular/angular.js"></script>
+	<script src="js/angular/angular-animate.js"></script>
+	<script src="js/angular/angular-cookies.min.js"></script>
+	<script src="js/angular/angular-ui-router.min.js"></script>
+	<script src="js/angular/ui-bootstrap-tpls.js"></script>
+	<script src="js/angular/sortable.js"></script>
+	
+	<script src="js/BreakingNews.js"></script>
+	<script src="js/G2.js"></script><i title="Web Colour Picker" style="display: none;"></i>
+	<!-- ueditor -->
+	<script type="text/javascript" charset="utf-8" src="js/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/ueditor/ueditor.all.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/ueditor/lang/en/en.js"></script>
+	<!-- App -->
+	<script src="js/app.js?_v=20170605"></script>
+	<script src="js/services.js?_v=20170605"></script>
+	<script src="js/filters.js?_v=20170605"></script>
+	<!-- 日常管理 -->
+	<script src="js/dailyApply/delayApplyCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/attendanceConfigurationCtrl.js?_v=20170605"></script>
+    <script src="js/dailyApply/attVacationCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/attLeavaCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/attDelayCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/attendanceBillCtrl.js?_v=20170609"></script>
+	<script src="js/dailyApply/businessApplicationCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/exceptionDealCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/additionalApplyCtrl.js?_v=20170605"></script>
+	<!-- 考勤异常管理-->
+	<script src="js/dailyApply/abnormalAttendanceMag/abnormalDetails.js?_v=20170605"></script>
+	<script src="js/dailyApply/abnormalAttendanceMag/attendanceException.js?_v=20170605"></script>
+    <!-- 我的考勤-->
+	<script src="js/dailyApply/myAttendance/myAttendanceCtrl.js?_v=20170605"></script>
+	<!-- 考勤管理 -->
+	<script src="js/dailyApply/attendanceDetails/attendanceDetailsCtrl.js?_v=20170605"></script>
+	<script src="js/dailyApply/attendanceManagement/attendanceManagementCtrl.js?_v=20170605"></script>
+	<!-- 信息管理 -->
+	<script src="js/inforManagement/contractCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/poolInformationCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/conContactBadRecodeCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/conContactRelationCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/jxManage.js?_v=20170605"></script>
+	
+	<script src="js/inforManagement/outsourcingCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/perInforCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/levelChangeManagementCtrl.js?_v=20170605"></script>
+	<script src="js/inforManagement/branchChangeManagementCtrl.js?_v=20170605"></script>
+	<!-- 进场离场管理 -->
+	<script src="js/inOutManage/approachRegisterCtrl.js?_v=20170605"></script>  
+	<script src="js/inOutManage/departureRegisterCtrl.js?_v=20170605"></script>
+	<script src="js/inOutManage/releaseApplicationCtrl.js?_v=20170605"></script>
+	<script src="js/inOutManage/leaveTalkTplCtrl.js?_v=20170605"></script>
+	<script src="js/inOutManage/exitInterviewsCtrl.js?_v=20170605"></script>
+	<script src="js/inOutManage/exitInterviewsEntryCtrl.js?_v=20170605"></script>
+	<script src="js/inOutManage/personReleaseProjectCtrl.js?_v=20170605"></script>
+	<!-- 工时管理 -->
+	<script src="js/hourManagement/billConfigCtrl.js?_v=20170605"></script>
+	<script src="js/hourManagement/workingHoursCtrl.js?_v=20170605"></script>
+	<script src="js/hourManagement/genWorkHoursCtrl.js?_v=20170605"></script>
+	<script src="js/hourManagement/billBalanceCtrl.js?_v=20170605"></script>
+	<script src="js/hourManagement/lossCost.js?_v=20170605"></script>
+	<script src="js/hourManagement/leaveCost.js?_v=20170605"></script>
+	<script src="js/hourManagement/travelCost.js?_v=20170605"></script>
+	<script src="js/hourManagement/otherCost.js?_v=20170605"></script>
+	<script src="js/hourManagement/outlineBill.js?_v=20170605"></script>
+	<!--人力资源规划管理-->
+	<script src="js/annualManage/annuallCtrl.js?_v=20170605"></script>
+	<script src="js/annualManage/annuallHistoryCtrl.js?_v=20170605"></script>
+	<script src="js/annualManage/annuallCountCtrl.js?_v=20170605"></script>
+	<script src="js/annualManage/yearProgramDetailsCtrl.js?_v=20170605"></script>
+	<script src="js/annualManage/yearProgramCountCtrl.js?_v=20170605"></script>
+	<script src="js/annualManage/yearProgramDetailsHisCtrl.js?_v=20170605"></script>
+	
+    <!-- Css -->
+    <!-- 
+    <link ng-if="userInterface!='GREEN'" href="css/bootstrap.min.css?_v=20170605" type="text/css" rel="stylesheet">    
+    <link ng-if="userInterface=='GREEN'" href="css/bootstrap.min-green.css?_v=20170605" type="text/css" rel="stylesheet">    
+    <link ng-if="userInterface!='GREEN'" href="css/layout.css?_v=20170605" type="text/css" rel="stylesheet">    
+    <link ng-if="userInterface=='GREEN'" href="css/layout-green.css?_v=20170605" type="text/css" rel="stylesheet"> 
+    <link ng-if="userInterface!='GREEN'" href="css/select2.css" type="text/css" rel="stylesheet">    
+    <link ng-if="userInterface=='GREEN'" href="css/select2-green.css" type="text/css" rel="stylesheet"> 
+    <link ng-if="userInterface!='GREEN'" href="css/amazonmenu.css" type="text/css" rel="stylesheet">    
+    <link ng-if="userInterface=='GREEN'" href="css/amazonmenu-green.css" type="text/css" rel="stylesheet"> 
+     -->
+    <link href="css/global.css?_v=20170605" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/BreakingNews.css">
+    <script src="js/amazonmenu.js?_v=20170605"></script>
+    <!-- 公共 -->
+    <script src="js/commons.js?_v=20170605"></script>
+    <script src="js/FileSaver.js?_v=20170314"></script>
+    <!-- 详情Tags切换 -->
+    <script src="js/popTags.js?_v=20170605"></script>
+	
+		<!-- 供应商管理详情查看,增加,修改,删除 -->
+	<script src="js/supManageCtrl/supManageCtrl.js?_v=20170605"></script>
+	<script src="js/supManageCtrl/supManageAddCtrl.js?_v=20170605"></script>
+	<script src="js/supManageCtrl/supManageUpdateCtrl.js?_v=20170605"></script>
+	   	<!-- 外包人员管理：进场登记详情查看,增加,修改,删除 -->
+
+    <!-- controllers -->
+	<!-- 系统管理控制器-->
+	<script src="js/controllers/sysCtrl.js?_v=20170605"></script>
+	<script src="js/controllers/controllers.js?_v=20170605"></script>
+	<!-- 个人中心controllers-->
+	<script src="js/task/taskComingCtrl.js?_v=20170605"></script>
+	<script src="js/task/overtimeTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/attbusinessTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/vacationTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/interviewTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/interviewResultTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/releaseAppTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/releaseProjectTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/taskDoneCtrl.js?_v=20170605"></script>
+	<script src="js/task/allApplyCtrl.js?_v=20170605"></script>
+	<script src="js/task/myApplyCtrl.js?_v=20170605"></script>
+	<script src="js/task/myMessageCtrl.js?_v=20170605"></script>
+	<script src="js/task/branchChangeTaskCtrl.js?_v=20170605"></script>
+	<script src="js/task/hrapplicationTaskCtrl.js?_v=20170314"></script>
+	
+	<!-- 系统管理 -->
+	<script src="js/sys/comUserCtrl.js?_v=20170605"></script>
+	<script src="js/sys/cmbUserCtrl.js?_v=20170605"></script>
+	<script src="js/sys/organCtrl.js?_v=20170605"></script>
+	<script src="js/sys/roleManageCtrl.js?_v=20170605"></script>
+	<script src="js/sys/sysParController.js?_v=20170605"></script>
+	<script src="js/sys/festivalCtrl.js?_v=20170605"></script>
+	<script src="js/sys/pubOperLogManageCtrl.js?_v=20170605"></script>
+	<script src="js/sys/emailLogCtrl.js"></script>
+	
+    <!-- Time -->    
+    <script src="time/WdatePicker.js"></script>
+    <script src="js/publicUploadJs.js"></script>
+    <!-- 下拉选择 -->
+    <script src="js/select2/select2.js"></script>
+    <script src="js/select2/select3.js"></script>
+    
+	<script src="js/cutword.js"></script>
+	<script src="js/placeholderText.js"></script>
+    <!-- 弹层效果 -->    
+    <script src="js/dialog/zDrag.js"></script>
+	<script src="js/dialog/zDialog.js"></script>
+    
+    <script src="js/forbidBackspace.js"></script>
+    <!-- 考勤日历 -->  
+	<script src="js/pagination.js"></script>
+	<script src="js/directives.js?_v=20170605"></script>
+	<script src="js/dailyApply/attCalendar/attCalendarCtrl.js?_v=20170605"></script>
+	
+	<!--人力资源申请-->
+	<script src="js/hrapplication/hrapplicationCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrapplication_update.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrapplication_addCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrapplication_detailsCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrDistributionCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrQueryCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrTrackCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrTrackDetailCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/hrapplication_addCtrlForBankUser.js?_v=20170314"></script>
+	
+	<!-- 人力资源获取 -->
+	<script src="js/hrapplication/preInterviewCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/preInterviewResultsCtrl.js?_v=20170605"></script>
+	<script src="js/hrapplication/interviewCtrl.js?_v=20170605"></script>
+	
+	<!--项目基本信息管理  -->
+	<script src="js/pmg/projectManagementCtrl.js?_v=20170605"></script>
+	<script src="js/pmg/projectTemplateCtrl.js?_v=20170605"></script>
+	<script src="js/pmg/projectCheckCtrl.js?_v=20170605"></script>
+	<script src="js/pmg/complianceCtrl.js?_v=20170605"></script>
+	<!-- 报表管理 -->
+	<script src="js/reportManage/reportManageCtrl.js?_v=20170605"></script>
+	<script src="js/reportManage/reportDetailCtrl.js?_v=20170605"></script>
+	<script src="js/reportManage/reportConfigCtrl.js?_v=20170605"></script>
+	<script src="js/reportManage/combineReportCtrl.js?_v=20170605"></script>
+	<script src="js/reportManage/addCustomizeDialog.js?_v=20170605"></script>
+	<script src="js/dailyApply/report/reportExportsCtrl.js?_v=20170605"></script>
+	<script src="js/drawReportPicture.js?_v=20170605"></script>
+	<!-- ztree-->
+	<script type="text/javascript" src="js/ztree/jquery.ztree.core-3.5.js"></script>
+	<script type="text/javascript" src="js/ztree/jquery.ztree.excheck-3.5.js"></script>
+	<!--  
+	<link ng-if="userInterface!='GREEN'" href="css/zTreeStyle/zTreeStyle.css" type="text/css" rel="stylesheet">    
+    <link ng-if="userInterface=='GREEN'" href="css/zTreeStyle/zTreeStyle-green.css" type="text/css" rel="stylesheet">  
+	-->
+	<!-- Lazy loading -->
+	<!-- uiView:  --><div ui-view="" style="min-width: 1000px;" class="ng-scope"><!-- header -->
+<!-- ngInclude: 'tpl/blocks/headnotice.html' --><div data-ng-include="'tpl/blocks/headnotice.html'" class="ng-scope"><!-- 头部信息 -->
+
+<!-- <div class="headnotice" ng-show="noticeShow" ng-controller="headnoticeContrl">
+	栏目标题
+    	<img style="vertical-align:-5px;margin-left:32px; padding-right:8px;" src="images/news-icon.png"/>
+    	<marquee id="noticees" direction="up" onMouseOut="this.setAttribute('scrollamount', 1, 0);" onMouseOver="this.setAttribute('scrollamount', 0, 0);" style="font-size: 14px;margin: 0 auto;position: absolute;"  behavior="scroll" scrollamount="1" scrolldelay="0" loop="-1"  width="90%" height="25" align="middle" hspace="20" vspace="0" >
+			<p ng-repeat="v in notices">
+				<a href="javascript:void(0)" ng-click="stateGo(v.noticeID)" style="font-size: 14px;color: #d25400;">{{v.noticeContent}}</a>
+			</p>
+		</marquee>
+		<a href="javascript:void(0)"   ng-click="deleteNotice()" ng-mouseOver="changeImg()" ng-mouseOut="changeImgOld()"> 
+			<img id="close" style="position: absolute;top: 5px;right: 20px;" src="images/close-icon.png" ><img id="closeMo" style="display:none;position: absolute;top: 5px;right: 20px;" src="images/closehover-icon.png" >
+		</a>
+</div> -->
+
+<div ng-show="noticeShow" class="BreakingNewsController easing ng-scope ng-hide" id="brekingnews" autoplay="autoplay" style="width: 100%; background: rgb(255, 255, 255) none repeat scroll 0% 0%; border: medium none; font-size: 16px;">
+  	<img class="bn-title" src="images/news-icon.png">
+    <!-- ngRepeat: v in notices -->
+    <a href="javascript:void(0)" ng-click="deleteNotice()" ng-mouseover="changeImg()" ng-mouseout="changeImgOld()"> 
+			<img id="close" style="position: absolute;top: 10px;left: 10px;" src="images/close-icon.png"><img id="closeMo" style="display:none;position: absolute;top: 10px;left: 10px;" src="images/closehover-icon.png">
+	</a>
+    <div class="bn-arrows"><span class="bn-arrows-left"></span><span class="bn-arrows-right"></span></div>    
+</div>
+
+
+<!-- <div class="notice" ng-controller="headnoticeContrl">
+	<ul id="texiao01" class="noticTipTxt" ng-repeat="v in notices">
+		  <li><a href="javascript:void(0)" ng-click="stateGo(v.noticeID)" style="font-size: 14px;color: #d25400;">{{v.noticeContent}}</a></li>
+	</ul>
+</div> --></div>
+<!-- ngInclude: 'tpl/blocks/header.html' --><div data-ng-include="'tpl/blocks/header.html'" class="ng-scope"><!-- 头部信息 -->
+<div class="header ng-scope" ng-controller="headContrl">
+	<!-- 栏目标题 -->
+    <div class="logo">
+    	<p class="headerTit">外包管理系统</p>
+    </div>
+    <!-- 用户信息 -->
+    <div id="userMenu">
+        <ul class="userList">			
+            <li style="margin-right:30px;">
+                <a onclick="javascript:void(0)" class="xialaguang ng-binding"><img src="images/user-icon.png"> 您好！林若 </a>    
+                <ul class="children">  
+                    <li><a href="javascript:void(0)" ng-click="updateUserMsg()"><span>个人资料</span></a></li>
+                    <li><a href="javascript:void(0)" ng-click="revisePwd()"><span>修改密码</span></a></li>
+                    <li><a href="user_guide/index.html" target="_blank"><span>用户手册</span></a></li>
+                    <li><a href="mailto:itomo@odc.cmbchina.cn" class="noneBottom"><span>用户反馈</span></a></li>
+                </ul>
+            </li>
+            <li style="margin-right:20px;width: 72px;" my-access="010600 010100">
+            	<table cellspacing="0" cellpadding="0" height="50" style="margin-top: 5px;">
+            		<tbody>
+            		<tr my-access="010100">
+            			<td valign="middle">
+			            	<a ng-click="taskRedirect()"><font color="white">待办：</font><font class="task-msg ng-binding">1</font></a>
+            			</td>
+            		</tr>
+            	</tbody></table>
+            </li>
+            <li><a href="javascript:void(0)" class="exit" ng-click="exit()">注销</a></li>             
+        </ul>
+    </div>    
+    <p class="clear"></p>
+	
+	<!--修改密码-->
+	<div style="display:none" id="revisePwd">
+		<div class="addTable">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		   <tbody><tr>
+			  <td width="20%">旧密码：</td>
+			  <td width="80%"><input id="oldPwd" name="" maxlength="20" type="password" class="inputBg"></td>
+		   </tr>
+		   <tr>
+			  <td>新密码：</td>
+			  <td><input id="newPwd1" name="" type="password" maxlength="20" class="inputBg"></td>
+		   </tr>
+		   <tr>
+			  <td>确认新密码：</td>
+			  <td><input name="" id="newPwd2" type="password" maxlength="20" class="inputBg"></td>
+		   </tr>              
+		</tbody></table>
+		</div>
+	</div>
+	<div style="display:none" id="updateUser">
+		<div class="addTable">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+                       <tbody><tr>
+                          <td width="20%">用户姓名：</td>
+                          <td width="80%"><input class="inputBg ng-pristine ng-valid" style="width:100%" maxlength="10" id="userName" name="userName" type="text" ng-model="userName" value="" readonly=""></td>
+                       </tr>
+                       <tr>
+                          <td>用户名：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userTel" name="userTel" type="text" ng-model="userLoginName" value="" readonly=""></td>
+                       </tr>
+                       <tr ng-hide="userType=='1'" class="">
+                          <td>所属供应商：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userTel" name="userTel" type="text" ng-model="userSupplierName" value="" readonly=""></td>
+                       </tr>
+                       <tr ng-hide="userType=='2'" class="ng-hide">
+                          <td>一事通ID：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userTel" name="userTel" type="text" ng-model="userEmpId" value="" readonly=""></td>
+                       </tr>
+                       <tr>
+                          <td>部室：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userTel" name="userTel" type="text" ng-model="userBranchName" value="" readonly=""></td>
+                       </tr>
+                       <tr>
+                          <td>性别：</td>
+                          <td align="left"><input type="radio" name="userSex" id="male" ng-model="userSex" value="1" checked="checked" class="ng-pristine ng-valid">
+							男
+							<input type="radio" name="userSex" id="maden" ng-model="userSex" value="0" class="ng-pristine ng-valid">
+							女</td>
+                       </tr>
+                       <tr>
+                          <td>手机号码：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userTel" maxlength="13" name="userTel" type="text" ng-model="userTel" value=""></td>
+                       </tr>
+                      
+                       <tr>
+                          <td>座机：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userPhone" maxlength="11" name="userPhone" type="text" ng-model="userPhone" value=""></td>
+                       </tr>
+                       <tr>
+                          <td>邮箱地址：</td>
+                          <td><input class="inputBg ng-pristine ng-valid" style="width:100%" id="userEmail" maxlength="30" name="userEmail" type="text" ng-model="userEmail" value=""></td>
+                       </tr>                 
+            </tbody></table>
+		
+		
+		</div>
+	</div>
+</div>
+</div>
+<!-- menu -->
+<!-- ngInclude: 'tpl/blocks/menu.html' --><div data-ng-include="'tpl/blocks/menu.html'" ng-show="show" class="ng-scope"><!-- 左侧菜单 -->
+<nav id="mysidebarmenu" class="amazonmenu ng-scope" ng-controller="sysMenuCtrl">
+	<ul>
+    	<!-- ngRepeat: menu in accessMenus --><li ng-repeat="menu in accessMenus" on-finish-render-filters="" class="ng-scope hassub">
+    		<a href="javascript:void(0)" class="myjob-icon"><span class="ng-binding">个人空间</span></a>
+            <ul class="issub" style="top: 0px;">
+                <!-- ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.taskComing" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/taskComing">我的待办</a></li><!-- end ngRepeat: child in menu.childMenu -->
+            </ul>
+        </li><!-- end ngRepeat: menu in accessMenus --><li ng-repeat="menu in accessMenus" on-finish-render-filters="" class="ng-scope hassub">
+    		<a href="javascript:void(0)" class="check-icon"><span class="ng-binding">考勤管理</span></a>
+            <ul class="issub">
+                <!-- ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.myAttendance" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/myAttendance">我的考勤</a></li><!-- end ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.attVacation({channel:''})" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/attVacation/">请假申请</a></li><!-- end ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.extendedService({channel:''})" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/extendedService/">延时服务申请</a></li><!-- end ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.businessApplication({channel:''})" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/businessApplication/">出差申请</a></li><!-- end ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.exceptionDeal({channel:''})" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/exceptionDeal/">异常处理</a></li><!-- end ngRepeat: child in menu.childMenu --><li ng-repeat="child in menu.childMenu" class="ng-scope"><a ui-sref="app.additionalApply({channel:''})" ui-sref-opts="{reload:true}" class="ng-binding" href="#/app/additionalApply/">补签申请</a></li><!-- end ngRepeat: child in menu.childMenu -->
+            </ul>
+        </li><!-- end ngRepeat: menu in accessMenus -->
+        
+	</ul>
+</nav>
+</div>
+<div ng-click="showHide(show)" ng-class="{true:'icon_left',false:'icon_right'}[show]" class="ng-scope icon_left"></div>
+<!-- uiView:  --><div ui-view="" class="ng-scope"><!-- 内容区 -->
+<!-- 延时申请 -->
+<div class="my-container ng-scope" ng-controller="delayApplyCtrl">
+	<!-- 层级标签/方便返回上一级或首页 -->
+	<div class="guide" id="normal">
+         <strong class="guideLeft">考勤管理</strong> <span>&gt;</span><a>延时服务申请</a>
+    </div>
+    <div class="guide" id="allApply" style="display:none;">
+    	<strong class="guideLeft">个人空间</strong><span>&gt;</span><a ui-sref="app.allApply" href="#/app/allApply">所有申请</a><span>&gt;</span>延时服务申请
+    </div>
+    <div class="guide" id="myApply" style="display:none;">
+    	<strong class="guideLeft">个人空间</strong><span>&gt;</span><a ui-sref="app.myApply" href="#/app/myApply">我的申请</a><span>&gt;</span>延时服务申请
+    </div>
+    <!-- 当前栏目 -->
+    <div class="contTit">
+        <div class="contAdd" my-access="020301"><a href="javascript:void(0)" ng-click="extendedAdd()">新增</a></div>
+    </div>
+    <!-- 内容信息 -->
+    <div class="contBar">
+    	<!-- 查询条件 -->
+        <div class="contInquire">
+            <form action="" method="get" class="ng-pristine ng-valid">
+                <div class="contSearch clearFix" enter-for-search="">            	
+                	<label ng-show="userType=='1'" not-role-access="100008" class="ng-hide"><span class="src_p">申请人</span>
+                    	<input class="searchBd ng-pristine ng-valid" type="text" style="width: 128px;" ng-model="qryUserId" placeholder="请输入姓名或编号">
+                    </label>
+                	
+                	<label ng-show="userType=='1'" not-role-access="100008" class="ng-hide"><span class="src_p">部室/单位</span>
+                    	<input class="searchBd ng-pristine ng-valid" type="text" style="width: 128px;" ng-model="qryBranch" placeholder="请输入部室名称">
+                    </label>
+                	
+                    <label><span class="src_p">审批状态</span>
+                        <div class="select2-container ng-isolate-scope ng-pristine ng-valid" id="s2id_autogen1" style="width: 128px;"><a href="javascript:void(0)" onclick="return false;" class="select2-choice select2-default" tabindex="-1">   <p class="select2-chosen"> --请选择-- </p><abbr class="select2-search-choice-close"></abbr>   <p class="select2-arrow"><b></b></p></a><input class="select2-focusser select2-offscreen" type="text" id="s2id_autogen2"><div class="select2-drop select2-display-none select2-with-searchbox">   <div class="select2-search">       <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="select2-input">   </div>   <ul class="select2-results">   </ul></div></div><select2 ng-model="adaStatus" style="width: 128px;" data="adaApplayStatus" placeholder=" --请选择-- " allow-clear="true" class="ng-isolate-scope ng-pristine ng-valid select2-offscreen" tabindex="-1"></select2>
+                    </label>
+                    <div style="float: left;">
+	                	<label><span class="src_p">延时服务日期</span>
+	                    	<input id="startTime" class="searchBd" style="width: 128px;" name="" onclick="WdatePicker()" my97mark="false" type="text">
+	                    </label>
+	                    <label>
+	                        	至&nbsp;
+	                        <input id="endTime" class="searchBd" name="" style="width: 128px;" onclick="WdatePicker()" my97mark="false" type="text">
+	                    </label>
+                    </div>
+                    <button class="searchBtn" type="button" ng-click="getList('0')">搜 索</button>
+                </div>
+                <!-- ngIf: channel != '&channel=2' --><div class="contBtn ng-scope" my-access="020306 020307 020308" ng-if="channel != '&amp;channel=2'">
+                    
+                    <button my-access="020306" class="buttonBg" type="button" ng-click="subApp()">提交申请</button>
+                    <button my-access="020307" class="buttonBg" type="button" ng-click="revoke()">撤回申请</button>
+                </div><!-- end ngIf: channel != '&channel=2' --> 
+            </form>
+            <p class="clear"></p>
+        </div>
+        <!--  信息列表 -->
+        <div class="contList">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="stripe">
+        <thead>
+                  <tr class="alt">
+                  	<th width="50"><input id="delayId" type="checkbox" check-all="" class="ng-isolate-scope"></th>
+                   	<th>申请人</th>
+                    <th>申请日期</th>
+                    <th>所属供应商</th>
+                    <th>单位</th>
+                    <th>部室</th>
+                    <th>延时服务日期</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>申请时长(小时)</th>
+                    <th>延时服务原因</th>
+					<th>审批状态</th>
+					<!-- ngIf: channel!='&channel=2' --><th class="tdCenter ng-scope" my-access="020302 020303 020304 020305 020308" ng-if="channel!='&amp;channel=2'">操作</th><!-- end ngIf: channel!='&channel=2' -->
+                  </tr>
+               </thead>
+               <tbody>
+                  <!-- ngRepeat: data in datas --><tr table-tr-selected="" ng-repeat="data in datas" class="ng-scope ng-isolate-scope">
+                  	<td> <input name="ckb" type="checkbox" value="--S00078402"></td>	
+                    <td><a ng-click="extendedDetail(data.adaApplayId)" class="ng-binding">林若/RT02286</a></td>
+                    <td class="ng-binding">2017-06-10</td>
+                    <td class="ng-binding">软通</td>
+                    <td class="ng-binding">数据仓库团队</td>
+                    <td title="/信息技术部/研发中心/数据仓库团队/绩效运营片区/绩效管理应用开发室" class="ng-binding">绩效管理应用开发室</td>
+                    <td class="ng-binding">2017-06-10</td>
+                    <td class="ng-binding">09:00</td>
+                    <td class="ng-binding">18:00</td>
+                    <td class="ng-binding">7</td>
+                    <td cutword="20" class="ng-binding" title="完成审批页面制作">完成审批页面制作</td>
+                    <td><a ng-click="queryHis(data.adaApplayId,'delayAuth')" class="ng-binding">待审批</a></td>
+                    <!-- ngIf: channel!='&channel=2' --><td class="tdCenter ng-scope" my-access="020302 020303 020304 020305 020308" ng-if="channel!='&amp;channel=2'">
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' --> 
+                         
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' -->
+                        
+                        <!-- ngIf: data.adaStatus=='1' && data.taskId != '' -->
+                    </td><!-- end ngIf: channel!='&channel=2' -->
+                  </tr><!-- end ngRepeat: data in datas --><tr table-tr-selected="" ng-repeat="data in datas" class="ng-scope ng-isolate-scope alt">
+                  	<td> <input name="ckb" type="checkbox" value="--S00077961"></td>	
+                    <td><a ng-click="extendedDetail(data.adaApplayId)" class="ng-binding">林若/RT02286</a></td>
+                    <td class="ng-binding">2017-06-08</td>
+                    <td class="ng-binding">软通</td>
+                    <td class="ng-binding">数据仓库团队</td>
+                    <td title="/信息技术部/研发中心/数据仓库团队/绩效运营片区/绩效管理应用开发室" class="ng-binding">绩效管理应用开发室</td>
+                    <td class="ng-binding">2017-06-08</td>
+                    <td class="ng-binding">18:30</td>
+                    <td class="ng-binding">21:00</td>
+                    <td class="ng-binding">2.5</td>
+                    <td cutword="20" class="ng-binding" title="解决 branch 控件一些 bug。">解决 branch 控件一些 bug。</td>
+                    <td><a ng-click="queryHis(data.adaApplayId,'delayAuth')" class="ng-binding">待审批</a></td>
+                    <!-- ngIf: channel!='&channel=2' --><td class="tdCenter ng-scope" my-access="020302 020303 020304 020305 020308" ng-if="channel!='&amp;channel=2'">
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' --> 
+                         
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' -->
+                        
+                        <!-- ngIf: data.adaStatus=='1' && data.taskId != '' -->
+                    </td><!-- end ngIf: channel!='&channel=2' -->
+                  </tr><!-- end ngRepeat: data in datas --><tr table-tr-selected="" ng-repeat="data in datas" class="ng-scope ng-isolate-scope">
+                  	<td> <input name="ckb" type="checkbox" value="--S00077596"></td>	
+                    <td><a ng-click="extendedDetail(data.adaApplayId)" class="ng-binding">林若/RT02286</a></td>
+                    <td class="ng-binding">2017-06-06</td>
+                    <td class="ng-binding">软通</td>
+                    <td class="ng-binding">数据仓库团队</td>
+                    <td title="/信息技术部/研发中心/数据仓库团队/绩效运营片区/绩效管理应用开发室" class="ng-binding">绩效管理应用开发室</td>
+                    <td class="ng-binding">2017-06-06</td>
+                    <td class="ng-binding">18:30</td>
+                    <td class="ng-binding">21:00</td>
+                    <td class="ng-binding">2.5</td>
+                    <td cutword="20" class="ng-binding" title="实现 excel.js 在 msui 框架下输出报表。">实现 excel.js 在 msui 框...</td>
+                    <td><a ng-click="queryHis(data.adaApplayId,'delayAuth')" class="ng-binding">待审批</a></td>
+                    <!-- ngIf: channel!='&channel=2' --><td class="tdCenter ng-scope" my-access="020302 020303 020304 020305 020308" ng-if="channel!='&amp;channel=2'">
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' --> 
+                         
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' -->
+                        
+                        <!-- ngIf: data.adaStatus=='1' && data.taskId != '' -->
+                    </td><!-- end ngIf: channel!='&channel=2' -->
+                  </tr><!-- end ngRepeat: data in datas --><tr table-tr-selected="" ng-repeat="data in datas" class="ng-scope ng-isolate-scope alt">
+                  	<td> <input name="ckb" type="checkbox" value="--S00077253"></td>	
+                    <td><a ng-click="extendedDetail(data.adaApplayId)" class="ng-binding">林若/RT02286</a></td>
+                    <td class="ng-binding">2017-06-03</td>
+                    <td class="ng-binding">软通</td>
+                    <td class="ng-binding">数据仓库团队</td>
+                    <td title="/信息技术部/研发中心/数据仓库团队/绩效运营片区/绩效管理应用开发室" class="ng-binding">绩效管理应用开发室</td>
+                    <td class="ng-binding">2017-06-03</td>
+                    <td class="ng-binding">09:00</td>
+                    <td class="ng-binding">18:00</td>
+                    <td class="ng-binding">7</td>
+                    <td cutword="20" class="ng-binding" title="寻找移动端报表的解决方案。">寻找移动端报表的解决方案。</td>
+                    <td><a ng-click="queryHis(data.adaApplayId,'delayAuth')" class="ng-binding">待审批</a></td>
+                    <!-- ngIf: channel!='&channel=2' --><td class="tdCenter ng-scope" my-access="020302 020303 020304 020305 020308" ng-if="channel!='&amp;channel=2'">
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' --> 
+                         
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' -->
+                        
+                        <!-- ngIf: data.adaStatus=='1' && data.taskId != '' -->
+                    </td><!-- end ngIf: channel!='&channel=2' -->
+                  </tr><!-- end ngRepeat: data in datas --><tr table-tr-selected="" ng-repeat="data in datas" class="ng-scope ng-isolate-scope">
+                  	<td> <input name="ckb" type="checkbox" value="--S00077078"></td>	
+                    <td><a ng-click="extendedDetail(data.adaApplayId)" class="ng-binding">林若/RT02286</a></td>
+                    <td class="ng-binding">2017-06-01</td>
+                    <td class="ng-binding">软通</td>
+                    <td class="ng-binding">数据仓库团队</td>
+                    <td title="/信息技术部/研发中心/数据仓库团队/绩效运营片区/绩效管理应用开发室" class="ng-binding">绩效管理应用开发室</td>
+                    <td class="ng-binding">2017-06-01</td>
+                    <td class="ng-binding">18:30</td>
+                    <td class="ng-binding">21:00</td>
+                    <td class="ng-binding">2.5</td>
+                    <td cutword="20" class="ng-binding" title="整理一些 msui 遗留的 bug。">整理一些 msui 遗留的 bug。</td>
+                    <td><a ng-click="queryHis(data.adaApplayId,'delayAuth')" class="ng-binding">待审批</a></td>
+                    <!-- ngIf: channel!='&channel=2' --><td class="tdCenter ng-scope" my-access="020302 020303 020304 020305 020308" ng-if="channel!='&amp;channel=2'">
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' --> 
+                         
+                        <!-- ngIf: data.adaStatus=='0'||data.adaStatus=='3' -->
+                        
+                        <!-- ngIf: data.adaStatus=='1' && data.taskId != '' -->
+                    </td><!-- end ngIf: channel!='&channel=2' -->
+                  </tr><!-- end ngRepeat: data in datas -->
+               </tbody>
+            </table>
+        </div>
+        <!-- 分页 -->
+        <div class="page">
+          <div class="page ng-isolate-scope" total-items="totalItems" page="currentPage" max-size="20" boundary-links="true" num-pages="numPages" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" ng-init="currentPage = 1" on-select-page="selectPage(page,pagesize)" items-per-page="10" page-size="10,20,30,50"><dl><dt class="ng-binding">当前第：<span class="ng-binding">1/1</span>页&nbsp;&nbsp;共 5 条记录</dt><dd><span ng-show="showSelectedPage" class="">显示条数
+ &nbsp;<select ng-model="selectValue" ng-change="selectPageSize(selectValue)" style="width:56px;" class="ng-pristine ng-valid"><!-- ngRepeat: size in pageSize track by $index --><option ng-repeat="size in pageSize track by $index" class="ng-scope ng-binding" value="10">10</option><!-- end ngRepeat: size in pageSize track by $index --><option ng-repeat="size in pageSize track by $index" class="ng-scope ng-binding" value="20">20</option><!-- end ngRepeat: size in pageSize track by $index --><option ng-repeat="size in pageSize track by $index" class="ng-scope ng-binding" value="30">30</option><!-- end ngRepeat: size in pageSize track by $index --><option ng-repeat="size in pageSize track by $index" class="ng-scope ng-binding" value="50">50</option><!-- end ngRepeat: size in pageSize track by $index --></select></span>
+  <!-- ngRepeat: page in pages --><button ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}" ng-click="selectPage(page.number)" class="ng-scope ng-binding disabled">首页</button><!-- end ngRepeat: page in pages --><button ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}" ng-click="selectPage(page.number)" class="ng-scope ng-binding disabled">上一页</button><!-- end ngRepeat: page in pages --><button ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}" ng-click="selectPage(page.number)" class="ng-scope ng-binding disabled">下一页</button><!-- end ngRepeat: page in pages --><button ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}" ng-click="selectPage(page.number)" class="ng-scope ng-binding disabled">尾页</button><!-- end ngRepeat: page in pages -->
+  &nbsp;
+转到 &nbsp;<input type="text" size="4" ng-model="goPageNum" ng-keydown="enterSubmit($event)" class="ng-pristine ng-valid">
+<input type="button" value="GO" class="pageBtn" ng-click="selectPage(goPageNum)"></dd></dl></div>
+        </div>
+    </div>
+
+<!-- 新增   修改-->
+    <script type="text/ng-template" id="extendedServiceDialog.html">
+        <div class="modal-header">
+            <h3 class="modal-title">{{modalTitle}}</h3>
+
+            <div class="popup-close" ng-click="cancel()"></div>
+        </div>
+        <div class="modal-body" ng-style="{'height':modalHeight,'width':modalWidth}" >
+            <div class="addTable">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td width="30%"><label>申请人</label><font class="redStar">*</font></td>
+                        <td width="70%">
+                            <input type="text" id="adaCreateMan" style="width: 100%;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%"><label>延时服务日期</label><font class="redStar">*</font></td>
+                        <td width="70%">
+							<input not-role-access="100009" class="inputBg" ng-model="attDelayApplayCfgColl.adaBeginDate" name="beginDate"  onclick="WdatePicker({minDate:currdate_10_1,maxDate:currdate,onpicked:function(){$('#adaHours').focus();}})" type="text" My97Mark="false" id="beginDate" ng-blur="getTime()"  />
+							<input role-access="100009" class="inputBg" ng-model="attDelayApplayCfgColl.adaBeginDate" name="beginDate"  onclick="WdatePicker({maxDate:currdate,onpicked:function(){$('#adaHours').focus();}})" type="text" My97Mark="false" id="beginDate" ng-blur="getTime()"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>开始时间</label><font class="redStar">*</font></td>
+                        <td>
+							<select2 ng-model="beginDateSe" data="dateSeList" ng-change="totals()" placeholder=" " style="width:60px;" minimum-results-for-search="-1"></select2>
+							&nbsp;&nbsp;:&nbsp;&nbsp;
+							<select2 ng-model="beginTimeSe" data="[{id:'00',text:'00'},{id:'30',text:'30'}]" placeholder=" " style="width:60px;" ng-change="totals()" minimum-results-for-search="-1"></select2>
+						</td>
+                    </tr>
+                    <tr>
+                        <td><label>结束时间</label><font class="redStar">*</font></td>
+                        <td>
+							<select2 ng-model="endDateSe" data="dateSeList" placeholder=" " style="width:60px;" ng-change="totals()" minimum-results-for-search="-1"></select2>
+							&nbsp;&nbsp;:&nbsp;&nbsp;
+							<select2 ng-model="endTimeSe" operate="operate2"  data="[{id:'00',text:'00'},{id:'30',text:'30'}]" placeholder=" " style="width:60px;" ng-change="totals()" minimum-results-for-search="-1"></select2>
+						</td>
+                    </tr>
+                    <tr>
+                        <td><label>申请时长</label><font class="redStar">*</font></td>
+                        <td><input class="inputBg" type="text" ng-model="attDelayApplayCfgColl.adaHours" id="adaHours"/><input type="hidden" id="totalHours"/></td>
+                    </tr>
+                    <tr>
+                        <td valign="top"><label>延时服务原因</label><font class="redStar">*</font></td>
+                        <td valign="top"><textarea class="textareaBg" placeholder="最多输入100个字符" maxlength="125" cols="" rows="3" ng-model="attDelayApplayCfgColl.adaContent" ></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label id="authPersonLabel">考勤审批人</label><font class="redStar">*</font></td>
+                        <td>
+                            <input type="text" id="authPerson" ng-model="attDelayApplayCfgColl.nextUser" style="width: 260px;">
+                        </td>
+                    </tr>
+                    <tr>
+						<td colspan="2" style="color: red;font-size: 10px;">
+							<fieldset>
+						    	<legend>&nbsp;&nbsp;“申请时长”说明&nbsp;&nbsp;</legend>
+						    	&nbsp;&nbsp;①工作日晚上延时服务：申请时长不能超过“签退时间-17:30”；工作日凌晨延时服务：申请时长不能超过“08:00(或凌晨签退时间)-凌晨签到时间”<br>
+								&nbsp;&nbsp;②非工作日延时服务：申请时长不能超过“签退时间-签到时间”（中午2小时不计算在内）<br>
+						    </fieldset>
+						</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer" ng-if="operate!='view'">
+            <button ng-if="attDelayApplayCfgColl.adaStatus!='1' && attDelayApplayCfgColl.adaStatus!='2'" class="btn btn-primary" ng-click="OKSubEvent()"> 保存并提交 </button>
+            <button class="btn btn-primary" ng-click="OKEvent()"> 保 存</button>
+            <button class="btn btn-default" ng-click="cancel()"> 取 消 </button>
+        </div>
+    </script>
+</div>
+
+</div>
+</div>
+	
+	<div id="loading" class="loading" style="display: none;">
+		<div class="backdrop"></div>
+        <img src="./images/main-loading.gif" alt="loading">
+    </div>
+	<div id="loading1" class="loading" style="display: none;">
+		<div class="backdrop"></div>
+        <img src="./images/main-loading-green.gif" alt="loading">
+    </div>
+
+<div id="_my97DP" style="position: absolute; top: -1970px; left: -1970px;"><iframe style="width: 246px; height: 196px;" src="http://oms01sz.itc.cmbchina.cn/time/My97DatePicker.htm" frameborder="0" border="0" scrolling="no"></iframe></div></body></html>
