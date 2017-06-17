@@ -1,0 +1,79 @@
+package com.cmb.bus.buswap.arrange;
+
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.cmb.bus.buswap.base.Branch;
+import com.cmb.bus.buswap.base.Parameter;
+import com.frm.base.exception.FrameworkException;
+import com.frm.base.model.ICacheTable;
+import com.frm.container.context.IContext;
+import com.frm.container.operation.IOperation;
+import com.frm.dao.model.IDBTable;
+import com.frm.dao.model.imp.DBTable;
+
+/**
+ * 查询我的柜员班表明细
+ * 输入：
+ * 		SCH_NBR 班表编号
+ * 输出：
+ * 		DTA_DTE 日期
+ * 		BRN_NBR 支行编码
+ * 		BRN_NAM 支行名称
+ * 		WIN_NBR 窗口编码
+ * 		WIN_NAM 窗口名称
+ * 		WIN_TYP 窗口类型
+ * 		WIN_TYP_NAM 窗口类型名称
+ * 		OPN_TIM 开始时间
+ * 		CLS_TIM 结束时间
+ * 		CAL_BUS 预期交易笔数
+ * 		FIX_FLG 是否固定开窗
+ * 		SAP_NBR 排班员工编号
+ * 		SAP_NAM 排班员工姓名
+ *
+ */
+public class WapArrMyTlrDetail implements IOperation {
+	@Override
+	public int execute(IContext context) throws FrameworkException {		
+		ICacheTable input = context.getInputData().get("InputParameter");
+		if(input == null || input.getRecordCount() < 1) {
+			throw new FrameworkException("000", "输入参数不存在");
+		}
+		
+		int schNbr = input.getInteger(0, "SCH_NBR");	//班表编号		
+		String sapNbr = context.getUserId();// 当前员工编号
+		
+		Connection conn = context.getConnection();
+		
+		//查询开窗表
+		String querySQL = 
+			"SELECT A.*,B.WIN_NAM,C.SAP_NAM " +
+			"FROM SCH.Q2RSWIND A " +
+			"LEFT OUTER JOIN SCH.Q2CFWIND B ON A.WIN_NBR = B.WIN_NBR " +
+			"LEFT OUTER JOIN EMP.Q2EMUSBT C ON A.SAP_NBR = C.SAP_NBR " +
+			"WHERE A.SCH_NBR=" + schNbr + " AND A.SAP_NBR='" + sapNbr +"'";
+		querySQL += " ORDER BY A.DTA_DTE,A.BRN_NBR,A.WIN_NBR";
+		
+		IDBTable mainTable = new DBTable(conn, "Result", querySQL);
+		ICacheTable mainTableResult = mainTable.select();
+		mainTableResult.addField("BRN_NAM");
+		mainTableResult.addField("WIN_TYP_NAM");
+
+		int recordCount = mainTableResult.getRecordCount();
+		for(int i=0;i<recordCount;i++){
+			String tmpBrnNbr = mainTableResult.getString(i, "BRN_NBR");
+			String tmpWinTyp = mainTableResult.getString(i, "WIN_TYP");
+					
+			mainTableResult.update(i, "BRN_NAM", Branch.getName(tmpBrnNbr));
+			mainTableResult.update(i, "WIN_TYP_NAM", Parameter.getName("Q2WINTYP", tmpWinTyp).split(",")[0]);
+		}
+		
+		Map<String, ICacheTable> output = new HashMap<String, ICacheTable>();
+		output.put("OutputResult", mainTableResult);
+		context.setOutputData(output);
+		
+		return 0;
+	}
+
+}
