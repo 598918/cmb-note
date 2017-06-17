@@ -1,0 +1,76 @@
+package com.cmb.bus.buswap.arrange;
+
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.cmb.bus.buswap.base.Branch;
+import com.cmb.bus.buswap.base.Parameter;
+import com.frm.base.exception.FrameworkException;
+import com.frm.base.model.ICacheTable;
+import com.frm.container.context.IContext;
+import com.frm.container.operation.IOperation;
+import com.frm.dao.model.IDBTable;
+import com.frm.dao.model.imp.DBTable;
+
+/**
+ * 查询管理班表主管明细
+ * 输入：
+ * 		SCH_NBR
+ * 输出：
+ * 		DTA_DTE 日期
+ * 		BRN_NBR 支行编码
+ * 		BRN_NAM 支行名称
+ * 		SAP_NBR 排班员工编号
+ * 		SAP_NAM 排班员工姓名
+ * 
+ *
+ */
+public class WapArrMyChfDetail implements IOperation {
+	@Override
+	public int execute(IContext context) throws FrameworkException {		
+		ICacheTable input = context.getInputData().get("InputParameter");
+		if(input == null || input.getRecordCount() < 1) {
+			throw new FrameworkException("000", "输入参数不存在");
+		}
+		
+		int schNbr = input.getInteger(0, "SCH_NBR");	//班表编号
+		String sapNbr = context.getUserId();// 当前员工编号
+		
+		//查询班表基本信息，获取排班组编号、排班月份
+		Connection conn = context.getConnection();
+
+		
+		//查询开窗表
+		String querySQL = 
+			"SELECT A.SCH_NBR,A.DTA_DTE,A.BRN_NBR,A.SAP_NBR,A.CHF_TYP,B.SAP_NAM," +
+			"ROW_NUMBER() OVER (ORDER BY A.DTA_DTE,A.BRN_NBR) AS ROWNO " + 
+			"FROM SCH.Q2RSCHFP A " +
+			"LEFT OUTER JOIN EMP.Q2EMUSBT B ON A.SAP_NBR = B.SAP_NBR " +
+			"WHERE A.SCH_NBR=" + schNbr + " AND A.SAP_NBR='" + sapNbr + "'";
+		querySQL += " ORDER BY A.DTA_DTE,A.BRN_NBR";
+		
+		//查询班表基本信息，获取排班组编号、排班月份
+		IDBTable mainTable = new DBTable(conn, "Result", querySQL);
+		ICacheTable mainTableResult = mainTable.select();
+		mainTableResult.addField("BRN_NAM");
+		mainTableResult.addField("CHF_TYP_NAM");
+		
+		for(int i=0;i<mainTableResult.getRecordCount();i++){
+			String tmpBrnNbr = mainTableResult.getString(i, "BRN_NBR");
+			String chfTyp = mainTableResult.getString(i, "CHF_TYP");
+				
+			mainTableResult.update(i, "BRN_NAM", Branch.getName(tmpBrnNbr));
+			mainTableResult.update(i, "CHF_TYP_NAM", Parameter.getName("Q2CHFTYP", chfTyp));
+			
+		}
+		
+		//返回结果集
+		Map<String, ICacheTable> output = new HashMap<String, ICacheTable>();
+		output.put("OutputResult", mainTableResult);
+		context.setOutputData(output);
+		
+		return 0;
+	}
+
+}
