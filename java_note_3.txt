@@ -1,0 +1,142 @@
+ICacheTable input = context.getInputData().get("InputParameter");
+
+...
+
+int dwnStr = input.getInteger(0, "DWN_STR");
+int dwnCnt = input.getInteger(0, "DWN_CNT");
+
+
+？ ICacheTable input 没见着有 DWN_STR 这个字段 ？？
+-- 有的，但是显示方式比较不一样；
+-- 鼠标悬浮后看 'name', 'meta', 'data'
+
+
+
+？ setPage 应该是 java 自带的 api 吧？？
+dbTable.setPage(dwnCnt, "SCH_MON DESC");
+
+
+
+resultTable.addField("PUB_USR_NAM");// 发布人名称
+-- 类似添加了一个 json 的属性；
+
+
+
+List<String> usrNbrList = new ArrayList<String>();
+？ List<String> 是什么数据类型？？
+
+
+
+-------------------------
+
+* 最终是为了生成这个 output 对象；
+
+Map<String, ICacheTable> output = new HashMap<String, ICacheTable>();
+output.put("OutputResult", resultTable);
+output.put("OutputResultCount", countTable);
+
+context.setOutputData(output);
+
+
+
+
+
+【JS】
+-- callWKE('myList_callback', 'WapArrMyList', '102005', inputInfo, "", "");
+
+[base.js]
+function callWKE(callBackFunc ,wkeCode , webcod , infoBody , OtherParameters, contextRoot, newFrm){
+	var callback = CMBAjax.createCallback({
+		success : function(message, obj) {
+			if(callBackFunc){
+				var func = eval(callBackFunc);
+				new func(obj , OtherParameters);
+			}
+		},
+		fail : function(message, errMessage) {
+			
+			if (typeof (showMessageDialog) == 'function' 
+				    && $("link[href*=bootstrap]").length >= 1) {
+				showMessageDialog('error', errMessage);
+			} else {
+				alert('发生错误：' + errMessage);
+			}
+			endload();
+		},
+		scope : this
+	 });
+	if(newFrm && newFrm == true)
+		CMBAjax.remoteInvokeNew({prccod : wkeCode,  webcod : webcod, infbdy : infoBody }, callback, contextRoot);   // CMBAjax.js
+	else
+		CMBAjax.remoteInvoke({prccod : wkeCode,  webcod : webcod, infbdy : infoBody }, callback, null, null, null, contextRoot);
+}
+
+
+？ 还没搞懂 WapArrMyList(webcod) 怎么跟 js 挂钩的；
+-- 就是 java 怎么跟 就是关联起来；
+
+[CMBAjax.js]
+remoteInvokeNew : function(config, callback, contextRoot) {
+	return this.remoteInvoke(config, callback, null, null, null, contextRoot, "json.ndo");
+},
+
+remoteInvoke : function(config, callback, err, scope, remoteUrl, contextRoot, servletName) {
+	CMBCaller = function(config) {
+		var cif = {
+			PRCCOD : '',
+			WEBCOD : '',
+			ISUDAT : '',
+			ISUTIM : '',
+			TARSVR : '',
+			DALCOD : '',
+			RTNLVL : '',
+			RTNCOD : '',
+			ERRMSG : '',
+			INFBDY : {}
+		};
+		this.data = '';
+		var initConfig = config || {};
+		CMBCaller.apply(this, initConfig);
+		CMBCaller.apply(cif, initConfig);
+		this.data = CMBAjax.toJSONString(cif);
+	};
+
+	CMBCaller.apply = function(o, c) {
+		if (o && c && typeof c == 'object') {
+			for (var p in c) {
+				if (o.hasOwnProperty(p.toString().toUpperCase()))
+					o[p.toString().toUpperCase()] = c[p];
+				if (o.hasOwnProperty(p))
+					o[p] = c[p];
+			}
+		}
+	};
+
+	var cmbCaller = new CMBCaller(config);
+	var url = 'rmi.do';
+	if(servletName && servletName!='')
+		url = servletName;
+	
+	if(remoteUrl){
+		url = remoteUrl;
+	}
+	if (callback) {
+		CMBAjax.doPost(url, cmbCaller.data, callback, err, scope, contextRoot);
+	} else {
+		try {
+			return CMBAjax.doPost(url, cmbCaller.data);
+		} catch (ex) {
+			if(Ext.Msg){
+				Ext.Msg.alert('错误信息', ex);
+			}else{
+				alert("错误信息："+ex);
+			}
+		}
+	}
+},
+
+
+
+
+
+
