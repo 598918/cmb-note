@@ -1,0 +1,654 @@
+public class Test {
+   public static void main(String args[]){
+      int [] numbers = {10, 20, 30, 40, 50};    // 整形数组
+
+      for(int x : numbers ){      // 类似 js 的 for(var a in array)
+         System.out.print( x );
+         System.out.print(",");
+      }
+      System.out.print("\n");
+      String [] names ={"James", "Larry", "Tom", "Lacy"};    // 字符串数组
+      for( String name : names ) {
+         System.out.print( name );
+         System.out.print(",");
+      }
+   }
+}
+
+
+* break 是彻底调出循环，continue 是不执行当前循环，执行下个循环；
+
+
+
+
+
+-------------------------
+
+这种由编译器特别支持的包装称为装箱，所以当内置数据类型被当作对象使用的时候，编译器会把内置类型装箱为包装类。相似的，编译器也可以把一个对象拆箱为内置类型。Number 类属于 java.lang 包。
+
+下面是一个使用 Integer 对象的实例：
+
+public class Test{
+ 
+   public static void main(String args[]){
+      Integer x = 5;   // 和 int 有什么区别？
+      x =  x + 10;
+      System.out.println(x); 
+   }
+}
+
+
+？ 当 x 被赋为整型值时，由于x是一个对象，所以编译器要对x进行装箱。然后，为了使x能进行加运算，所以要对x进行拆箱。
+
+
+
+
+
+-------------------------
+
+/**
+* @author Dale
+* java中的自动装箱与拆箱
+* 简单一点说，装箱就是自动将基本数据类型转换为包装器类型；拆箱就是自动将包装器类型转换为基本数据类型。
+*/
+public class Number {
+	public static void main(String[] args) {
+		/**
+		Integer i1 = 128;  // 装箱，相当于 Integer.valueOf(128);
+		int t = i1; //相当于 i1.intValue() 拆箱
+		System.out.println(t);
+		*/
+
+		/**
+		对于–128到127（默认是127）之间的值,被装箱后，会被放在内存里进行重用
+		但是如果超出了这个值,系统会重新new 一个对象
+		*/
+		Integer i1 = 200;
+		Integer i2 = 200;
+
+		/**
+		注意 == 与 equals的区别
+		== 它比较的是对象的地址
+		equlas 比较的是对象的内容
+		*/
+		if(i1==i2) {
+			System.out.println("true");
+		} else {
+			System.out.println("false");
+		}
+	}
+}
+
+
+
+
+
+-------------------------
+
+* char 和 string 有什么区别？
+-- 一个是字符，一个是串？
+
+
+// 原始字符 'a' 装箱到 Character 对象 ch 中
+Character ch = 'a';
+ 
+// 原始字符 'x' 用 test 方法装箱
+// 返回拆箱的值到 'c'
+char c = test('x');
+
+
+
+
+
+
+-------------------------
+
+public class StringDemo{
+   public static void main(String args[]){
+      char[] helloArray = { 'r', 'u', 'n', 'o', 'o', 'b'};
+      String helloString = new String(helloArray);  
+      System.out.println( helloString );
+   }
+}
+
+
+
+
+
+
+
+
+-------------------------
+
+创建格式化字符串
+-- printf() 和 format();
+
+我们知道输出格式化数字可以使用 printf() 和 format() 方法。
+String 类使用静态方法 format() 返回一个String 对象而不是 PrintStream 对象。
+String 类的静态方法 format() 能用来创建可复用的格式化字符串，而不仅仅是用于一次打印输出。
+
+如下所示：
+
+System.out.printf("浮点型变量的的值为 " +
+                  "%f, 整型变量的值为 " +
+                  " %d, 字符串变量的值为 " +
+                  "is %s", floatVar, intVar, stringVar);
+
+你也可以这样写
+
+String fs;
+fs = String.format("浮点型变量的的值为 " +
+                   "%f, 整型变量的值为 " +
+                   " %d, 字符串变量的值为 " +
+                   " %s", floatVar, intVar, stringVar);
+
+
+
+
+
+-------------------------
+
+？ 没有销毁机制么？
+-- 跟之前碰到的 $.extend() 好像啊。对象和对象的引用。
+
+原因在于实例中的 s 只是一个 String 对象的引用，并不是对象本身
+当执行 s = "Runoob"; 创建了一个新的对象 "Runoob"，而原来的 "Google" 还存在于内存中。
+
+
+
+
+
+-------------------------
+
+？ string 的操作好像和 js 有很大不同；
+-- 
+
+public class Test{
+  public static void main(String args[]){
+    StringBuffer sBuffer = new StringBuffer("菜鸟教程官网：");
+    sBuffer.append("www");
+    sBuffer.append(".runoob");
+    sBuffer.append(".com");
+    System.out.println(sBuffer);  
+  }
+}
+
+
+
+
+Java 中 StringBuffer 和 String 是有一定的区别的，
+
+首先，String 是被 final 修饰的，他的长度是不可变的，就算调用 String 的 concat 方法，那也是把字符串拼接起来并重新创建一个对象，把拼接后的 String 的值赋给新创建的对象
+
+而 StringBuffer 的长度是可变的，调用StringBuffer 的 append 方法，来改变 StringBuffer 的长度，并且，相比较于 StringBuffer，String 一旦发生长度变化，是非常耗费内存的！
+
+
+
+
+
+
+
+-------------------------
+
+public class TestArray {
+   public static void main(String[] args) {
+      double[] myList = {1.9, 2.9, 3.4, 3.5};
+ 
+      // 打印所有数组元素
+      for (double element: myList) {  // 这种写法...
+         System.out.println(element);
+      }
+   }
+}
+
+以上实例编译运行结果如下：
+
+1.9
+2.9
+3.4
+3.5
+
+
+
+
+
+-------------------------
+
+？ 怎么用？？
+
+Java使用以下三种方法来比较两个日期：
+
+使用getTime( ) 方法获取两个日期（自1970年1月1日经历的微妙数值），然后比较这两个值。 
+使用方法before()，after()和equals()。例如，一个月的12号比18号早，则new Date(99, 2, 12).before(new Date (99, 2, 18))返回true。 
+使用compareTo()方法，它是由Comparable接口定义的，Date类实现了这个接口。 
+
+
+
+
+
+
+
+
+
+-------------------------
+
+SimpleDateFormat() 
+？ 是一个 function ？？
+
+import java.util.*;
+import java.text.*;
+
+public class DateDemo {
+   public static void main(String args[]) {
+
+      Date dNow = new Date( );
+      SimpleDateFormat ft = 
+      new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
+
+      System.out.println("Current Date: " + ft.format(dNow));
+   }
+}
+
+以上实例编译运行结果如下:
+Current Date: Sun 2004.07.18 at 04:14:09 PM PDT
+
+
+
+
+
+
+
+
+-------------------------
+
+？ 要输出一个个性化定义的日期这么难？？
+
+
+import java.util.Date;
+  
+public class DateDemo {
+
+   public static void main(String args[]) {
+       // 初始化 Date 对象
+       Date date = new Date();
+        
+       // 使用toString()显示日期和时间
+       System.out.printf("%1$s %2$tB %2$td, %2$tY", 
+                         "Due date:", date);
+   }
+}
+
+以上实例编译运行结果如下:
+
+Due date: February 09, 2004
+
+-- 这些个参数要查表；
+
+
+？ printf() 方法应该有很多参数；
+
+
+
+
+
+-------------------------
+
+SimpleDateFormat 类有一些附加的方法，特别是parse()，它试图按照给定的SimpleDateFormat 对象的格式化存储来解析字符串。例如： 
+
+
+？ 有点看不懂...
+
+import java.util.*;
+import java.text.*;
+  
+public class DateDemo {
+
+   public static void main(String args[]) {
+      SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
+
+      String input = args.length == 0 ? "1818-11-11" : args[0];    
+
+      System.out.print(input + " Parses as ");      【1】
+  
+      Date t; 
+
+      try { 
+          t = ft.parse(input); 
+          System.out.println(t);                    【2】
+      } catch (ParseException e) { 
+          System.out.println("Unparseable using " + ft); 
+      }
+   }
+}
+以上实例编译运行结果如下:
+
+$ java DateDemo
+1818-11-11 Parses as Wed Nov 11 00:00:00 GMT 1818   【1】
+$ java DateDemo 2007-12-01
+2007-12-01 Parses as Sat Dec 01 00:00:00 GMT 2007   【2】
+
+
+？ 还是看不懂...应该是想表达：SimpleDateFormat() 有这种用法：
+-- new SimpleDateFormat ("yyyy-MM-dd").parse("1818-11-11") 
+
+
+
+
+
+
+-------------------------
+
+* 相当于 js 的 setTimeout？？
+
+import java.util.*;
+  
+public class SleepDemo {
+   public static void main(String args[]) {
+      try { 
+         System.out.println(new Date( ) + "\n"); 
+         Thread.sleep(5*60*10); 
+         System.out.println(new Date( ) + "\n"); 
+      } catch (Exception e) { 
+          System.out.println("Got an exception!"); 
+      }
+   }
+}
+以上实例编译运行结果如下:
+
+Sun May 03 18:04:41 GMT 2009
+
+Sun May 03 18:04:51 GMT 2009
+
+
+
+
+
+
+
+-------------------------
+
+？ 有差这么多？
+
+import java.util.*;
+  
+public class DiffDemo {
+
+   public static void main(String args[]) {
+      try {
+         long start = System.currentTimeMillis( );
+         System.out.println(new Date( ) + "\n");
+         Thread.sleep(5*60*10);
+         System.out.println(new Date( ) + "\n");
+         long end = System.currentTimeMillis( );
+         long diff = end - start;
+         System.out.println("Difference is : " + diff);
+      } catch (Exception e) {
+         System.out.println("Got an exception!");
+      }
+   }
+}
+以上实例编译运行结果如下:
+
+Sun May 03 18:16:51 GMT 2009
+
+Sun May 03 18:16:57 GMT 2009
+
+Difference is : 5993
+
+
+
+
+
+
+
+
+-------------------------
+
+* caleandar 类，很粗浅，还要看看具体的例子；
+
+Calendar c1 = Calendar.getInstance();调用：
+
+public final void set(int year,int month,int date)
+
+c1.set(2009, 6 - 1, 12);//把Calendar对象c1的年月日分别设这为：2009、6、12
+
+
+
+
+
+
+
+
+-------------------------
+
+import java.util.*;
+  
+public class GregorianCalendarDemo {
+
+   public static void main(String args[]) {
+      String months[] = {
+      "Jan", "Feb", "Mar", "Apr",
+      "May", "Jun", "Jul", "Aug",
+      "Sep", "Oct", "Nov", "Dec"};
+      
+      int year;
+      // 初始化 Gregorian 日历
+      // 使用当前时间和日期
+      // 默认为本地时间和时区
+      GregorianCalendar gcalendar = new GregorianCalendar();
+      // 显示当前时间和日期的信息
+      System.out.print("Date: ");
+      System.out.print(months[gcalendar.get(Calendar.MONTH)]);
+      System.out.print(" " + gcalendar.get(Calendar.DATE) + " ");
+      System.out.println(year = gcalendar.get(Calendar.YEAR));
+      System.out.print("Time: ");
+      System.out.print(gcalendar.get(Calendar.HOUR) + ":");
+      System.out.print(gcalendar.get(Calendar.MINUTE) + ":");
+      System.out.println(gcalendar.get(Calendar.SECOND));
+      
+      // 测试当前年份是否为闰年
+      if(gcalendar.isLeapYear(year)) {
+         System.out.println("当前年份是闰年");
+      }
+      else {
+         System.out.println("当前年份不是闰年");
+      }
+   }
+}
+以上实例编译运行结果如下：
+
+Date: Apr 22 2009
+Time: 11:25:27
+当前年份不是闰年
+
+
+
+
+
+
+
+-------------------------
+
+？ 为什么会有 3 个 group？？ 
+？ 捕获组？
+
+
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class RegexMatches
+{
+    public static void main( String args[] ){
+
+      // 按指定模式在字符串查找
+      String line = "This order was placed for QT3000! OK?";
+      String pattern = "(.*)(\\d+)(.*)";     // 【？？】
+
+      // 创建 Pattern 对象
+      Pattern r = Pattern.compile(pattern);
+
+      // 现在创建 matcher 对象
+      Matcher m = r.matcher(line);
+      if (m.find( )) {
+         System.out.println("Found value: " + m.group(0) );   // 【？？】
+         System.out.println("Found value: " + m.group(1) );   // 【？？】
+         System.out.println("Found value: " + m.group(2) );   // 【？？】
+      } else {
+         System.out.println("NO MATCH");
+      }
+   }
+}
+以上实例编译运行结果如下：
+
+Found value: This order was placed for QT3000! OK?
+Found value: This order was placed for QT300
+Found value: 0
+
+
+1. 写 regex expression；
+2. 创建 pattern 对象：就是实例化 1 的对象；
+3. 创建 matcher 对象：输入目标返回结果；
+
+
+
+-------------------------
+
+下面是一个对单词"cat"出现在输入字符串中出现次数进行计数的例子： 
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class RegexMatches
+{
+    private static final String REGEX = "\\bcat\\b";    // 弄清楚这里面逐个符号的意思
+    private static final String INPUT = "cat cat cat cattie cat";
+
+    public static void main( String args[] ){
+       Pattern p = Pattern.compile(REGEX);             // compile？？
+       Matcher m = p.matcher(INPUT); // 获取 matcher 对象
+       int count = 0;
+
+       while(m.find()) {
+         count++;
+         System.out.println("Match number "+count);
+         System.out.println("start(): "+m.start());
+         System.out.println("end(): "+m.end());
+      }
+   }
+}
+以上实例编译运行结果如下：
+
+Match number 1
+start(): 0
+end(): 3
+Match number 2
+start(): 4
+end(): 7
+Match number 3
+start(): 8
+end(): 11
+Match number 4
+start(): 19
+end(): 22
+
+
+？ while 这个循环好像很少见；
+
+？ p.matcher(INPUT).find() 返回的是啥？数值？
+
+
+
+
+
+
+------------------------
+
+* matcher 下的子方法；
+-- 目前理解是 lookingAt() 看有没有包含这种字符串；matches() 是完全匹配；
+
+
+lookingAt() vs matches()
+？ matches() 返回的是 true/false 吗？好像还返回匹配的数组啊？？
+
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class RegexMatches
+{
+    private static final String REGEX = "foo";
+    private static final String INPUT = "fooooooooooooooooo";
+    private static Pattern pattern;
+    private static Matcher matcher;
+
+    public static void main( String args[] ){
+       pattern = Pattern.compile(REGEX);
+       matcher = pattern.matcher(INPUT);
+
+       System.out.println("Current REGEX is: "+REGEX);
+       System.out.println("Current INPUT is: "+INPUT);
+
+       System.out.println("lookingAt(): "+matcher.lookingAt());
+       System.out.println("matches(): "+matcher.matches());
+   }
+}
+以上实例编译运行结果如下：
+
+Current REGEX is: foo
+Current INPUT is: fooooooooooooooooo
+lookingAt(): true
+matches(): false
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+* appendReplacement 和appendTail 
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class RegexMatches
+{
+   private static String REGEX = "a*b";
+   private static String INPUT = "aabfooaabfooabfoob";    // 就把 'ab' 替换成 '-' 而已吧？
+   private static String REPLACE = "-";
+   public static void main(String[] args) {
+      Pattern p = Pattern.compile(REGEX);
+      // 获取 matcher 对象
+      Matcher m = p.matcher(INPUT);
+      StringBuffer sb = new StringBuffer();
+      while(m.find()){
+         m.appendReplacement(sb,REPLACE);   // 【core】
+      }
+      m.appendTail(sb);
+      System.out.println(sb.toString());
+   }
+}
+以上实例编译运行结果如下：
+
+-foo-foo-foo-
+
+
+
+！ 一个个的对比 regex...
+
+
+
+
+
+
+
+
+
+
+
+
