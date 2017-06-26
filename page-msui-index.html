@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title>为什么选择 MSUI</title>
+		<link href="css/columnal.css" rel="stylesheet" type="text/css" />
+		<link href="css/pages.css" rel="stylesheet" type="text/css" />
+		
+		<!-- 代码高亮插件：syntaxhighlighter  -->
+		<script type="text/javascript" src="js/shCore.js"></script>
+		<script type="text/javascript" src="js/shBrushBash.js"></script>
+		<script type="text/javascript" src="js/shBrushCss.js"></script>
+		<script type="text/javascript" src="js/shBrushCSharp.js"></script>
+		<script type="text/javascript" src="js/shBrushJScript.js"></script>
+		<script type="text/javascript" src="js/shBrushPhp.js"></script>
+		<script type="text/javascript" src="js/shBrushPlain.js"></script>
+		<script type="text/javascript" src="js/shBrushPython.js"></script>
+		<script type="text/javascript" src="js/shBrushJava.js"></script>
+		<script type="text/javascript" src="js/shBrushScala.js"></script>
+		<script type="text/javascript" src="js/shBrushSql.js"></script>
+		<script type="text/javascript" src="js/shBrushXml.js"></script>
+		<script type="text/javascript" src="js/shBrushPerl.js"></script>
+		<link type="text/css" rel="stylesheet" href="css/shCore.css" />
+		<link type="text/css" rel="stylesheet" href="css/shThemeDefault.css" />
+		<script type="text/javascript">
+				SyntaxHighlighter.defaults['toolbar'] = false;  //去掉右上角问号图标
+				SyntaxHighlighter.config.tagName = 'pre';       //可以更改解析的默认Tag。
+				SyntaxHighlighter.config.bloggerMode = true; 
+				SyntaxHighlighter.config.stripBrs = true;  
+				SyntaxHighlighter.all();
+		</script>
+	</head>
+	<body>
+		<h1 class="page-title">引入 CSS + JAVASCRIPT</h1>
+		<section>
+			<p>最简单的 HTML 结构：</p>
+			<pre class="brush: html;">
+				<!--
+                <!DOCTYPE html>
+				<html>
+					<head>
+						<meta charset="UTF-8">
+						<title></title>
+					</head>
+					<body>
+					</body>
+				</html>
+				-->
+			</pre>
+			<p>引入 CSS: </p>
+			<pre class="brush: html;">
+				<!--
+				<head>
+					<meta charset="UTF-8">
+					<title>页面名称</title>
+					<link rel="stylesheet" href="../css/sm.min.css">
+					<link rel="stylesheet" href="../css/sm-extend.min.css">
+					<link rel="stylesheet" href="../css/all.css">
+				</head>	
+				-->
+			</pre>
+			<p>其中 all.css 整合了整站样式：</p>
+			<pre class="brush: css;">
+				@import url('page-mnglist.css');
+				@import url('page-mylist.css');
+				@import url('page-chflist.css');
+				@import url('page-tlrlist.css');
+				@import url('page-myinfo.css');
+				@import url('page-report.css');
+				
+				/*index.css*/
+				...
+			</pre>
+			<p>引入 JAVASCRIPT: </p>
+			<pre class="brush: html;">
+				<!--
+					...
+					<script type='text/javascript' src='../js/zepto.min.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/sm.min.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/sm-extend.min.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/CMBAjax.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/common.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/tree-zepto.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/branch-msui.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/inputcontrol-msui.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/common/excel-msui.js'	charset='utf-8'></script>
+					<script type='text/javascript' src='../js/page-index.js' charset='utf-8'></script>
+					<script type='text/javascript' src='../js/myapp.js' charset='utf-8'></script>
+				</body>	
+				-->
+			</pre>
+			<p>其中 myapp.js 会自动加载页面的同名 js，同时写一些公共方法；</p>
+			<pre class="brush: javascript;">
+				$(function() {
+					'use strict';
+					
+					$(document).on("pageInit", function(e, pageId, page) {
+						if(pageId == 'page-main'){
+							$.get('../js/' + pageId + '.js');
+						}
+						if(pageId !== 'page-index' && pageId !== 'page-main'){
+							$.get('../../js/' + pageId + '.js');
+						}
+					});
+					
+					$(document).on("beforePageSwitch", function(e, pageId, page) {
+						localStorage.prevPage = pageId;
+					});
+					
+					$(document).on('click', '#menuAside a', function() {
+						$.closePanel();
+					});
+					
+					$.init();
+				});
+				
+				function saveSessionStorage(obj) {
+					if(sessionStorage.extras){
+						sessionStorage.removeItem('extras');
+					}
+					sessionStorage.extras = JSON.stringify(obj);
+				}
+				
+				/* 写入页面参数：
+				function setParams() {
+					var sch_nbr = $(this).attr('SCH_NBR');
+					var sch_mdl = $(this).parents('.card').attr('SCH_MDL');
+					var year = $(this).parents('.card').attr('YEAR');
+					var month = $(this).parents('.card').attr('MONTH');
+					var params = {
+						'sch_nbr' : sch_nbr,
+						'sch_mdl' : sch_mdl,
+						'year' : year,
+						'month' : month
+					};
+					saveSessionStorage(params);
+				}
+				*/
+				
+				function getParams(){
+					return JSON.parse(sessionStorage.extras);
+				}
+			</pre>
+		</section>
+	</body>
+</html>
