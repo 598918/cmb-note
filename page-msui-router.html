@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title>路由</title>
+		<link href="css/columnal.css" rel="stylesheet" type="text/css" />
+		<link href="css/pages.css" rel="stylesheet" type="text/css" />
+
+		<!-- 代码高亮插件：syntaxhighlighter  -->
+		<script type="text/javascript" src="js/shCore.js"></script>
+		<script type="text/javascript" src="js/shBrushBash.js"></script>
+		<script type="text/javascript" src="js/shBrushCss.js"></script>
+		<script type="text/javascript" src="js/shBrushCSharp.js"></script>
+		<script type="text/javascript" src="js/shBrushJScript.js"></script>
+		<script type="text/javascript" src="js/shBrushPhp.js"></script>
+		<script type="text/javascript" src="js/shBrushPlain.js"></script>
+		<script type="text/javascript" src="js/shBrushPython.js"></script>
+		<script type="text/javascript" src="js/shBrushJava.js"></script>
+		<script type="text/javascript" src="js/shBrushScala.js"></script>
+		<script type="text/javascript" src="js/shBrushSql.js"></script>
+		<script type="text/javascript" src="js/shBrushXml.js"></script>
+		<script type="text/javascript" src="js/shBrushPerl.js"></script>
+		<link type="text/css" rel="stylesheet" href="css/shCore.css" />
+		<link type="text/css" rel="stylesheet" href="css/shThemeDefault.css" />
+		<script type="text/javascript">
+			SyntaxHighlighter.defaults['toolbar'] = false; //去掉右上角问号图标
+			SyntaxHighlighter.config.tagName = 'pre'; //可以更改解析的默认Tag。
+			SyntaxHighlighter.config.bloggerMode = true;
+			SyntaxHighlighter.config.stripBrs = true;
+			SyntaxHighlighter.all();
+		</script>
+	</head>
+
+	<body>
+		<h1 class="page-title">路由</h1>
+		<h2 class="sub-title">就是页面之间的跳转方式</h2>
+		<div class="left-wrapper">
+			<div class="left">
+				<blockquote>
+					我的理解是：使用了 MSUI 的路由功能后，目标 page 会被抽取到首页上展示。
+				</blockquote>
+				<blockquote>
+					$.router.load("/detail"); // 加载 ajax 页面：比如从首页跳到我的班表 <br> $.router.load("#about"); // 加载内联页面：page group 里面的 "page-index"、"page-main" 间的跳转；
+				</blockquote>
+
+				<section>
+					<pre class="brush: html;">
+				<div class="page-group">
+					<div class="page page-current page-index" id="page-index">
+						<div class="content preloadpage">
+							<div id="loginDivRegion" class="preload">
+								<div class="imgcontainer">
+									<img src="../images/loading-2.gif" />
+								</div>
+								<span>登录中</span>
+							</div>
+							<div id="messagediv" class="messagediv" style="display: none;">
+								<ul id="messagelist">
+								</ul>
+							</div>
+						</div>
+					</div>
+					
+					<div class="page page-main" id="page-main">
+						<div class="content">
+							<div class="main">
+								<img src="../images/op-main-bg.jpg">
+								<div class="mainmenuwrapper">
+									<div class="menu-top">&nbsp;</div>
+									<div class="userinfo" id="userinfo">
+									</div>
+									<ul id="menuList">
+										<li><a href="http://localhost:8080/buswap/msui/arrange/mylist.html">我的班表</a></li>
+										<li><a href="http://localhost:8080/buswap/msui/arrange/mnglist.html">班表管理</a></li>
+										<li><a href="http://localhost:8080/buswap/msui/assistant/tlrlist.html">柜员助手</a></li>
+										<li><a href="http://localhost:8080/buswap/msui/assistant/chflist.html">主管助手</a></li>
+										<li><a href="http://localhost:8080/buswap/msui/emp/myinfo.html">我的信息</a></li>
+										<li><a href="http://localhost:8080/buswap/msui/report/list.html">报表</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</pre>
+				</section>
+			</div>
+		</div>
+		<div class="right">
+			<img src="img/skl_login.jpg">
+			<img src="img/skl_index.jpg">
+		</div>
+	</body>
+
+</html>
