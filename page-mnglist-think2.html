@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title>为什么选择 MSUI</title>
+		<link href="css/columnal.css" rel="stylesheet" type="text/css" />
+		<link href="css/pages.css" rel="stylesheet" type="text/css" />
+		
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		
+		<!-- 代码高亮插件：syntaxhighlighter  -->
+		<script type="text/javascript" src="js/shCore.js"></script>
+		<script type="text/javascript" src="js/shBrushBash.js"></script>
+		<script type="text/javascript" src="js/shBrushCss.js"></script>
+		<script type="text/javascript" src="js/shBrushCSharp.js"></script>
+		<script type="text/javascript" src="js/shBrushJScript.js"></script>
+		<script type="text/javascript" src="js/shBrushPhp.js"></script>
+		<script type="text/javascript" src="js/shBrushPlain.js"></script>
+		<script type="text/javascript" src="js/shBrushPython.js"></script>
+		<script type="text/javascript" src="js/shBrushJava.js"></script>
+		<script type="text/javascript" src="js/shBrushScala.js"></script>
+		<script type="text/javascript" src="js/shBrushSql.js"></script>
+		<script type="text/javascript" src="js/shBrushXml.js"></script>
+		<script type="text/javascript" src="js/shBrushPerl.js"></script>
+		<link type="text/css" rel="stylesheet" href="css/shCore.css" />
+		<link type="text/css" rel="stylesheet" href="css/shThemeDefault.css" />
+		<script type="text/javascript">
+				SyntaxHighlighter.defaults['toolbar'] = false;  //去掉右上角问号图标
+				SyntaxHighlighter.config.tagName = 'pre';       //可以更改解析的默认Tag。
+				SyntaxHighlighter.config.bloggerMode = true; 
+				SyntaxHighlighter.config.stripBrs = true;  
+				SyntaxHighlighter.all();
+		</script>
+	</head>
+
+	<body>
+		<h1 class="page-title">
+			班表管理
+		</h1>
+		<h2 class="sub-title">实现功能：管理员查看员工的排班</h2>
+		<br>
+		<div class="left-wrapper">
+			<div class="left">
+				<section>
+					<h3 class="section-title">构思</h3>
+					<h6 class="title">如何实现：</h6>
+					<p>
+						-- 默认展示：当月排班组内全部支行班表；<br> -- 按支行：管理员看某支行某天全部员工的排班；<br> -- 按员工：管理员看某员工当月的排班；<br>
+					</p>
+					<br>
+					<h6 class="title">页面：</h6>
+					<p>
+						-- 列表页 + 详情页
+					</p>
+				</section>
+				<br>
+				<section>
+					<h3 class="section-title">风格</h3>
+					<h6>科技 or 商务 or 儿童 or 节庆</h6>
+					<h6>配色</h6>
+				</section>
+				<br>
+				<section>
+					<h3 class="section-title">制作</h3>
+					<h6>HTML -> CSS -> JAVASCRIPT</h6>
+					<p>列表页的html：</p>
+					<pre class="brush: html;">
+						<div class="page page-current page-mnglist-main" id="page-mnglist-main">
+							<header class="bar bar-nav topbar">
+								<a class="icon-arrow-left pull-left back"></a> 
+								<a class="icon-align-justify pull-right open-panel"></a>
+								<h1 class="title">班表管理</h1>
+							</header>
+							
+							<div class="content infinite-scroll infinite-scroll-bottom" data-distance="100">
+								<div class="row">
+									<form class="searchrow">
+										<input id="branchControl" type="text" value="" name="" placeholder="机构代码"> <input type="month" id="monthControl" style="width: 9.1em; max-width: none;">
+										<button id="searchBtn" type="button">
+											<i class="icon-search"></i>
+										</button>
+									</form>
+								</div>
+								
+								<div id="wrapper">
+									<div id="thelist" class="">
+										<div class="card" id="template" style="display:none;">
+											<div class="card-header">
+												<a href="#"><span></span><i
+													class="icon-angle-down"></i></a>
+											</div>
+											<div class="card-content">
+												<div class="card-content-inner billinfo">
+													<a href="#page-mnglist-detail">
+														<p>
+															<span>班表编号：</span>
+														</p>
+														<p>
+															<span>按日明细：</span> 点击进入每日排班明细
+														</p>
+														<p>
+															<span>发布人：</span>
+														</p>
+														<p>
+															<span>更新时间：</span>
+														</p>
+													</a>
+												</div>
+											</div>
+										</div>
+										<div id="info" style="display: none;">
+											<h3 class="noresult">无任何班表</h3>
+										</div>
+										
+										<div id="morediv" class="show-more">
+											拖动加载更多...
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</pre>
+					<p>详情页的html：</p>
+					<pre class="brush: html;">
+						<div class="page page-mnglist-detail" id="page-mnglist-detail">
+							<header class="bar bar-nav topbar">
+								<a class="icon-arrow-left pull-left back" data-no-cache="false" id="page-mnglist-detail-back"></a>
+								<a class="icon-align-justify pull-right open-panel"></a>
+								<h1 class="title" id="mngDetailTitle"></h1>
+							</header>
+							<div class="content">
+								<div class="content-block-title">点击日期可查看当日该组排班详情</div>
+								<div class="card">
+									<div class="row srcbilldtl" id="week_template">
+										<table class="datelist">
+											<thead>
+												<tr align="center">
+													<th class="day week_title ">日</th>
+													<th class="day week_title ">一</th>
+													<th class="day week_title ">二</th>
+													<th class="day week_title ">三</th>
+													<th class="day week_title ">四</th>
+													<th class="day week_title ">五</th>
+													<th class="day week_title ">六</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</div>
+								<div class="srcbill" id="srcbill">
+									<div class="card" id="detail_template" style="display: none;">
+										<div class="srcbilldtl-list">
+											<div class="srcbilldtl-list card-header">
+												<h2></h2>
+											</div>
+											<div class="card-content">
+												<ul>
+													<li id="tlr_li_template" style="display: none;"><i class="icon-circle-blank"></i></li>
+													<li id="chf_li_template" style="display: none;"><i class="icon-circle"></i></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</pre>
+					
+				</section>
+			</div>
+		</div>
+		<div class="right">
+			<img src="img/skl_1.jpg"> 
+			<img src="img/skl_2.jpg"> 
+		</div>
+	</body>
+
+</html>
