@@ -1,0 +1,26 @@
+body
+{
+	padding:15px 20px;
+	font-size: 14px;
+	line-height: 24px;
+	font-family: "微软雅黑";
+}
+.page-title
+{
+	font-size: 20px;
+	line-height: 34px;
+}
+.left-wrapper
+{
+	float:left;
+	width:100%;
+	margin-right:-360px;
+}
+.left{
+	margin-right: 400px;
+}
+.right
+{
+	float: right;
+	width:360px;
+}
