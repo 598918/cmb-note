@@ -1,0 +1,433 @@
+class Animal{
+
+   public void move(){
+      System.out.println("动物可以移动");
+   }
+}
+
+class Dog extends Animal{
+
+   public void move(){
+      System.out.println("狗可以跑和走");
+   }
+}
+
+public class TestDog{
+
+   public static void main(String args[]){
+      Animal a = new Animal(); // Animal 对象
+      Animal b = new Dog(); // Dog 对象
+
+      a.move();// 执行 Animal 类的方法
+
+      b.move();//执行 Dog 类的方法
+   }
+}
+
+以上实例编译运行结果如下：
+
+动物可以移动
+狗可以跑和走
+
+
+
+？ 怎么感觉 class 有点像 function
+？ class 跟 public class 有什么关系？这个文件应该怎么写？还是分三个文件？
+
+
+
+
+
+----------------------------------
+
+class Animal{
+
+   public void move(){
+      System.out.println("动物可以移动");
+   }
+}
+
+class Dog extends Animal{
+
+   public void move(){
+      System.out.println("狗可以跑和走");
+   }
+   public void bark(){
+      System.out.println("狗可以吠叫");
+   }
+}
+
+public class TestDog{
+
+   public static void main(String args[]){
+      Animal a = new Animal(); // Animal 对象
+      Animal b = new Dog(); // Dog 对象
+
+      a.move();// 执行 Animal 类的方法
+      b.move();//执行 Dog 类的方法
+      b.bark();    // 这里会报错：因为b的引用类型Animal没有bark方法。
+   }
+}
+
+
+？ 为什么呢？Dog 里面不可以自行定义新的方法吗？
+
+
+
+
+
+
+
+----------------------------------
+
+当需要在子类中调用父类的被重写方法时，要使用super关键字。 
+
+class Animal{
+
+   public void move(){
+      System.out.println("动物可以移动);
+   }
+}
+
+class Dog extends Animal{
+
+   public void move(){
+      super.move(); // 应用super类的方法
+      System.out.println("狗可以跑和走");
+   }
+}
+
+public class TestDog{
+
+   public static void main(String args[]){
+
+      Animal b = new Dog(); /
+      b.move(); //执行 Dog类的方法
+
+   }
+}
+
+以上实例编译运行结果如下：
+
+动物可以移动
+狗可以跑和走
+
+
+
+
+
+
+
+----------------------------------
+
+public interface Vegetarian{}
+public class Animal{}
+public class Deer extends Animal implements Vegetarian{}
+
+因为Deer类具有多重继承，所以它具有多态性。以上实例解析如下： 
+
+一个 Deer IS-A（是一个） Animal 
+一个 Deer IS-A（是一个） Vegetarian 
+一个 Deer IS-A（是一个） Deer 
+一个 Deer IS-A（是一个）Object 
+
+
+？ extends vs implements 
+
+
+
+
+
+
+----------------------------------
+
+当子类对象调用重载的方法时，调用的是子类的方法，而不是父类中被重载的方法。
+
+Salary s = new Salary("Mohd Mohtashim", "Ambehta, UP", 3, 3600.00);
+Employee e = new Salary("John Adams", "Boston, MA", 2, 2400.00);
+s.mailCheck();
+e.mailCheck();
+
+-- 其中，public class Salary extends Employee
+-- 也就是说 Salary 是 Employee 的子类；
+-- 根据上面的说法，mailCheck 被子类重载了，所以访问不了父类的 mailCheck 方法；
+
+-- 要想调用父类中被重载的方法，则必须使用关键字super。
+
+
+
+
+
+
+
+----------------------------------
+
+-- 在面向对象的概念中，所有的对象都是通过类来描绘的，但是反过来，并不是所有的类都是用来描绘对象的，如果一个类中没有包含足够的信息来描绘一个具体的对象，这样的类就是抽象类。 
+-- 抽象类除了不能实例化对象之外，类的其它功能依然存在，成员变量、成员方法和构造方法的访问方式和普通类一样。  【1】
+-- 由于抽象类不能实例化对象，所以抽象类必须被继承，才能被使用。也是因为这个原因，通常在设计阶段决定要不要设计抽象类。
+-- 父类包含了子类集合的常见的方法，但是由于父类本身是抽象的，所以不能使用这些方法。
+？ 妈蛋，那要在抽象类定义方法干毛。
+
+
+
+public abstract class Employee
+Employee e = new Employee("George W.", "Houston, TX", 43);   // 报错，【1】
+
+
+尽管我们不能实例化一个Employee类的对象，但是如果我们实例化一个Salary类对象，该对象将从Employee类继承3个成员变量和7个成员方法。
+
+public class Salary extends Employee
+
+
+
+
+
+
+
+----------------------------------
+
+声明抽象方法会造成以下两个结果：
+
+-- 如果一个类包含抽象方法，那么该类必须是抽象类。 
+-- 任何子类必须重写父类的抽象方法，或者声明自身为抽象类。 
+
+-- 抽象方法就是粘上了就别想轻易甩掉；
+
+
+
+
+
+
+----------------------------------
+
+类在实现接口的方法时，不能抛出强制性异常，只能在接口中，或者继承接口的抽象类中抛出该强制性异常。 
+？ 强制性异常？？
+
+
+
+
+
+
+----------------------------------
+
+// 文件名: Sports.java
+public interface Sports
+{
+   public void setHomeTeam(String name);
+   public void setVisitingTeam(String name);
+}
+
+// 文件名: Football.java
+public interface Football extends Sports
+{
+   public void homeTeamScored(int points);
+   public void visitingTeamScored(int points);
+   public void endOfQuarter(int quarter);
+}
+
+// 文件名: Hockey.java
+public interface Hockey extends Sports
+{
+   public void homeGoalScored();
+   public void visitingGoalScored();
+   public void endOfPeriod(int period);
+   public void overtimePeriod(int ot);
+}
+
+Hockey接口自己声明了四个方法，从Sports接口继承了两个方法，这样，实现Hockey接口的类需要实现六个方法。
+？ 不是应该是 7 个方法咩？？
+？ 另外，不用实现 sports 里面的方法啊？
+
+
+相似的，实现Football接口的类需要实现五个方法，其中两个来自于Sports接口。 
+
+
+
+
+
+
+
+----------------------------------
+
+package java.util;
+public interface EventListener
+{}
+
+-- 没有任何方法的接口被称为标记接口。
+-- 标识接口作用：简单形象的说就是给某个对象打个标（盖个戳），使对象拥有某个或某些特权。
+
+标记接口主要用于以下两种目的： 
+
+* 建立一个公共的父接口：
+-- 正如EventListener接口，这是由几十个其他接口扩展的Java API，你可以使用一个标记接口来建立一组接口的父接口。
+-- 例如：当一个接口继承了EventListener接口，Java虚拟机(JVM)就知道该接口将要被用于一个事件的代理方案。 
+
+-- 好像有点理解：关键词是一组接口的父接口；可以用来标注某一个类型事件的发生；
+
+
+
+* 向一个类添加数据类型：
+-- 这种情况是标记接口最初的目的，实现标记接口的类不需要定义任何接口方法(因为标记接口根本就没有方法)，但是该类通过多态性变成一个接口类型。
+
+
+
+
+
+
+
+
+
+
+----------------------------------
+
+？ 在 class 头引入 package 和 import 的目的是什么呢？
+-- 为了能够使用某一个包的成员，我们需要在 Java 程序中明确导入该包。使用"import"语句可完成此功能。 
+
+
+package net.java.util
+public class Something{
+   ...
+}
+那么它的路径应该是 net/java/Something.java 这样保存的。 
+
+package com.cmb.bus.buswap.arrange;
+？这里没有 util 啊？
+
+
+
+
+
+
+
+
+----------------------------------
+
+？枚举和注释？？
+
+当你自己完成类的实现之后，将相关的类分组，可以让其他的编程者更容易地确定哪些类、接口、枚举和注释等是相关的。 
+
+
+
+
+----------------------------------
+
+如果其他的一个源文件包含了这个包提供的类、接口、枚举或者注释类型的时候，都必须将这个package的声明放在这个源文件的开头。
+
+？ 就是某个类调用了 package 中的资源，必须要先声明这个包么？
+
+
+
+
+
+
+----------------------------------
+
+package animals;
+interface Animal {
+   ...
+}
+
+package animals;
+public class MammalInt implements Animal{
+   ...
+} 
+
+ 
+$ mkdir animals   // ？？
+$ cp Animal.class  MammalInt.class animals   // ？？
+$ java animals/MammalInt
+Mammal eats
+Mammal travel
+
+
+
+
+
+
+----------------------------------
+
+？ 包和类的关系？？
+？ 往包中添加类是怎么一回事？从 js 的角度看，是添加方法？还是实现某个功能？
+
+
+
+
+
+
+
+
+----------------------------------
+
+如果Boss类不在payroll包中又会怎样？Boss类必须使用下面几种方法之一来引用其他包中的类 
+
+使用类全名描述，例如：
+payroll.Employee
+
+用import关键字引入，使用通配符"*"
+import payroll.*;
+
+使用import关键字引入Employee类
+import payroll.Employee;
+
+
+
+
+
+
+----------------------------------
+
+// 文件名: Dell.java
+
+package com.apple.computers;
+public class Dell{
+      
+}
+class Ups{
+      
+}
+
+现在，我们用-d选项来编译这个文件，如下： 
+
+$javac -d . Dell.java
+这样会像下面这样放置编译了的文件： 
+
+.\com\apple\computers\Dell.class
+.\com\apple\computers\Ups.class
+
+
+
+
+
+
+
+----------------------------------
+
+？ java 文件 vs class 文件？？
+
+<path-one>\sources\com\apple\computers\Dell.java
+<path-two>\classes\com\apple\computers\Dell.class
+
+-- <path- two>\classes是class path，package名字是com.apple.computers
+-- 而编译器和JVM会在 <path-two>\classes\com\apple\compters中找.class文件。
+
+
+
+
+
+
+----------------------------------
+
+？ 文件按包含Java平台相关的类，所以他们的目录默认放在了class path中。
+
+
+
+
+
+
+
+
+
+
+
+
+
