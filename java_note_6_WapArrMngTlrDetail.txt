@@ -1,0 +1,129 @@
+public int execute(IContext context) throws FrameworkException 
+？ int execute(IContext context)  这个是什么类型，应该 debug 看看。
+
+
+
+---------------------------------------
+
+import com.cmb.bus.buswap.base.Permission;
+...
+
+List<String> perBrn = Permission.getPermissionBranch(context);    // context 里面的内容是什么？
+
+？ 为什么不是 new Permission();
+
+？ context 里面找不到类似 getPermissionBranch 的东东；
+-- 翻了下 iContext.java，确实没见着。
+
+
+
+
+
+
+
+---------------------------------------
+
+import com.frm.container.context.IContext;
+
+？ IContext 感觉很强大，里面应该有很多数据；
+
+【IContext context】
+-- 好像是一堆的 json，里面有 session，operation，conn, name 等一些的信息；
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------
+
+import com.frm.dao.model.IDBTable;     // 又是自定义的类；
+...
+
+IDBTable mainTable = new DBTable(conn, "Result", querySQL);
+ICacheTable mainTableResult = mainTable.select();
+mainTableResult.addField("BRN_NAM");
+mainTableResult.addField("WIN_TYP_NAM");
+
+
+
+
+
+
+
+
+---------------------------------------
+
+？ 感觉这一段是给表格额外添加两个字段；
+
+mainTableResult.addField("BRN_NAM");
+mainTableResult.addField("WIN_TYP_NAM");
+
+int recordCount = mainTableResult.getRecordCount();
+for(int i=0;i<recordCount;i++){
+	String tmpBrnNbr = mainTableResult.getString(i, "BRN_NBR");
+	String tmpWinTyp = mainTableResult.getString(i, "WIN_TYP");
+
+	if(!checkBranchPermission(perBrn, tmpBrnNbr)){
+		mainTableResult.delete(i);
+		continue;
+	}
+	
+	mainTableResult.update(i, "BRN_NAM", Branch.getName(tmpBrnNbr));
+	mainTableResult.update(i, "WIN_TYP_NAM", Parameter.getName("Q2WINTYP", tmpWinTyp).split(",")[0]);
+}
+
+
+
+
+
+
+
+---------------------------------------
+
+ICacheTable input = context.getInputData().get("InputParameter");
+
+-- json 字段：name, meta, data, column... 看起来确实像一张表；
+-- {SCH_NBR=0}
+-- {0=[818]}
+
+int schNbr = input.getInteger(0, "SCH_NBR");	//班表编号
+-- 然后就得到 schNbr = 818; 
+
+
+IDBTable mainTable = new DBTable(conn, "Result", querySQL);    // mainTable：这个可能只是一个类，没见着有东西；
+ICacheTable mainTableResult = mainTable.select();              // name, meta, data, columnSize, autoRowId: 91
+-- meta: {SCH_NBR=0, DTA_DTE=1, WIN_NBR=2, BRN_NBR=3, WIN_TYP=4, OPN_TIM=5, CLS_TIM=6, CAL_BUS=7, FIX_FLG=8, SAP_NBR=9, LIK_FLG=10, WIN_FLG=11, WIN_NAM=12, SAP_NAM=13}
+-- data: {0=[818, 2015-11-01, 14, 110510, W204, 09:00, 18:00, 192.53, Y, 01100496, Y, 3, 2, 孙瑶1], }
+
+
+
+private boolean checkBranchPermission(List<String> list, String branch) throws FrameworkException{
+	for(String brn: list){       // [100, 100]
+		if(Branch.isBelong(brn, branch)){       // 110510 belong to 100 ？？
+			return true;
+		}
+	}
+	return false;
+}
+
+
+mainTableResult.update(i, "BRN_NAM", Branch.getName(tmpBrnNbr));
+
+-- {0=[818, 2015-11-01, 14, 110510, W204, 09:00, 18:00, 192.53, Y, 01100496, Y, 3, 2, 孙瑶1, 北京分行望京西园支行, null], ...}
+-- {0=[818, 2015-11-01, 14, 110510, W204, 09:00, 18:00, 192.53, Y, 01100496, Y, 3, 2, 孙瑶1], }
+
+
+
+
+
+
+
+
+
+
