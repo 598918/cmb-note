@@ -1,0 +1,474 @@
+？ popup 页面应该是下面有个关闭按钮，然后中间的内容是滚动显示；
+
+
+
+
+--------------------------------
+
+! 整个 app 的缓存方案要怎么解决
+
+
+$(document).on('click', '.back', function() {
+	if ($(this).attr('id') == 'page-mnglist-detail-back') {
+		localStorage.prePage = 'page-mnglist-detail';
+	} else {
+		localStorage.removeItem('prePage');
+	}
+});
+
+
+$(document).on("beforePageSwitch", function(e, pageId, page) {
+	localStorage.prevPage = pageId;
+});
+
+if(localStorage.prevPage !== 'page-report-detail'){
+}
+
+
+
+
+
+
+
+
+【排班详情页】
+
+-- 难点是怎么把数据绑定到 td 上；
+-- hq 是把当月全部的员工数据查出来，按日期排列；
+-- 然后在某一个天的 td 上做个标记，从 start 到 end 的数据是当天值班的；
+-- 再把 start 到 end 的数据按 主管/员工 排列；
+
+
+1. 优化
+-- 应该有清除 extras 的机制；因为从 page-arrange-detail 返回 page-arrange-main，sessionStorage.extras 还保存，这是不对的；
+-- 会不会有从排班页面跳到员工助手的情况？肯定有。
+-- @param obj(json) 
+
+function setParams() {
+	var sch_nbr = $(this).attr('SCH_NBR');
+	var sch_mdl = $(this).parents('.card').attr('SCH_MDL');
+	var year = $(this).parents('.card').attr('YEAR');
+	var month = $(this).parents('.card').attr('MONTH');
+	var params = {
+		'sch_nbr' : sch_nbr,
+		'sch_mdl' : sch_mdl,
+		'year' : year,
+		'month' : month
+	};
+	saveSessionStorage(params);
+}
+
+function saveSessionStorage(obj) {
+	if(sessionStorage.extras){
+		sessionStorage.removeItem('extras');
+	}
+	sessionStorage.extras = JSON.stringify(obj);
+}
+
+
+
+
+
+-------------------------------
+
+【我的班表】
+
+2.1 ？ 第一个结果展开实现不了；
+-- 怀疑是 bindEvent 的时候绑重了；进了两次页面；
+
+
+
+
+
+
+
+-------------------------------
+
+【柜员助手】
+
+-- 手册 <=> 搜索结果 切得有点生硬；用 page 会不会好点；或者其他的 app 是怎么出现搜索结果的；
+-- 其他的 app 都是点击搜索框然后跳转到新的页面；可以参考下；
+
+-- 吴老板肯定希望 “主管助手” 等 popup 放到子页面里；
+
+$('#search').on('focus', function(){
+	$.router.load("#page-tlrlist-search");
+});
+
+
+！ 点击搜索结果不应该有事件绑定；
+-- 把绑定事件绑定到有搜索结果分支，而不是没有搜索结果分支；
+
+
+
+
+
+
+
+
+-------------------------------
+
+【主管助手】
+
+-- 搜索；切换 search 和 tree 在当前页进行即可；
+-- 输出 tree， bindEvent;
+-- show Modal? 试试用 popup
+
+
+
+？ treeClick(isLeaf, code, obj)
+-- 传入的三个参数是怎么传的？
+
+$("#" + textID).click(function(){
+	var _tmpID = $(this).attr("code");
+	var _isLeaf = $(this).attr("isleaf");
+
+	...
+	
+	if(typeof(_this.options.clickFn) == "function"){
+		_this.options.clickFn(_isLeaf=="Y"?true:false, _tmpID);
+	}
+});
+
+-- 所以要先设置 <li a> 的 isLeaf 属性；
+
+function checkLeaf(row){
+	if(row.IS_LEAF == 'Y') 
+		return true;
+	else 
+		return false;
+}
+
+resultObj.push({code: list[i][this.options.operationZ1Code], 
+		alue: list[i][this.options.operationZ1Name],
+		isLeaf: typeof(_this.options.leafCheckFn)=="function"?_this.options.leafCheckFn(list[i]):null});
+
+-- 并不是直接设置 <li a> 的属性，只是返回一个 true/false 作为参数，后续再设置；
+
+
+
+4.2 重新进入的时候手册内容被清空；
+
+Tree.prototype.explainNode = function(nodeID, nodes) {
+	var parentUL = this.elementId + '_ul_' + nodeID;
+	var parentLI = this.elementId + '_li_' + nodeID;
+	
+	if($("#" + parentUL).length > 0){       //【这里搞的鬼】
+		if($("#" + parentUL).css('display') == 'none'){
+			this.statusOpen($("#" + parentLI), $("#" + parentUL));
+		}else{
+			this.statusClose($("#" + parentLI), $("#" + parentUL));
+		}
+
+
+
+
+
+
+
+-------------------------------
+
+6. 【报表】
+
+* 机构控件：
+-- 先看看 msui 怎么用，再看看项目中要调用什么接口，怎么展开；
+？ 支行名字太长怎么解决？？
+？？ 或者其他 app 有没有类似的解决方案？
+
+-- 关键是数据，拿 branch 到数据直接到 cityPicker 上试。
+
+* 两种展示方式：
+
+1. 一种是返回
+
+
+
+
+
+
+
+** 返回
+-- setValue(preBrnArr)
+
+
+step1:'id1'
+
+	-> step2.1: 'id2.2'     [{'1':['id1']}] && p.treeLevel = 2
+
+		-> step3.1: 'id3.1'     [{'1':['id1']},{'2': ['id2.1']}] && p.treeLevel = 3
+
+	-> step2.2: 'id2.2'
+
+		-> step3.2: 'id3.2'
+
+
+-- 要引入一个层级的概念；
+-- 还要注意进入不同分支的情况；
+
+
+* branchLinkData: 
+{
+	'lv1':[[],[]],
+	'lv2':[[],[]],
+	
+}
+
+
+* branchLv: 
+
+
+
+
+** 下级
+-- 同时保存当前 preBrnArr[]
+-- 得到当前节点的 id，-> CMBAJAX -> setValue
+
+-- $.picker，或者 $.brancher 好像都不太合适。
+-- 这样里面的 prevBtn 和 nextBtn 都要重新绑一次事件咩；
+-- 所以应该用插件本身的方法；
+
+*** 【bindEvent】
+-- 我在 p.open() 里绑定了 bindEvent() 好像第二第三个参数没什么用了？
+-- 应该还是有用的，不是保存上一步的数据吗？
+
+p.bindEvent = function(ele, values, displayValues)
+
+$nextBtn.on('click',function(){
+	var newValues = ['id7', 'id8','id9'];
+	var newDisPlayValues = ['广州分行天河支行', '广州分行人民中路支行','广州分行淘金支行'];
+
+	p.branchLinkData['lv' + p.branchLv] = [];
+	p.branchLinkData['lv' + p.branchLv].push(values);
+	p.branchLinkData['lv' + p.branchLv].push(displayValues);
+	p.branchLv++;
+
+	p.params.cols[0].values = newValues;
+	p.params.cols[0].displayValues = newDisPlayValues;
+	p.close();
+	p.open();
+});
+
+$prevBtn.on('click',function(){
+	p.branchLv--;
+	p.params.cols[0].values = p.branchLinkData['lv' + p.branchLv][0];
+	p.params.cols[0].displayValues = p.branchLinkData['lv' + p.branchLv][1];
+	delete p.branchLinkData['lv' + p.branchLv];
+
+	p.close();
+	p.open();
+});
+
+
+
+
+
+*** 查数：
+
+getRemoteData()
+
+BRN_NAM:"北京代表处A"
+BRN_NBR:"021"
+UPP_BRN:"100"
+
+
+*** 拼数：
+
+explainNode()
+
+
+
+？ 怎么判断没有下级和没有上级的情况？
+
+
+-------------------------------
+
+？ 刚开始的时候没有 nodeId 怎么查根节点？？
+
+x.1 先用 fixData 数据来初始化插件；
+$('#'+branchid).branch({fixData : attr});///静态数据类似,[{code:'100',value:'招商银行'},{code:'110',value:'北京分行'}]
+
+x.2 再用 set 第一个的 value；
+if(attr.length > 0){
+	$('#'+branchid).branch('setInputValue',[attr[0].code, attr[0].value]);
+}
+
+
+
+
+
+
+-------------------------------
+
+* 设置默认值：
+
+if(p.params.fixData){
+	$(p.input).attr('brn',p.params.fixData[0].code);
+	$(p.input).val(p.params.fixData[0].value);
+}
+
+
+* 返回第一层：
+
+if (p.params['branchLv'] <= 1) {
+	$(p.input).attr('brn',p.params.fixData[0].code);
+	$(p.input).val(p.params.fixData[0].value);
+	p.close();
+	return;
+}
+
+
+
+-- 另外，添加当前层的数据应该查到下一层有数据才添加：
+if (list && list.length > 0) {
+	p.params.branchLinkData['lv' + p.params['branchLv']] = [];
+	p.params.branchLinkData['lv' + p.params['branchLv']][0] = values;
+	p.params.branchLinkData['lv' + p.params['branchLv']][1] = displayValues;
+	... 
+
+
+
+
+
+
+
+
+-------------------------------
+
+$('#'+branchid).branch({fixData : attr});///静态数据类似,[{code:'100',value:'招商银行'},{code:'110',value:'北京分行'}]
+if(attr.length > 0){
+	$('#'+branchid).branch('setInputValue',[attr[0].code, attr[0].value]);
+}
+
+
+$('#'+regionid).branch({type:'GRP',fixData : attr});//静态数据类似,[{code:'100',value:'招商银行'},{code:'110',value:'北京分行'}]
+if(attr.length > 0){
+	$('#'+regionid).branch('setInputValue',[attr[0].code, attr[0].value]);
+}
+
+
+
+* 将初始化获得数据的代码整合到 branch-msui.js 中；
+
+1. CMBAJAX 放到 init 里面？但是要有输入参数啊；
+
+* 等查到数了再 open(); 
+
+columnHTML() + layout() -> open()
+
+
+
+** 确定
+
+
+
+
+
+
+
+
+------------------------------
+
+* 设置默认值
+
+-- 看看源码是怎样将 val 赋到 input 上的；
+
+【p.updateValue】
+-- $(p.input).val(p.params.formatValue ? p.params.formatValue(p, p.value,p.displayValue) : p.value.join(' '))
+
+
+
+
+
+
+
+
+------------------------------
+
+2. 一种是联动；先试试联动；
+-- 有的分行名字太长，联动显示不全名字；
+-- 层级太多，联动也显示不全。
+
+
+
+
+
+
+------------------------------
+
+6.3 报表展示：
+
+-- YST UI
+-- jquery mobile
+-- jquery 之家
+-- 搜索一下 掘金
+
+* 响应式表格
+-- 水平垂直切换；
+
+
+-- 要考虑翻页；
+
+
+
+
+？ generateOutput()
+-- 起了什么作用？是不是读取 input 控件的 id？
+-- 好像不是。
+
+COLUMNID:"A"
+CONTROLATTR:""
+ID:"27"
+NAME:"工作量"
+PATTERN:""
+SEQUENCE:""
+TRANSFORM:""
+
+-- 好像是根据字段 id 输出字段名；
+
+
+
+6.3.1 绑定个事件看看能不能生成 table
+-- 要传参，保存什么参数呢？
+
+
+COLCOUNT:"3"
+DEFINE:"{"colCnt":3,"rowCnt":5,"mode":"Design","freezeXY":"","hideXYTag":false,"colWidth":{"A":120,"B":120,"C":120},"rowHeight":{},"colDefaultWidth":120,"cellSpan":{},"cellData":{"A1":"1","B1":"2","C1":"3"},"cellExpr":{},"cellFormat":{},"cellDeaultFormat":[],"noSystemTool":false}"
+FREEZEXY:""
+ID:"125"
+ROWCOUNT:"1"
+
+
+{"colCnt":3,"rowCnt":5,"mode":"Design","freezeXY":"","hideXYTag":false,"colWidth":{"A":120,"B":120,"C":120},"rowHeight":{},"colDefaultWidth":120,"cellSpan":{},"cellData":{"A1":"1","B1":"2","C1":"3"},"cellExpr":{},"cellFormat":{},"cellDeaultFormat":[],"noSystemTool":false}
+
+
+
+* 输出 json；
+for (var i in defineObj){
+	console.log(i + ':  ' + defineObj[i]);
+}
+
+
+[{"PATTERN":"","TRANSFORM":"","SEQUENCE":"","COLUMNID":"A","NAME":"1","CONTROLATTR":"","ID":"125"},{"PATTERN":"","TRANSFORM":"","SEQUENCE":"","COLUMNID":"B","NAME":"2","CONTROLATTR":"","ID":"125"},{"PATTERN":"","TRANSFORM":"","SEQUENCE":"","COLUMNID":"C","NAME":"3","CONTROLATTR":"","ID":"125"}]
+
+
+
+==============================
+
+？ 怎么调试？？
+
+*  直接在浏览器打开网址：
+-- 会看不到样式；
+-- pages group 里面所有的页面都会被打开；
+
+
+* 首页通过 router 跳转：   
+-- 当前页面的 js 会被屏蔽，显示不到后台；
+
+
+【解决方案】
+-- 把 current page 放到 index.html
+-- 在 index.html 加上当前页的 js；
+
+
+
+
