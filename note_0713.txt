@@ -1,0 +1,201 @@
+【工作条完整流程】
+
+public class Test implements IOperation {
+	public static final String DetailZ1 = "DetailZ1";
+	
+	@Override
+	public int execute(IContext context) throws FrameworkException {
+		Connection conn = context.getConnection();
+		
+		
+		String sql = "SELECT * FROM PRD.PRODUCT WHERE PRD_CD = 01021400 ";
+		ICacheTable prdCache = new DBTable(conn, DetailZ1, sql).select();
+		
+		System.out.println( "get in java" );
+		
+		context.addOutputData(prdCache);
+		return 0;
+	}
+
+}
+
+
+
+
+function test(obj){
+	var objz1 = obj['DetailZ1'];
+	if (objz1 && objz1.length > 0) {
+		$('#PRD_CD').text(objz1[0].PRD_CD);
+	}
+}
+
+
+
+
+--------------------------
+
+！ new.java 看看自己能不能写一些东西出来获取数据；插入数据；
+
+1. 引入工作条：LF62_Product.xml
+
+-- <operations schema="Product"> 
+-- <operation id="test" class="com.cmb.bus.product.operation.Test" name="查询产品明细"></operation>
+-- 类名必须大写；文件名必须和类名保持一致；
+
+
+-- framework.callWKE(test, 'Product.test', '102005', inputInfo, "", "",true);
+
+
+
+
+
+--------------------------
+
+** 空的方法并不会自动执行，要被调用才行：
+
+public static void main()
+{
+	System.out.println( "get in java2" );
+} 
+
+Test.main();
+
+
+？ 那为什么这个可以直接执行呢？？
+
+public int execute(IContext context) throws FrameworkException 
+{
+	...
+}
+
+
+
+
+
+
+--------------------------
+
+2. 写 java；
+-- 从数据库拿数；
+-- select xx from xx;
+
+
+？ 涉及到数据库的表怎么设计？？
+
+
+
+
+
+
+
+--------------------------
+
+! 弹出太多对话框；
+-- 因为重复绑 click 事件了；
+
+
+
+
+
+
+--------------------------
+
+2. 数据形式；
+
+？ data 怎么对应的横纵坐标；
+[1,55,9,56,0.46,18,6,"良"]
+-- data[0] 表示横轴，data[1]表示纵轴？
+-- 是的；
+
+* 官方文档：
+series: [{
+    data: [
+        // dimX   dimY   other dimensions ...
+        [  3.4,    4.5,   15,   43],
+        [  4.2,    2.3,   20,   91],
+        [  10.8,   9.5,   30,   18],
+        [  7.2,    8.8,   18,   57]
+    ]
+}]
+
+
+
+？ 跟地图的坐标有何不同？？
+
+* map：
+series: [
+    {
+        type: 'scatter',
+        coordinateSystem: 'geo',    // 多了这个；
+
+     }
+]
+
+
+* 散点：
+series: [
+      {
+          name: '北京',
+          type: 'scatter',
+          itemStyle: itemStyle,
+          data: dataBJ
+      }
+]
+
+
+
+
+--------------------------
+
+3. y 轴倒排；
+
+xAxis: {
+      type: 'value',
+      position: 'bottom',    // 【core】
+      name: '偏移度',
+      nameGap: 16,
+      nameTextStyle: {
+          color: '#333',
+          fontSize: 14
+      },
+      max: 100,
+      splitLine: {
+          show: false
+      },
+      axisLine: {16:14 2017/7/14
+    	  onZero: false,     // 【core】
+          lineStyle: {
+              color: '#000'
+          }
+      }
+},
+
+
+
+
+
+
+--------------------------
+
+5. 添加椭圆区；
+
+
+* polar
+-- 没有椭圆的情况，就用正圆形解决；
+
+？ 怎么添加扇形？
+-- echart-all-3.js
+
+？ 扇形的中心点居然跑回中心去了，怎么破？
+-- 看看有没有这种设置；angleAxis？还是 radiusAxis ？？
+
+
+？ 设置显示极坐标的某一部分，好像也不太好设置吧？？
+
+
+
+-- 太多地方要设置了；
+-- 不如试试 饼状图；
+
+
+做 3 个极坐标？
