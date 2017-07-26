@@ -218,7 +218,7 @@ public class TestArray {
 
 Java使用以下三种方法来比较两个日期：
 
-使用getTime( ) 方法获取两个日期（自1970年1月1日经历的微妙数值），然后比较这两个值。 
+使用getTime( ) 方法获取两个日期（自1970年1月1日经历的微秒数值），然后比较这两个值。 
 使用方法before()，after()和equals()。例如，一个月的12号比18号早，则new Date(99, 2, 12).before(new Date (99, 2, 18))返回true。 
 使用compareTo()方法，它是由Comparable接口定义的，Date类实现了这个接口。 
 
@@ -234,6 +234,9 @@ Java使用以下三种方法来比较两个日期：
 
 SimpleDateFormat() 
 ？ 是一个 function ？？
+-- 应该说是一个对象；
+
+？ 参数搞不懂；
 
 import java.util.*;
 import java.text.*;
@@ -242,9 +245,7 @@ public class DateDemo {
    public static void main(String args[]) {
 
       Date dNow = new Date( );
-      SimpleDateFormat ft = 
-      new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-
+      SimpleDateFormat ft = new SimpleDateFormat("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
       System.out.println("Current Date: " + ft.format(dNow));
    }
 }
@@ -273,8 +274,7 @@ public class DateDemo {
        Date date = new Date();
         
        // 使用toString()显示日期和时间
-       System.out.printf("%1$s %2$tB %2$td, %2$tY", 
-                         "Due date:", date);
+       System.out.printf("%1$s %2$tB %2$td, %2$tY", "Due date:", date);
    }
 }
 
@@ -296,7 +296,9 @@ Due date: February 09, 2004
 SimpleDateFormat 类有一些附加的方法，特别是parse()，它试图按照给定的SimpleDateFormat 对象的格式化存储来解析字符串。例如： 
 
 
-？ 有点看不懂...
+！ 有点看不懂...
+-- 就是把 yyyy-MM-dd 转换成 Wed Nov 11 00:00:00 GMT 1818
+
 
 import java.util.*;
 import java.text.*;
@@ -308,13 +310,13 @@ public class DateDemo {
 
       String input = args.length == 0 ? "1818-11-11" : args[0];    
 
-      System.out.print(input + " Parses as ");      【1】
+      System.out.print(input + " Parses as ");      
   
       Date t; 
 
       try { 
           t = ft.parse(input); 
-          System.out.println(t);                    【2】
+          System.out.println(t);                   
       } catch (ParseException e) { 
           System.out.println("Unparseable using " + ft); 
       }
@@ -323,9 +325,9 @@ public class DateDemo {
 以上实例编译运行结果如下:
 
 $ java DateDemo
-1818-11-11 Parses as Wed Nov 11 00:00:00 GMT 1818   【1】
-$ java DateDemo 2007-12-01
-2007-12-01 Parses as Sat Dec 01 00:00:00 GMT 2007   【2】
+1818-11-11 Parses as Wed Nov 11 00:00:00 GMT 1818   
+$ java DateDemo 2007-12-01                                // 输入参数的情况；
+2007-12-01 Parses as Sat Dec 01 00:00:00 GMT 2007   
 
 
 ？ 还是看不懂...应该是想表达：SimpleDateFormat() 有这种用法：
@@ -410,7 +412,7 @@ Calendar c1 = Calendar.getInstance();调用：
 
 public final void set(int year,int month,int date)
 
-c1.set(2009, 6 - 1, 12);//把Calendar对象c1的年月日分别设这为：2009、6、12
+c1.set(2009, 6 - 1, 12);    //把Calendar对象c1的年月日分别设这为：2009、6、12
 
 
 
@@ -426,7 +428,7 @@ import java.util.*;
 public class GregorianCalendarDemo {
 
    public static void main(String args[]) {
-      String months[] = {
+      String months[] = {        // 不是应该 string[] months 吗？
       "Jan", "Feb", "Mar", "Apr",
       "May", "Jun", "Jul", "Aug",
       "Sep", "Oct", "Nov", "Dec"};
@@ -555,7 +557,6 @@ end(): 22
 
 ？ while 这个循环好像很少见；
 
-？ p.matcher(INPUT).find() 返回的是啥？数值？
 
 
 
@@ -565,7 +566,8 @@ end(): 22
 ------------------------
 
 * matcher 下的子方法；
--- 目前理解是 lookingAt() 看有没有包含这种字符串；matches() 是完全匹配；
+-- 目前理解是 lookingAt() 看有没有包含这种字符串；
+-- matches() 是完全匹配；
 
 
 lookingAt() vs matches()
@@ -629,7 +631,7 @@ public class RegexMatches
       while(m.find()){
          m.appendReplacement(sb,REPLACE);   // 【core】
       }
-      m.appendTail(sb);
+      m.appendTail(sb);                     // ？ appendTail ？？ 干嘛的？？
       System.out.println(sb.toString());
    }
 }
@@ -640,6 +642,11 @@ public class RegexMatches
 
 
 ！ 一个个的对比 regex...
+
+
+
+
+
 
 
 
