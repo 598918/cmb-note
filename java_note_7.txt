@@ -1,0 +1,726 @@
+【vector】
+
+-- 对于预先不知或者不愿预先定义数组大小，并且需要频繁地进行查找，插入，删除工作的情况。可以考虑使用向量类。
+
+-- 感觉就像数组，遇到不懂得的查查 API。
+
+？ 好歹写点代码出来啊？？
+
+
+import java.util.*;
+
+public class VectorDemo {
+
+   public static void main(String args[]) {
+      // initial size is 3, increment is 2
+      Vector v = new Vector(3, 2);      // 【core】    // Vector(int size,int incr)
+      System.out.println("Initial size: " + v.size());
+      System.out.println("Initial capacity: " +
+      v.capacity());
+      v.addElement(new Integer(1));
+      v.addElement(new Integer(2));
+      v.addElement(new Integer(3));
+      v.addElement(new Integer(4));
+      System.out.println("Capacity after four additions: " + v.capacity());     // 5：[1, 2, 3, 4, '']
+
+      v.addElement(new Double(5.45));
+      System.out.println("Current capacity: " + v.capacity());                  // 5: [1, 2, 3, 4, 5.45]
+      v.addElement(new Double(6.08));
+      v.addElement(new Integer(7));
+      System.out.println("Current capacity: " + v.capacity());                  // 7
+      v.addElement(new Float(9.4));
+      v.addElement(new Integer(10));
+      System.out.println("Current capacity: " + v.capacity());                  // 9
+      v.addElement(new Integer(11));
+      v.addElement(new Integer(12));
+      System.out.println("First element: " +
+         (Integer)v.firstElement());
+      System.out.println("Last element: " +
+         (Integer)v.lastElement());
+      if(v.contains(new Integer(3)))
+         System.out.println("Vector contains 3.");
+      // enumerate the elements in the vector.
+      Enumeration vEnum = v.elements();
+      System.out.println("\nElements in vector:");
+      while(vEnum.hasMoreElements())
+         System.out.print(vEnum.nextElement() + " ");
+      System.out.println();
+   }
+}
+
+
+
+以上实例编译运行结果如下：
+
+Initial size: 0
+Initial capacity: 3
+Capacity after four additions: 5
+Current capacity: 5
+Current capacity: 7
+Current capacity: 9
+First element: 1
+Last element: 12
+Vector contains 3.
+
+Elements in vector:
+1 2 3 4 5.45 6.08 7 9.4 10 11 12
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------
+
+【stack】  
+-- 后进先出；
+
+Stack st = new Stack();
+
+st.push(new Integer(a));
+
+Integer a = (Integer) st.pop();
+
+
+
+
+
+
+
+----------------------------------
+
+【hashtable】
+
+？ 数据结构：[{'key', value},{},{}...]
+
+Hashtable<String, Integer> table = new Hashtable<String, Integer>();  
+          
+//[1]添加元素  
+table.put("zhangsan", 22);  
+table.put("lisi", 33);  
+table.put("wangwu", 44);  
+
+？ Hashtable<String, Integer> 这种定义方式的 <> 表示啥？？
+
+
+public class HashTableTest {  
+  
+    public static void main(String args[]){  
+        Hashtable<String, Integer> table = new Hashtable<String, Integer>();  
+          
+        //[1]添加元素  
+        table.put("zhangsan", 22);  
+        table.put("lisi", 33);  
+        table.put("wangwu", 44);  
+          
+        //[2]toString()方式打印  
+        System.out.println(table.toString());  
+          
+        //[3]Iterator遍历方式1--键值对遍历entrySet()  
+        Iterator<Entry<String, Integer>> iter = table.entrySet().iterator();  
+        while(iter.hasNext()){  
+            Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>)iter.next();  
+            String key = entry.getKey();  
+            int value = entry.getValue();  
+            System.out.println("entrySet:"+key+" "+value);  
+        }  
+          
+        System.out.println("====================================");  
+          
+        //[4]Iterator遍历方式2--key键的遍历  
+        Iterator<String> iterator = table.keySet().iterator();  
+        while(iterator.hasNext()){  
+            String key = (String)iterator.next();  
+            int value = table.get(key);  
+            System.out.println("keySet:"+key+" "+value);  
+        }  
+          
+        System.out.println("====================================");  
+          
+        //[5]通过Enumeration来遍历Hashtable  
+        Enumeration<String> enu = table.keys();  
+        while(enu.hasMoreElements()) {  
+            System.out.println("Enumeration:"+table.keys()+" "+enu.nextElement());  
+        }   
+              
+    }  
+}  
+
+output: 
+
+{zhangsan=22, lisi=33, wangwu=44}  
+entrySet:zhangsan 22  
+entrySet:lisi 33  
+entrySet:wangwu 44  
+
+====================================  
+keySet:zhangsan 22  
+keySet:lisi 33  
+keySet:wangwu 44  
+====================================  
+Enumeration:java.util.Hashtable$Enumerator@139a55 zhangsan  
+Enumeration:java.util.Hashtable$Enumerator@1db9742 lisi  
+Enumeration:java.util.Hashtable$Enumerator@106d69c wangwu  
+
+
+
+
+Hashtable和HashMap到底有哪些不同呢
+（1）基类不同：HashTable基于Dictionary类，而HashMap是基于AbstractMap。Dictionary是什么？它是任何可将键映射到相应值的类的抽象父类，而AbstractMap是基于Map接口的骨干实现，它以最大限度地减少实现此接口所需的工作。
+（2）null不同：HashMap可以允许存在一个为null的key和任意个为null的value，但是HashTable中的key和value都不允许为null。
+（3）线程安全：HashMap时单线程安全的，Hashtable是多线程安全的。
+（4）遍历不同：HashMap仅支持Iterator的遍历方式，Hashtable支持Iterator和Enumeration两种遍历方式。
+
+
+
+？ 没有看见 get() 的运用？？
+
+
+
+
+* HashTable 的原理
+
+HashTable的使用和原理 - 蜕变的快乐 - CSDN博客
+http://blog.csdn.net/jinhuoxingkong/article/details/52022999
+
+
+如果天空不死 - 博客园
+http://www.cnblogs.com/skywang12345/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+【序列化】
+
+-- 将序列化对象写入文件之后，可以从文件中读取出来，并且对它进行反序列化，也就是说，对象的类型信息、对象的数据，还有对象中的数据类型可以用来在内存中新建对象。 
+
+*
+ 我的理解是将对象保存成文件，再将文件读取出来；
+
+
+
+* 实现了Serializable 接口。
+public class Employee implements java.io.Serializable
+{
+   public String name;
+   public String address;
+   public transient int SSN;
+   public int number;
+   public void mailCheck()
+   {
+      System.out.println("Mailing a check to " + name + " " + address);
+   }
+}
+
+
+
+
+
+
+
+
+
+-------------------------
+
+以下步骤在两台计算机之间使用套接字建立TCP连接时会出现：
+
+-- 服务器实例化一个ServerSocket对象，表示通过服务器上的端口通信。 
+-- 服务器调用 ServerSocket类 的accept（）方法，该方法将一直等待，直到客户端连接到服务器上给定的端口。 
+-- 服务器正在等待时，一个客户端实例化一个Socket对象，指定服务器名称和端口号来请求连接。 
+-- Socket类的构造函数试图将客户端连接到指定的服务器和端口号。如果通信被建立，则在客户端创建一个Socket对象能够与服务器进行通信。 
+-- 在服务器端，accept()方法返回服务器上一个新的socket引用，该socket连接到客户端的socket。 
+
+连接建立后，通过使用I/O流在进行通信。每一个socket都有一个输出流和一个输入流。客户端的输出流连接到服务器端的输入流，而客户端的输入流连接到服务器端的输出流。 
+
+TCP是一个双向的通信协议，因此数据可以通过两个数据流在同一时间发送.
+
+
+
+
+
+public class GreetingClient
+{
+   public static void main(String [] args)
+   {
+      String serverName = args[0];
+      int port = Integer.parseInt(args[1]);
+      try
+      {
+         System.out.println("Connecting to " + serverName
+                             + " on port " + port);
+         Socket client = new Socket(serverName, port);
+         System.out.println("Just connected to " + client.getRemoteSocketAddress());
+         OutputStream outToServer = client.getOutputStream();
+         DataOutputStream out = new DataOutputStream(outToServer);
+ 
+         out.writeUTF("Hello from " + client.getLocalSocketAddress());
+         InputStream inFromServer = client.getInputStream();
+         DataInputStream in = new DataInputStream(inFromServer);
+         System.out.println("Server says " + in.readUTF());
+         client.close();
+      }catch(IOException e)
+      {
+         e.printStackTrace();
+      }
+   }
+}
+
+
+$ java GreetingClient localhost 6066   【参数】
+Connecting to localhost on port 6066
+Just connected to localhost/127.0.0.1:6066
+Server says Thank you for connecting to /127.0.0.1:6066
+Goodbye!
+
+
+
+
+
+-------------------------
+
+* 发送带有附件的 E-mail 
+
+public class SendFileEmail
+{
+   public static void main(String [] args)
+   {
+     
+      // 收件人电子邮箱
+      String to = "abcd@gmail.com";
+ 
+      // 发件人电子邮箱
+      String from = "web@gmail.com";
+ 
+      // 指定发送邮件的主机为 localhost
+      String host = "localhost";
+ 
+      // 获取系统属性
+      Properties properties = System.getProperties();
+ 
+      // 设置邮件服务器
+      properties.setProperty("mail.smtp.host", host);
+ 
+      // 获取默认的 Session 对象。
+      Session session = Session.getDefaultInstance(properties);
+ 
+      try{
+         // 创建默认的 MimeMessage 对象。
+         MimeMessage message = new MimeMessage(session);
+ 
+         // Set From: 头部头字段
+         message.setFrom(new InternetAddress(from));
+ 
+         // Set To: 头部头字段
+         message.addRecipient(Message.RecipientType.TO,
+                                  new InternetAddress(to));
+ 
+         // Set Subject: 头字段
+         message.setSubject("This is the Subject Line!");
+ 
+         // 创建消息部分
+         BodyPart messageBodyPart = new MimeBodyPart();
+ 
+         // 消息
+         messageBodyPart.setText("This is message body");
+        
+         // 创建多重消息
+         Multipart multipart = new MimeMultipart();
+ 
+         // 设置文本消息部分
+         multipart.addBodyPart(messageBodyPart);
+ 
+         // 附件部分
+         messageBodyPart = new MimeBodyPart();
+         String filename = "file.txt";
+         DataSource source = new FileDataSource(filename);
+         messageBodyPart.setDataHandler(new DataHandler(source));
+         messageBodyPart.setFileName(filename);
+         multipart.addBodyPart(messageBodyPart);
+ 
+         // 发送完整消息
+         message.setContent(multipart );
+ 
+         //   发送消息
+         Transport.send(message);
+         System.out.println("Sent message successfully....");
+      }catch (MessagingException mex) {
+         mex.printStackTrace();
+      }
+   }
+}
+
+
+
+
+
+
+
+-------------------------
+
+-- 一个进程包括由操作系统分配的内存空间，包含一个或多个线程。
+-- 一个线程不能独立的存在，它必须是进程的一部分。一个进程一直运行，直到所有的非守候线程都结束运行后才能结束。
+
+？ start() run() sleep()...
+
+
+
+？ Thread(Runnable threadOb,String threadName);
+-- 这个就是线程的构造方法？
+
+
+
+* 创建线程的三种方式的对比
+1. 采用实现 Runnable、Callable 接口的方式创见多线程时，线程类只是实现了 Runnable 接口或 Callable 接口，还可以继承其他类。
+2. 使用继承 Thread 类的方式创建多线程时，编写简单，如果需要访问当前线程，则无需使用 Thread.currentThread() 方法，直接使用 this 即可获得当前线程。
+
+
+
+
+* 线程的几个主要概念
+-- 在多线程编程时，你需要了解以下几个概念：
+-- 线程同步
+-- 线程间通信
+-- 线程死锁
+-- 线程控制：挂起、停止和恢复
+
+
+
+* 多线程的使用
+-- 有效利用多线程的关键是理解程序是并发执行而不是串行执行的。例如：程序中有两个子系统需要并发执行，这时候就需要利用多线程编程。
+-- 通过对多线程的使用，可以编写出非常高效的程序。不过请注意，如果你创建太多的线程，程序执行的效率实际上是降低了，而不是提升了。
+-- 请记住，上下文的切换开销也很重要，如果你创建了太多的线程，CPU 花费在上下文的切换的时间将多于执行程序的时间！
+
+
+
+
+
+
+-------------------------
+
+* 通过实现 Runnable 接口来创建线程
+
+** 下面的实例：
+-- 构造函数 -> start() -> run()
+
+class RunnableDemo implements Runnable {
+   private Thread t;
+   private String threadName;
+   
+   RunnableDemo( String name) {
+      threadName = name;
+      System.out.println("Creating " +  threadName );
+   }
+   
+   public void run() {
+      System.out.println("Running " +  threadName );
+      try {
+         for(int i = 4; i > 0; i--) {
+            System.out.println("Thread: " + threadName + ", " + i);
+            // 让线程睡眠一会
+            Thread.sleep(50);
+         }
+      }catch (InterruptedException e) {
+         System.out.println("Thread " +  threadName + " interrupted.");
+      }
+      System.out.println("Thread " +  threadName + " exiting.");
+   }
+   
+   public void start () {
+      System.out.println("Starting " +  threadName );
+      if (t == null) {
+         t = new Thread (this, threadName);
+         t.start ();
+      }
+   }
+}
+ 
+public class TestThread {
+   public static void main(String args[]) {
+      RunnableDemo R1 = new RunnableDemo( "Thread-1");
+      R1.start();
+      
+      RunnableDemo R2 = new RunnableDemo( "Thread-2");
+      R2.start();
+   }   
+}
+
+Creating Thread-1
+Starting Thread-1
+Creating Thread-2
+Starting Thread-2
+Running Thread-1
+Thread: Thread-1, 4
+Running Thread-2
+Thread: Thread-2, 4
+Thread: Thread-1, 3
+Thread: Thread-2, 3
+Thread: Thread-1, 2
+Thread: Thread-2, 2
+Thread: Thread-1, 1
+Thread: Thread-2, 1
+Thread Thread-1 exiting.
+Thread Thread-2 exiting.
+
+
+？ 上面代码可以写在同一个文件里面吗？？
+
+？ run() 方法是怎么被调用的？
+
+！ 看参数；
+
+
+
+
+
+
+
+
+-------------------------
+
+* 通过继承Thread来创建线程
+
+-- 创建一个线程的第二种方法是创建一个新的类，该类继承 Thread 类，然后创建一个该类的实例。
+-- 继承类必须重写 run() 方法，该方法是新线程的入口点。它也必须调用 start() 方法才能执行。
+-- 该方法尽管被列为一种多线程实现方式，但是本质上也是实现了 Runnable 接口的一个实例
+
+？ 跟上面好像差不多？？
+
+-- 继承用 extends，实现用 implements...
+
+class ThreadDemo extends Thread {
+   private Thread t;
+   private String threadName;
+   
+   ThreadDemo( String name) {
+      threadName = name;
+      System.out.println("Creating " +  threadName );
+   }
+   
+   public void run() {
+      System.out.println("Running " +  threadName );
+      try {
+         for(int i = 4; i > 0; i--) {
+            System.out.println("Thread: " + threadName + ", " + i);
+            // 让线程睡醒一会
+            Thread.sleep(50);
+         }
+      }catch (InterruptedException e) {
+         System.out.println("Thread " +  threadName + " interrupted.");
+      }
+      System.out.println("Thread " +  threadName + " exiting.");
+   }
+   
+   public void start () {
+      System.out.println("Starting " +  threadName );
+      if (t == null) {
+         t = new Thread (this, threadName);
+         t.start ();
+      }
+   }
+}
+ 
+public class TestThread {
+ 
+   public static void main(String args[]) {
+      ThreadDemo T1 = new ThreadDemo( "Thread-1");
+      T1.start();
+      
+      ThreadDemo T2 = new ThreadDemo( "Thread-2");
+      T2.start();
+   }   
+}
+
+
+
+
+
+
+
+
+-------------------------
+
+【以下实例仍属于用 Thread 来构建线程】
+
+？ 未看懂这个程序想表达啥？？
+
+
+
+
+* DisplayMessage.java 文件代码：
+
+// 文件名 : DisplayMessage.java
+// 通过实现 Runnable 接口创建线程
+
+public class DisplayMessage implements Runnable {
+   private String message;
+   
+   public DisplayMessage(String message) {
+      this.message = message;
+   }
+   
+   public void run() {
+      while(true) {
+         System.out.println(message);
+      }
+   }
+}
+
+
+* GuessANumber.java 文件代码：
+
+// 文件名 : GuessANumber.java
+// 通过继承 Thread 类创建线程
+ 
+public class GuessANumber extends Thread {
+   private int number;
+   public GuessANumber(int number) {
+      this.number = number;
+   }
+   
+   public void run() {
+      int counter = 0;
+      int guess = 0;
+      do {
+         guess = (int) (Math.random() * 100 + 1);
+         System.out.println(this.getName() + " guesses " + guess);
+         counter++;
+      } while(guess != number);
+      System.out.println("** Correct!" + this.getName() + "in" + counter + "guesses.**");
+   }
+}
+
+
+
+
+
+* ThreadClassDemo.java 文件代码：
+
+// 文件名 : ThreadClassDemo.java
+
+public class ThreadClassDemo {
+ 
+   public static void main(String [] args) {
+      Runnable hello = new DisplayMessage("Hello");
+      Thread thread1 = new Thread(hello);
+      thread1.setDaemon(true);
+      thread1.setName("hello");
+      System.out.println("Starting hello thread...");
+      thread1.start();
+      
+      Runnable bye = new DisplayMessage("Goodbye");
+      Thread thread2 = new Thread(bye);
+      thread2.setPriority(Thread.MIN_PRIORITY);
+      thread2.setDaemon(true);
+      System.out.println("Starting goodbye thread...");
+      thread2.start();
+ 
+      System.out.println("Starting thread3...");
+      Thread thread3 = new GuessANumber(27);
+      thread3.start();
+      try {
+         thread3.join();
+      }catch(InterruptedException e) {
+         System.out.println("Thread interrupted.");
+      }
+      System.out.println("Starting thread4...");
+      Thread thread4 = new GuessANumber(75);
+      
+      thread4.start();
+      System.out.println("main() is ending...");
+   }
+}
+
+
+运行结果如下，每一次运行的结果都不一样。
+
+Starting hello thread...
+Starting goodbye thread...
+Hello
+Hello
+Hello
+Hello
+Hello
+Hello
+Goodbye
+Goodbye
+Goodbye
+Goodbye
+Goodbye
+.......
+
+
+
+
+
+
+
+-------------------------
+
+通过 Callable 和 Future 创建线程
+
+1. 创建 Callable 接口的实现类，并实现 call() 方法，该 call() 方法将作为线程执行体，并且有返回值。
+2. 创建 Callable 实现类的实例，使用 FutureTask 类来包装 Callable 对象，该 FutureTask 对象封装了该 Callable 对象的 call() 方法的返回值。
+3. 使用 FutureTask 对象作为 Thread 对象的 target 创建并启动新线程。
+4. 调用 FutureTask 对象的 get() 方法来获得子线程执行结束后的返回值。
+
+
+？ 没有跑过不知道输出结果；
+
+
+
+public class CallableThreadTest implements Callable<Integer> {
+    public static void main(String[] args)  
+    {  
+        CallableThreadTest ctt = new CallableThreadTest();  
+        FutureTask<Integer> ft = new FutureTask<>(ctt);  
+        for(int i = 0;i < 100;i++)  
+        {  
+            System.out.println(Thread.currentThread().getName()+" 的循环变量i的值"+i);  
+            if(i==20)  
+            {  
+                new Thread(ft,"有返回值的线程").start();  
+            }  
+        }  
+        try  
+        {  
+            System.out.println("子线程的返回值："+ft.get());  
+        } catch (InterruptedException e)  
+        {  
+            e.printStackTrace();  
+        } catch (ExecutionException e)  
+        {  
+            e.printStackTrace();  
+        }  
+  
+    }
+    @Override  
+    public Integer call() throws Exception  
+    {  
+        int i = 0;  
+        for(;i<100;i++)  
+        {  
+            System.out.println(Thread.currentThread().getName()+" "+i);  
+        }  
+        return i;  
+    }  
+}
