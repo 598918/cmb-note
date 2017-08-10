@@ -1,0 +1,179 @@
+【实例】
+-- msui
+
+？ 这些变量定义在哪里？？
+？ 哪些 .xxx 是公用的，用在哪里？？
+
+
+@font-size-default
+
+@font-family-default
+
+@color-text
+
+@color-bg
+
+@color-link
+
+@color-link-active
+
+@bar-tab-height
+
+@bar-base-height
+
+@bar-side-spacing
+
+
+
+.bar-nav ~ .content {
+  top: @bar-base-height;
+}
+
+.bar-header-secondary ~ .content {
+  top: (@bar-base-height*2);
+}
+
+
+
+
+
+
+------------------------------
+
+【rem.less】
+？ 最终还是要看看 .loop 在哪里被调用？？
+？ 还要看看 .loop 最终的输出
+
+
+@baseWidth: 375px;
+
+@baseFont: 20px;
+
+
+html {
+  font-size: @baseFont;  //默认当做320px宽度的屏幕来处理
+}
+
+
+
+@bps: 400px, 414px, 480px; 
+
+
+
+.loop(@i: 1) when (@i <= length(@bps)) {  //注意less数组是从1开始的
+    // 有点像 i=0,i++的结构；
+	@bp: extract(@bps, @i);
+           // 获得某个数组的第几个元素
+	@font: @bp/@baseWidth*@baseFont;  
+  
+	@media only screen and (min-width: @bp){
+    
+		html {
+      
+			font-size: @font !important;
+    
+		}
+  
+	}
+  
+	.loop((@i + 1));
+
+};
+
+.loop;
+
+
+
+
+
+------------------------------
+
+？ 看看 .item-inner 里是不是有这个图标；
+
+.item-inner {
+     
+	padding-right: 1.75rem;
+	background: no-repeat calc(~"100% - 15px") center;
+            	
+	.encoded-svg-background("<svg viewBox='0 0 60 120' xmlns='http://www.w3.org/2000/svg'><path d='m60 61.5-38.25 38.25-9.75-9.75 29.25-28.5-29.25-28.5 9.75-9.75z' fill='#c7c7cc'/></svg>");
+     	background-size: 0.5rem 1rem;
+            
+        
+}
+
+
+* calc(~"100% - 15px")
+
+* 实际是这样显示：
+-- background-position: -webkit-calc(100% - 2rem) center;
+-- 所以 (~"")应该是避免编译的意思；
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+手机端 报表
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
