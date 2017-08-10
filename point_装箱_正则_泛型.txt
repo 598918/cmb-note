@@ -1,0 +1,290 @@
+1. 系统流程走一遍。像 LYH 那样；
+-- 工作条为什么一定要有输入呢？
+-- js 是怎么跟 java 配合工作的？？
+
+
+
+
+
+----------------------------
+
+3.4 
+
+SimpleDateFormat date()
+
+
+
+
+
+
+
+
+
+----------------------------
+
+3.5 
+
+String<> 是什么数据类型？ 
+
+
+
+* int[] param  vs int param[]
+-- 泪奔，效果一样，都是数组；
+
+
+
+* Java 的两大数据类型:
+
+-- 内置数据类型
+
+	byte、short、int、long、float、char、double、boolean
+
+-- 引用数据类型
+
+	对象、数组
+
+
+
+
+
+
+
+
+
+----------------------------
+
+【app】
+
+1. 搭建 app 环境；
+2. 项目管理 app。 
+
+
+
+
+
+
+
+
+
+
+----------------------------
+
+3.1 java 装箱拆箱
+
+！ 为什么要装箱：
+-- 基本数据类型不是对象，也就是使用int、double、boolean等定义的变量、常量。
+-- 基本数据类型没有可调用的方法。
+
+eg:
+
+int t = 1；    t.  后面是没有方法滴。
+Integer t =1； t.  后面就有很多方法可让你调用了。
+
+
+* 装箱：
+Integer i = 100; (注意：不是 int i = 100; )
+执行上面那句代码的时候，系统为我们执行了：Integer i = Integer.valueOf(100);
+
+
+* 拆箱：
+Integer i = 10; //装箱 
+int t = i; //拆箱，实际上执行了 int t = i.intValue();
+
+
+* 在进行运算时，也可以进行拆箱。 
+Integer i = 10; 
+System.out.println(i++);    
+？ 那装不装箱，拆不拆箱有啥区别，都这么用得了；
+
+
+
+Java 自动装箱与拆箱(Autoboxing and unboxing) - 蛋呢 - 博客园
+http://www.cnblogs.com/danne823/archive/2011/04/22/2025332.html
+
+
+
+
+
+----------------------------
+
+3.2 printf() 和 format()  %d 这些是什么鬼？
+-- System.out.printf("%1$s %2$tB %2$td, %2$tY", "Due date:", date);
+
+？ 看 api 参数是怎么写的？？
+
+* Java中的println和printf的区别在于：
+-- println是用于输出参数内容，然后换行，其参数个数固定为一个。
+-- printf是用于输出带各种数据类型的占位符的参数，其参数个数是不定的。
+
+-- System.out.printf("%tF\n",new Date()); 
+-- ISO 8061日期	
+-- 2004-02-09
+
+
+-- 从上表可以看出，某些格式只给出指定日期的部分信息，如果需要多次对日期操作才能实现一部分操作的目的就太笨拙了，为此可以采用一个格式化字符串之处被格式化的参数索引。
+-- 索引必须紧跟在%后面，以$终止。 索引从1开始 ，而非0。
+
+System.out.printf("%1$s %2$tB %2$te, %2$tY\n", "Due date:", new Date());      // %之后的2表示的是第二个参数，此处是指的是new Date()  
+
+也可以选择使用<标志，它指示前面格式说明中的参数将被再次使用。
+System.out.printf("%s %tB %<te, %<tY", "Due date:", new Date());//选择使用<标志，它指示前面格式说明中的参数将被再次使用。
+
+？ 必须要亲自试试才行？？
+
+
+
+
+
+
+
+
+Java SE学习之printf 日期转换符 - 我的编程之路 - CSDN博客
+http://blog.csdn.net/junshuaizhang/article/details/40153147
+
+
+
+
+
+----------------------------
+
+3.3 
+
+* String pattern = "(.*)(\\d+)(.*)";     
+-- \d 表示数字；使用过程都要用 \\d 这种写法；
+-- 上述表达式应该是个数字；
+
+
+* "\\bcat\\b"
+\b  匹配一个字边界，即字与空格间的位置。例如，"er\b"匹配"never"中的"er"，但不匹配"verb"中的"er"。
+-- 所以这个是要匹配一个单词 cat
+
+
+
+-- 9位机构号：!/^([0-9]{9})$/.test(brnNbr)
+
+
+
+
+* ^\d+(\.\d+)?
+
+^ 定义了以什么开始
+\d+ 匹配一个或多个数字
+? 设置括号内的选项是可选的
+\. 匹配 "."
+可以匹配的实例："5", "1.5" 和 "2.21"。
+
+
+
+* 是否包含特定字符串：
+.*runoob.*
+
+
+. 是任意字符的意思；
+？ js 是 * 表示任意字符；
+
+
+*  零次或多次匹配前面的字符或子表达式。例如，zo* 匹配"z"和"zoo"。* 等效于 {0,}。
++  一次或多次匹配前面的字符或子表达式。例如，"zo+"与"zo"和"zoo"匹配，但与"z"不匹配。+ 等效于 {1,}。
+?  零次或一次匹配前面的字符或子表达式。例如，"do(es)?"匹配"do"或"does"中的"do"。? 等效于 {0,1}。
+
+
+
+
+
+----------------------------
+
+3.6 捕获组
+-- 就是多次匹配括号内的内容；
+-- 第一次是汇总；
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+ 
+public class RegexMatches
+{
+    public static void main( String args[] ){
+ 
+      // 按指定模式在字符串查找
+      String line = "This order was placed for QT3000! OK?";
+      String pattern = "(\\D*)(\\d+)(.*)";
+ 
+      // 创建 Pattern 对象
+      Pattern r = Pattern.compile(pattern);
+ 
+      // 现在创建 matcher 对象
+      Matcher m = r.matcher(line);
+      if (m.find( )) {
+         System.out.println("Found value: " + m.group(0) );
+         System.out.println("Found value: " + m.group(1) );
+         System.out.println("Found value: " + m.group(2) );
+         System.out.println("Found value: " + m.group(3) ); 
+      } else {
+         System.out.println("NO MATCH");
+      }
+   }
+}
+
+以上实例编译运行结果如下：
+Found value: This order was placed for QT3000! OK?     // (\\D*)(\\d+)(.*)
+Found value: This order was placed for QT              // (\\D*)  非数字
+Found value: 3000                                      // (\\d+) 数字
+Found value: ! OK?                                     // (.*) 任意
+
+
+
+
+
+
+
+
+----------------------------
+
+3.7 matcher 的 start() 和 end() 方法；
+-- 返回索引值；
+-- 一个是从开始算起，一个是从结尾算起；
+
+public class RegexMatches
+{
+    private static final String REGEX = "\\bcat\\b";
+    private static final String INPUT =
+                                    "cat cat cat cattie cat";
+ 
+    public static void main( String args[] ){
+       Pattern p = Pattern.compile(REGEX);
+       Matcher m = p.matcher(INPUT); // 获取 matcher 对象
+       int count = 0;
+ 
+       while(m.find()) {
+         count++;
+         System.out.println("Match number "+count);
+         System.out.println("start(): "+m.start());
+         System.out.println("end(): "+m.end());
+      }
+   }
+}
+
+以上实例编译运行结果如下：
+Match number 1
+start(): 0
+end(): 3
+Match number 2
+start(): 4
+end(): 7
+Match number 3
+start(): 8
+end(): 11
+Match number 4
+start(): 19
+end(): 22
+
+
+
+
+
+
+
+
+
+
+
+
