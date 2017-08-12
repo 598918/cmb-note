@@ -1,0 +1,150 @@
+2. 事件、状态；
+
+
+
+？ display:flex; 
+
+
+？ 实现像 msui 那样，输入数组来配置组件；
+
+？ html 代码肯定也不是生成好的那样；原装的，最少的代码会是怎样的呢？
+
+
+
+
+---------------------
+
+？ 一个组件的样式怎么组织的？？
+
+-- 顶层 class
+
+？ 组件引用组件的情况？
+
+
+
+
+
+
+---------------------
+
+! width:calc(100% - 2.25rem);
+变成： width: calc(97.75%);
+
+不让它编译？
+-- 果然 work： calc(~"100% - 15px")
+
+
+
+
+
+
+---------------------
+
+！ rem 的大小到底是多少 px？
+-- 先简单的理解成 html 的根元素 font-size;
+
+
+! msui 怎么定义 font-size 的？
+-- 不可能是 20px。
+-- msui 的 body 定义了 font-size:.85rem; 
+-- 17px，真是有毛病的设置；
+-- 应该是 .8rem;
+
+
+
+
+---------------------
+
+！ 网页可以双击放大缩小应该是内容有超出；
+
+
+
+
+
+
+
+---------------------
+
+border:1px solid #d9d9d9; 应该可以写成一个类？
+@border-default
+
+
+
+
+
+
+---------------------
+
+？ 搞清楚 hairline 干嘛的。
+
+* 本例就是添加一条下划线；
+-- 其实就是一个方法；
+
+.hairline(@position, @color) when (@position = bottom) {
+    &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: auto;
+        top: auto;
+        height: 1px;
+        width: 100%;
+        background-color: @color;
+        display: block;
+        z-index: 15;
+        transform-origin: 50% 100%;    // 有点奇怪；应该配合 transform 效果来用的；
+        @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+            transform: scaleY(0.5);
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio: 3) {
+            transform: scaleY(0.33);
+        }
+    }
+}
+
+
+？ transform: translate3d(0,0,0) scale(1);
+-- 这个动效有点搞不清；
+-- 应该是 x轴，y轴，z轴转换的值；
+
+transform:translate3d(0,0,0) 是开启硬件加速的；从 cpu 渲染变成 gpu 渲染；
+
+未改进版本的fps（每秒传输帧数，值越高画面就越流畅）一半多的时间都是小于30fps，而改进后的动画fps基本都超过60fps。
+当然对于整个效果，楼主css3与jQ动画结合使用，jQ的动画效果比不上CSS3
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+.modal-overlay, .preloader-indicator-overlay, .popup-overlay {
+    visibility: hidden;
+    opacity: 0;
+    ...
+    &.modal-overlay-visible {      // 这样就变成可见了； // 表现在 html 上是两个并列的 class
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+
+
+
+
+
+---------------------
+
+css3的字体大小单位[rem]到底好在哪？ - 知乎
+https://www.zhihu.com/question/21504656
+
+
+Flex 布局教程：语法篇 - 阮一峰的网络日志
+http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
