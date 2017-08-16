@@ -1,0 +1,358 @@
+2. 事件、状态；
+
+
+
+？ display:flex; 
+
+
+
+
+
+---------------------
+
+【modal】
+
+？ 实现像 msui 那样，输入数组来配置组件；
+
+？ html 代码肯定也不是生成好的那样；原装的，最少的代码会是怎样的呢？
+
+？ transitionEnd 
+
+
+
+
+
+？ 自定义事件 open, opened;
+
+modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
+	if(modal.hasClass('modal-out')) modal.trigger('closed');
+	else modal.trigger('opened');
+});
+
+？ 没有按照预期的触发 opened 事件，但是 msui 的可以。
+？ 应该是某些地方没有完全调用过来？？是不是 adapter.js 里面有方法没弄过来？
+
+
+
+--------
+
+！ 最后的 sheet 出现应该是 css 动效
+
+.actions-modal {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 11000;
+    width: 100%; 
+    transform: translate3d(0,100%,0);      // 等效于我常用的 display:none;
+    &.modal-in {
+        transition-duration: @actionsModalDuration;
+        transform: translate3d(0,0,0);     // display:block;
+    }
+    &.modal-out {
+        z-index: 11000-1;
+        transition-duration: @actionsModalDuration;
+        transform: translate3d(0,100%,0);  // display:none;
+    }
+}
+
+
+
+
+--------
+
+？ transitionEnd 事件就是动效结束？？
+
+【transitionEnd】
+
+modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
+	if(modal.hasClass('modal-out')) modal.trigger('closed');
+	else modal.trigger('opened');
+});
+
+$.fn.transitionEnd = function(callback) {
+    __dealCssEvent.call(this, ['webkitTransitionEnd', 'transitionend'], callback);
+    return this;
+};
+
+function __dealCssEvent(eventNameArr, callback) {
+    var events = eventNameArr,
+        i, dom = this;// jshint ignore:line
+
+    function fireCallBack(e) {
+        /*jshint validthis:true */
+        if (e.target !== this) return;
+        callback.call(this, e);
+        for (i = 0; i < events.length; i++) {
+            dom.off(events[i], fireCallBack);
+        }
+    }
+    if (callback) {
+        for (i = 0; i < events.length; i++) {
+            dom.on(events[i], fireCallBack);
+        }
+    }
+}
+
+
+？ 我的理解是：
+
+modal.on('webkitTransitionEnd',function(e){
+	if(modal.hasClass('modal-out')) modal.trigger('closed');
+	else modal.trigger('opened');
+});
+
+modal.on('transitionend',function(e){
+	if(modal.hasClass('modal-out')) modal.trigger('closed');
+	else modal.trigger('opened');
+})
+
+
+
+
+
+
+
+
+---------------------
+
+！ 怎么触发的 closeModal
+-- 点击 lable 不会消失；
+-- 点击其他的 button 都会消失，不管是不是取消；
+
+* 【$.actions】
+
+if(clickTarget) {     // label 进不来，所以绑定不了 closeModal 事件
+	clickTarget.on('click', function(e) {
+		if(buttonParams.close !== false) $.closeModal(modal);
+		if(buttonParams.onClick) buttonParams.onClick(modal, e);
+	});
+}
+
+-- 给 button 绑定事件的时候，除了用户输入的事件，还有隐藏的 closeModal 事件；
+
+
+
+* in openModal()
+
+modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
+	if(modal.hasClass('modal-out')) modal.trigger('closed');
+	else modal.trigger('opened');
+});
+
+？ 目测是动效一类的方法，但是 modal.js 里面找不到定义的地方；
+
+
+* technique：判断 class 元素
+
+if($(el).is(buttonSelector)) clickTarget = $(el);
+-- $('.actions-modal-label').is('.actions-modal-button')     // false
+
+
+
+
+* technique：动态绑定事件的方法
+
+if(clickTarget) {
+	clickTarget.on('click', function(e) {
+		if(buttonParams.close !== false) $.closeModal(modal);
+		if(buttonParams.onClick) buttonParams.onClick(modal, e);
+	});
+}
+
+
+
+* technique：回调：
+
+if(typeof cb === 'function') {
+	cb.call(this);
+}
+
+
+
+
+
+---------------------
+
+？ 组件的原理？
+-- 对于：$('xx').plugin(option), jquery 应该做了一些隐藏的动作；
+-- 可能是把 $('xx') 做为 this 参数，传递了进来： new beautifer = new Beautifer(this, option);
+-- 插件一般都会 return this, 就是把传递进来的参数 option 对 this 做了一些改变，然后把改变后的 this 返回；
+
+
+？ zepto 的写法类似 jq 的 $.fn.xx, $.xx
+
+$.extend({
+	add:function(a,b){
+		return a+b;
+	}
+})
+
+$.add(5,8) //return 13
+
+
+$.fn.extend({
+	clickwhile:function(){
+		$(this).click(function(){
+			alert($(this).val()) 
+		})
+	}
+})
+
+$('input').clickwhile();//当点击输入框会弹出该对象的Value值
+
+
+-- $.extend(obj); 是为了扩展 jquery 本身，为类添加新的方法
+-- $.fn.extend(obj); 给 JQUERY对象 添加方法。
+
+？ 但是吴老板开发的组件没见写过 extend 啊；
+
+
+
+
+
+
+jQuery 请指出'$'和'$.fn'的区别？或者说出'$.fn'的用途。 - liuhaozcx的专栏 - CSDN博客
+http://blog.csdn.net/liuhaozcx/article/details/23861377
+
+
+
+
+
+
+---------------------
+
+？ 一个组件的样式怎么组织的？？
+
+-- 顶层 class
+
+？ 组件引用组件的情况？
+
+
+
+
+
+
+---------------------
+
+! width:calc(100% - 2.25rem);
+变成： width: calc(97.75%);
+
+不让它编译？
+-- 果然 work： calc(~"100% - 15px")
+
+
+
+
+
+
+---------------------
+
+！ rem 的大小到底是多少 px？
+-- 先简单的理解成 html 的根元素 font-size;
+
+
+! msui 怎么定义 font-size 的？
+-- 不可能是 20px。
+-- msui 的 body 定义了 font-size:.85rem; 
+-- 17px，真是有毛病的设置；
+-- 应该是 .8rem;
+
+
+
+
+---------------------
+
+！ 网页可以双击放大缩小应该是内容有超出；
+
+
+
+
+
+
+
+---------------------
+
+border:1px solid #d9d9d9; 应该可以写成一个类？
+@border-default
+
+
+
+
+
+
+---------------------
+
+？ 搞清楚 hairline 干嘛的。
+
+* 本例就是添加一条下划线；
+-- 其实就是一个方法；
+
+.hairline(@position, @color) when (@position = bottom) {
+    &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: auto;
+        top: auto;
+        height: 1px;
+        width: 100%;
+        background-color: @color;
+        display: block;
+        z-index: 15;
+        transform-origin: 50% 100%;    // 有点奇怪；应该配合 transform 效果来用的；
+        @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+            transform: scaleY(0.5);
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio: 3) {
+            transform: scaleY(0.33);
+        }
+    }
+}
+
+
+？ transform: translate3d(0,0,0) scale(1);
+-- 这个动效有点搞不清；
+-- 应该是 x轴，y轴，z轴转换的值；
+
+transform:translate3d(0,0,0) 是开启硬件加速的；从 cpu 渲染变成 gpu 渲染；
+
+未改进版本的fps（每秒传输帧数，值越高画面就越流畅）一半多的时间都是小于30fps，而改进后的动画fps基本都超过60fps。
+当然对于整个效果，楼主css3与jQ动画结合使用，jQ的动画效果比不上CSS3
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+.modal-overlay, .preloader-indicator-overlay, .popup-overlay {
+    visibility: hidden;
+    opacity: 0;
+    ...
+    &.modal-overlay-visible {      // 这样就变成可见了； // 表现在 html 上是两个并列的 class
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+
+
+
+
+
+---------------------
+
+css3的字体大小单位[rem]到底好在哪？ - 知乎
+https://www.zhihu.com/question/21504656
+
+
+Flex 布局教程：语法篇 - 阮一峰的网络日志
+http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
