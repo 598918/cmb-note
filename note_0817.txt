@@ -1,0 +1,241 @@
+1.看完工作条，看数据库，然后输入一些自己想要的字段；数据；
+
+-- 配合设计文档看看；
+
+【工作条】
+
+-- LV35_BusMonitor.xml
+-- Java Resources -> src/main/resources -> operations -> LV35_BusMonitor.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 工作条配置
+	defaultflow: 默认流量，可不配置
+	defaultparl: 默认并发，可不配置 
+-->
+<operations schema="BusMonitor">
+<!-- 
+	id: operation id
+	name: operation name
+	class: IOperation实现类名
+	flow: 流量控制，每秒多少请求，不配置该属性则用默认值
+	parl: 并发控制，同时有多少请求，不配置该属性则用默认值
+-->
+	<operation id="QueryHisBus" class="com.cmb.bus.busmonitor.operation.QueryHisBus" name="历史业务量查询"></operation>		
+	<operation id="QueryRealBusBrn" class="com.cmb.bus.busmonitor.operation.QueryRealBusBrn" name="机构实时业务量查询"></operation>		
+	<operation id="QueryRealBusWinReg" class="com.cmb.bus.busmonitor.operation.QueryRealBusWinReg" name="窗口区域实时业务量查询"></operation>		
+	<operation id="QueryRealBusWin" class="com.cmb.bus.busmonitor.operation.QueryRealBusWin" name="窗口实时业务量查询"></operation>	
+	
+	<operation id="QueryExeRatGrp" class="com.cmb.bus.busmonitor.operation.QueryExeRatGrp" name="排班组执行率查询" flow="50" parl="5"></operation>
+	<operation id="QueryExeRatDay" class="com.cmb.bus.busmonitor.operation.QueryExeRatDay" name="每日执行率查询" flow="50" parl="5"></operation>
+	<operation id="QueryExeErrCause" class="com.cmb.bus.busmonitor.operation.QueryExeErrCause" name="执行率异常原因的查询"></operation>
+	<!-- 需要配置工作条权限 -->
+	<operation id="MntExeErrCause" class="com.cmb.bus.busmonitor.operation.MntExeErrCause" name="执行率异常原因维护"></operation>		
+</operations>
+
+
+
+
+
+
+
+【container.xml】
+
+？ 连接两个数据库？？
+
+<db>
+	<!-- 开发配置 -->
+	<jdbc id="business">
+		<driver>com.ibm.db2.jcc.DB2Driver </driver>
+		<url>jdbc:db2://99.12.39.74:50000/buscordb</url>
+		<username>cbccordb</username>
+		<password>cbccordb</password>
+	</jdbc>
+	
+	<jdbc id="busrptdb">
+		<driver>com.ibm.db2.jcc.DB2Driver </driver>
+		<url>jdbc:db2://99.12.39.74:50000/busrptdb</url>
+		<username>cbccordb</username>
+		<password>cbccordb</password>
+	</jdbc>
+</db>
+
+
+
+
+
+？ 数据表缓存？？
+
+<caches>
+	<cache dbID="business">
+		<unit name="CFG.Q2CFRLLS"/>
+		<unit name="CFG.Q2CFRLPG"/>
+		<unit name="CFG.Q2CFPGWK"/>
+		<unit name="CFG.Q2CFSYDA"/>
+		<unit name="CFG.Q2CFPGLS"/>
+		<unit name="CFG.Q2CFCOBR" index="index1:BRN_NBR;index2:UPP_BRN" order="BRN_NBR"/>
+		<unit name="SCH.Q2SCGPDA" index="index1:GRP_NBR;index2:BBK_NBR"/>
+		<unit name="SCH.Q2SCGPBR" index="index1:GRP_NBR;index2:BRN_NBR"/>
+	</cache>
+</caches>
+
+
+
+
+？ 连接其他的工作条？？
+
+<operations file="operations/LV35_Common.xml"/>
+<operations file="operations/LV35_BusMonitor.xml"/>
+
+
+
+
+* 改一些 sql 试试效果；
+
+BRN_NBR-机构、BRN_NAM-机构名称、SUM_CNT-业务量
+
+SELECT A.BBK_NBR BRN_NBR,SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A WHERE A.DTA_DTE = CURRENT DATE GROUP BY A.BBK_NBR 
+
+-- 缺少 BRN_NAM 字段：
+
+result.addField("BRN_NAM");
+for (int i = 0; i < result.getRecordCount(); i++) {
+	result.update(i, "BRN_NAM", Branch.getName(result.getString(i, "BRN_NBR")));
+}
+
+
+
+
+-----------------------------
+
+2. 手机 ui；
+
+-- picker 问题；scroll 的时候，input 显示的还是 displayValue，而不是 value；
+-- formatter, brancher
+
+-- 查下 picker() 有没有返回 value 的方法；
+
+
+-- 样式，调整几个页面；
+
+
+
+
+
+
+
+
+
+
+3. 写个插件；
+
+
+
+
+
+
+
+
+-----------------------------
+
+4. 原因填写：
+
+4.1 button 样式；
+
+
+？ select 的 val() ？？
+-- var schMdl = $("#SEARCH_SCH_MDL").find("select").val();
+
+
+
+
+
+
+？ 怎么控制分行不能填写原因，而支行可以？？
+-- if(brnNbr)
+-- brnNbr 是什么代码？？
+
+
+
+
+！ 输出原因：
+-- getErrCause(others['BRN_NBR'], others['DTA_DTE']);
+
+
+
+
+？ 支行怎么输出原因呢？？
+function addErrCause(obj){
+	if(obj){
+		var cause = "";
+		$(".day ul .single-reason").remove();
+		$(obj['QueryExeErrCauseZ1']).each(function(k,v){
+			if(v['CAUSE'] &&　parseInt(v['EXE_RAT']) < 80){
+				cause = v['CAUSE'];
+				if(!brnNbr){   // 这里只是排班组把？没有输出支行的吧？？但是界面上支行是有的，怎么输出的呢？？
+					cause = "<span>[" + v['BRN_NAM'] + "]</span>" + v['CAUSE'];
+				}
+				showCauseItem(parseInt(getDay(v['DTA_DTE'])),cause,v['BRN_NBR']);
+			}
+		});
+		bindAddErrCauseEvt();
+	}
+	framework.endload();
+}
+
+
+
+
+！删除一条原因要跟数据库交互：
+function removeCause(a){
+	if(confirm("确定要删除这条记录吗？")){
+		framework.preload();
+		$("#delId").val(a);
+		var mntExeErrCauseX1 = new Object;
+		mntExeErrCauseX1['DTA_DTE'] = $(a).parents(".day").data("DTA_DTE");
+		mntExeErrCauseX1['BRN_NBR'] = $(a).data('BRN_NBR');
+		mntExeErrCauseX1['OPR_TYP'] = "DEL";
+		framework.operate("BusMonitor.MntExeErrCause", {"MntExeErrCauseX1":[mntExeErrCauseX1]}, afterDoRemove, null);
+	}
+}
+
+
+
+？ 这逻辑自己都看不懂；
+function renderTD(ul){
+	if($(ul).find('.single-reason').length > 2){
+		$(ul).find('.single-reason:lt(2)').show();
+		if(isTDExpanded){
+			$(ul).find('.single-reason').show();
+			$(ul).find('.show-more').hide();
+		}else{
+			$(ul).find('.single-reason:gt(1)').hide();
+			$(ul).find('.show-more').show();
+		}
+	}else{
+		$(ul).find('.single-reason').show();
+		$(ul).find('.show-more, .no-more').hide();
+		isTDExpanded = false;
+	}
+}
+
+
+
+？ 添加原因后，删除整个 td 的数据，再从数据库读当前支行，当天的数据？
+function afterDoSave(){
+	framework.endload();
+	var id = parseInt(getDay($("#dtaDte").text().trim()));
+	$(".Day" + id + " ul .single-reason").remove();   // 这里是整个删除了吧？？
+	showCauseItem(id, $("#cause").val(),$("#brnNbr").val());
+	$('#noteModal').modal('hide');
+}
+
+
+
+
+对比下我和 lx 的代码有啥不同。
+
+
+
+
+
+
