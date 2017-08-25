@@ -1,0 +1,123 @@
+2. 手机 ui；
+
+-- picker 问题；scroll 的时候，input 显示的还是 displayValue，而不是 value；
+-- formatter, brancher
+
+-- 查下 picker() 有没有返回 value 的方法；
+
+
+-- 样式，调整几个页面；
+
+
+
+
+
+
+
+
+-----------------------------
+
+3. 写个插件；
+
+
+
+
+？ 返回数据丢失；
+-- 呃，时丢时不丢；
+
+
+
+
+
+
+----------------------
+
+？ 点击发布班表的时候 &.alert 会弹窗好几次；
+-- 猜测是因为 modal 和 popup 混用的原因；
+
+-- 有可能是因为有 overlay 没删除，然后 openModal 的时候往几个 overlay 添加弹窗了；
+
+？ 在 $.alert() 的回调里面添加删除 overlay 的方法；
+
+
+
+
+
+---------------------
+
+？ picker 有初始值的时候怎么处理；
+
+-- 看官方的例子是可以 onScroll 的时候读取 value 的；
+-- 应该是初始化的时候设置 input 的 value；而且 value 和 displayValue 要分开设置；
+
+？ picker 应该有处理的默认值的方法！！！
+
+
+onOpen(picker){
+	if($(picker.input).val()){
+		picker.value = $(picker.input).prop('key');
+		picker.displayValue = $(picker.input).val();
+	}
+}
+
+
+
+// Set value
+
+if (!p.initialized) {
+	
+	if (p.params.value) {
+		
+		p.setValue(p.params.value, 0);
+	
+	}
+
+}
+
+else {
+	
+	if (p.value) p.setValue(p.value, 0);
+
+}
+
+
+
+line 357
+
+
+
+
+
+function initReasonPicker(title,values,displayValues,onClose,winTyps,winTypNams){
+	var $p = $('<input type="text" placeholder="请选择" >');
+	$p.picker({
+		toolbarTemplate: '<header class="bar bar-nav">\
+			  <button class="button button-link pull-right close-picker">确定
+
+</button>\
+			  <h1 class="title">请选择'+title+'</h1>\
+			  </header>',
+		cols: [
+			    {
+			      textAlign: 'center',
+			      values: values,
+			      displayValues: displayValues
+			    }
+			  ],
+		formatValue : function(picker, value, displayValue) {
+					return displayValue;
+	    		},
+	   	onClose: function(picker){ 
+			    	$(picker.input).val(picker.cols[0].displayValue);
+			    	$(picker.input).attr('key', picker.cols[0].value);
+	    			if(onClose && typeof onClose === 'function'){onClose
+
+(picker.cols[0].value,winTyps,winTypNams)}; 
+	    	    }
+	});
+	return $p;
+}
+
+
+
+
