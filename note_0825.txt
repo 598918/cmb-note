@@ -1,3 +1,16 @@
+算法速成系列 - 随笔分类 - 一线码农 - 博客园
+http://www.cnblogs.com/huangxincheng/category/340146.html
+
+
+深入理解JavaScript系列（4）：立即调用的函数表达式 - 汤姆大叔 - 博客园
+http://www.cnblogs.com/TomXu/archive/2011/12/31/2289423.html
+
+
+
+
+
+----------------------
+
 2. 手机 ui；
 
 -- picker 问题；scroll 的时候，input 显示的还是 displayValue，而不是 value；
@@ -15,15 +28,10 @@
 
 
 
------------------------------
+----------------------
 
 3. 写个插件；
 
-
-
-
-？ 返回数据丢失；
--- 呃，时丢时不丢；
 
 
 
@@ -41,48 +49,117 @@
 
 
 
+$.modalStack = [];
+
+$.modalStackClearQueue = function () {
+    if ($.modalStack.length) {
+        ($.modalStack.shift())();    // shift() 删除并返回第一个；  // (function(){})()
+    }
+};
+
+
+深入理解JavaScript系列（4）：立即调用的函数表达式 - 汤姆大叔 - 博客园
+http://www.cnblogs.com/TomXu/archive/2011/12/31/2289423.html
+
+
+
+
+
+
+【openModal】
+var isModal = modal.hasClass('modal'),
+    isNotToast = !modal.hasClass('toast');
+if ($('.modal.modal-in:not(.modal-out)').length && defaults.modalStack && isModal && isNotToast) {
+    $.modalStack.push(function () {
+        $.openModal(modal, cb);
+    });
+    return;
+}
+
+-- 如果要打开的弹窗有 modal 这个 class，那么添加把 openModal 加入 $.modalStack；
+
+
+
+
+
+
+
+【closeModal】
+if (isModal &&  defaults.modalStack ) {
+    $.modalStackClearQueue();
+}
+
+？ 关闭的时候为什么还要清除一次 $.modalStack 呢？ 而且清除队列的动作是让 openModal 再执行一次，真是毛病；
+？ 所以一开始就不应该有 defaults.modalStack 这个概念；
+
+
+
+
 
 
 ---------------------
 
-？ picker 有初始值的时候怎么处理；
+* 初始化 picker 后动态设置 picker 的 value；
+（思路；想办法打断点）
 
--- 看官方的例子是可以 onScroll 的时候读取 value 的；
--- 应该是初始化的时候设置 input 的 value；而且 value 和 displayValue 要分开设置；
+-- 要明白，input 的 value 和 picker 的 value 不是同一个概念；
 
-？ picker 应该有处理的默认值的方法！！！
+1. 先给 input 一个 value，然后再初始化 picker；
+2. 初始化 picker后，调用 picker.setValue()；
 
 
-onOpen(picker){
-	if($(picker.input).val()){
-		picker.value = $(picker.input).prop('key');
-		picker.displayValue = $(picker.input).val();
+【1】 走不通；
+-- 虽然设置了 input 的 value，但是用户要看的其实是 displayValue;
+-- input[value] -> picker -> input[value] -> append。有点繁琐，代码不够简洁；
+
+$sap.find('.item-input').attr('id', 'sap_InputDiv').append('<input type="text" placeholder="请选择" value='+ $li_a.attr("SAP_NBR") +'>');
+$sap.find('.item-input').find('input').picker({
+	toolbarTemplate: '<header class="bar bar-nav">\
+		  <button class="button button-link pull-right close-picker">确定</button>\
+		  <h1 class="title">请选择员工</h1>\
+		  </header>',
+	cols: [
+		    {
+		      textAlign: 'center',
+		      values: sapNbrs,
+		      displayValues: sapNams
+		    }
+		  ],
+	formatValue : function(picker, value, displayValue) {
+				return displayValue;
+    		},
+   	onClose: function(picker){ 
+		    	$(picker.input).val(picker.cols[0].displayValue);
+		    	$(picker.input).attr('key', picker.cols[0].value);
+    			if(onClose && typeof onClose === 'function'){onClose(picker.cols[0].value,winTyps,winTypNams)}; 
+    	    }
+});
+if($li_a.attr('OPT_STS')=='toUpd'){
+	$sap.find('.item-input').find('input').attr('key',$li_a.attr('NEW_SAP_NBR')).val($li_a.attr('NEW_SAP_NAM'));
+}else{
+	$sap.find('.item-input').find('input').attr('key',$li_a.attr('SAP_NBR')).val($li_a.attr('SAP_NAM'));	
+}
+$popupHTML.find('#metaForm').append($sap);	
+
+
+
+
+
+
+【2】
+
+p.setValue = function (arrValues, transition) {
+	var valueIndex = 0;
+	for (var i = 0; i < p.cols.length; i++) {      // 发现没有进去；因为 picker 没有初始化，没有 p.cols
+		if (p.cols[i] && !p.cols[i].divider) {
+			p.cols[i].setValue(arrValues[valueIndex], transition);
+			valueIndex++;
+		}
 	}
-}
+};
 
 
-
-// Set value
-
-if (!p.initialized) {
-	
-	if (p.params.value) {
-		
-		p.setValue(p.params.value, 0);
-	
-	}
-
-}
-
-else {
-	
-	if (p.value) p.setValue(p.value, 0);
-
-}
-
-
-
-line 357
+$p.picker('open').picker('close').picker('setValue', [$li_a.attr('SAP_NBR')]);
 
 
 
@@ -92,9 +169,7 @@ function initReasonPicker(title,values,displayValues,onClose,winTyps,winTypNams)
 	var $p = $('<input type="text" placeholder="请选择" >');
 	$p.picker({
 		toolbarTemplate: '<header class="bar bar-nav">\
-			  <button class="button button-link pull-right close-picker">确定
-
-</button>\
+			  <button class="button button-link pull-right close-picker">确定</button>\
 			  <h1 class="title">请选择'+title+'</h1>\
 			  </header>',
 		cols: [
@@ -110,9 +185,7 @@ function initReasonPicker(title,values,displayValues,onClose,winTyps,winTypNams)
 	   	onClose: function(picker){ 
 			    	$(picker.input).val(picker.cols[0].displayValue);
 			    	$(picker.input).attr('key', picker.cols[0].value);
-	    			if(onClose && typeof onClose === 'function'){onClose
-
-(picker.cols[0].value,winTyps,winTypNams)}; 
+	    			if(onClose && typeof onClose === 'function'){onClose(picker.cols[0].value,winTyps,winTypNams)}; 
 	    	    }
 	});
 	return $p;
