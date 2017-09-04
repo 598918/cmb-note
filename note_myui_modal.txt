@@ -2,7 +2,39 @@
 
 
 
-？ display:flex; 
+
+？ 四项目感觉有点问题？？
+
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: space-between;
+}
+
+
+
+
+Flex 布局教程：实例篇 - 阮一峰的网络日志
+http://www.ruanyifeng.com/blog/2015/07/flex-examples.html
+
+
+
+
+
+
+---------------------
+
+* CSS "+" 选择器
+
+** h1 + p {margin-top:50px;}
+-- 是选后面的 p， 而不是前面的 h1
+这个选择器读作：“选择紧接在 h1 元素后出现的段落，h1 和 p 元素拥有共同的父元素”。
+
+
+
+** li + li {font-weight:bold;}
+-- 上面这个选择器只会把列表中的第二个和第三个列表项变为粗体。第一个列表项不受影响。
 
 
 
@@ -12,15 +44,27 @@
 
 【modal】
 
-？ 实现像 msui 那样，输入数组来配置组件；
+？ bg- color- 这些怎么影响样式？？
 
-？ html 代码肯定也不是生成好的那样；原装的，最少的代码会是怎样的呢？
 
-？ transitionEnd 
-
+？ 关闭机制？？
 
 
 
+
+---------------------
+
+【transitionEnd】
+
+-- css 提供的方法；
+
+
+
+
+
+
+
+--------
 
 ？ 自定义事件 open, opened;
 
@@ -34,7 +78,77 @@ modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
 
 
 
---------
+
+* 两种写法：
+-- 第一种可以侦听异步添加的元素；
+
+$(document).on('open','.actions-modal', function () {
+	console.log('open event');
+});
+
+$('.actions-modal').on('open', function(){
+	console.log('open + 1 event');
+});
+
+
+
+？？ js 的自定义事件是随便写的吗？
+-- 只要有 on('xxx') 就可以 trigger('xxx') 了吗？？
+
+
+
+
+
+
+
+
+---------------------
+
+！ return modal[0];    // modal[0] 应该是个 html ？
+-- 输出是个 object，应该是 jquery 对象转成 dom 对象；
+
+
+
+！ 集成组件：picker， modal，toast, actionsheet; 
+-- 组件之间应该无耦合，只是用了 modal.js 里面的 openModal 和 closeModal;
+-- 所以应该抽出来，actionSheet.js + modal.js; 
+
+
+
+
+
+
+
+
+
+---------------------
+
+！ actionsheet 是怎么 closeModal 的？
+-- if(buttonParams.close !== false) $.closeModal(modal);   // buttonParams.close == undefined, 所以会进入这个分支；
+-- (!== false) 就是除了强制设成 false, 其他情况都会打开；
+-- 这样看来 !== 的选择范围比较广；
+
+
+if(clickTarget) {     // label 进不来，所以绑定不了 closeModal 事件
+	clickTarget.on('click', function(e) {
+		if(buttonParams.close !== false) $.closeModal(modal);
+		if(buttonParams.onClick) buttonParams.onClick(modal, e);
+	});
+}
+
+-- 给 button 绑定事件的时候，除了用户输入的事件，还有隐藏的 closeModal 事件；
+
+
+
+
+
+
+
+
+
+
+
+---------------------
 
 ！ 最后的 sheet 出现应该是 css 动效
 
@@ -59,53 +173,8 @@ modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
 
 
 
---------
-
-？ transitionEnd 事件就是动效结束？？
-
-【transitionEnd】
-
-modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
-	if(modal.hasClass('modal-out')) modal.trigger('closed');
-	else modal.trigger('opened');
-});
-
-$.fn.transitionEnd = function(callback) {
-    __dealCssEvent.call(this, ['webkitTransitionEnd', 'transitionend'], callback);
-    return this;
-};
-
-function __dealCssEvent(eventNameArr, callback) {
-    var events = eventNameArr,
-        i, dom = this;// jshint ignore:line
-
-    function fireCallBack(e) {
-        /*jshint validthis:true */
-        if (e.target !== this) return;
-        callback.call(this, e);
-        for (i = 0; i < events.length; i++) {
-            dom.off(events[i], fireCallBack);
-        }
-    }
-    if (callback) {
-        for (i = 0; i < events.length; i++) {
-            dom.on(events[i], fireCallBack);
-        }
-    }
-}
 
 
-？ 我的理解是：
-
-modal.on('webkitTransitionEnd',function(e){
-	if(modal.hasClass('modal-out')) modal.trigger('closed');
-	else modal.trigger('opened');
-});
-
-modal.on('transitionend',function(e){
-	if(modal.hasClass('modal-out')) modal.trigger('closed');
-	else modal.trigger('opened');
-})
 
 
 
@@ -115,33 +184,6 @@ modal.on('transitionend',function(e){
 
 
 ---------------------
-
-！ 怎么触发的 closeModal
--- 点击 lable 不会消失；
--- 点击其他的 button 都会消失，不管是不是取消；
-
-* 【$.actions】
-
-if(clickTarget) {     // label 进不来，所以绑定不了 closeModal 事件
-	clickTarget.on('click', function(e) {
-		if(buttonParams.close !== false) $.closeModal(modal);
-		if(buttonParams.onClick) buttonParams.onClick(modal, e);
-	});
-}
-
--- 给 button 绑定事件的时候，除了用户输入的事件，还有隐藏的 closeModal 事件；
-
-
-
-* in openModal()
-
-modal.removeClass('modal-out').addClass('modal-in').transitionEnd(function(e) {
-	if(modal.hasClass('modal-out')) modal.trigger('closed');
-	else modal.trigger('opened');
-});
-
-？ 目测是动效一类的方法，但是 modal.js 里面找不到定义的地方；
-
 
 * technique：判断 class 元素
 
@@ -165,7 +207,7 @@ if(clickTarget) {
 * technique：回调：
 
 if(typeof cb === 'function') {
-	cb.call(this);
+	cb.call(this);    // !!!
 }
 
 
@@ -193,7 +235,7 @@ $.add(5,8) //return 13
 
 $.fn.extend({
 	clickwhile:function(){
-		$(this).click(function(){
+		$(this).click(function(){    // ？？ 我就当 $.fn 都会传一个对象进来好了；
 			alert($(this).val()) 
 		})
 	}
@@ -205,15 +247,8 @@ $('input').clickwhile();//当点击输入框会弹出该对象的Value值
 -- $.extend(obj); 是为了扩展 jquery 本身，为类添加新的方法
 -- $.fn.extend(obj); 给 JQUERY对象 添加方法。
 
-？ 但是吴老板开发的组件没见写过 extend 啊；
 
 
-
-
-
-
-jQuery 请指出'$'和'$.fn'的区别？或者说出'$.fn'的用途。 - liuhaozcx的专栏 - CSDN博客
-http://blog.csdn.net/liuhaozcx/article/details/23861377
 
 
 
@@ -222,11 +257,45 @@ http://blog.csdn.net/liuhaozcx/article/details/23861377
 
 ---------------------
 
-？ 一个组件的样式怎么组织的？？
+？ 但是吴老板开发的组件没见写过 extend 啊；
 
--- 顶层 class
+var Plugin = function (element, options)
+Plugin.prototype._generateTable = function()
 
-？ 组件引用组件的情况？
+$.fn[pluginName] = function(options, args) {
+	var result;
+	this.each(function() {
+		var _this = $.data(this, pluginName);
+		if (typeof options === 'string') {      // 调用插件输出的方法；
+			if (!_this) {
+				console.error('Not initialized, can not call method : ' + options);
+			} else if (!$.isFunction(_this[options]) || options.charAt(0) === '_') {
+				console.error('No such method : ' + options);
+			} else {
+				if (!(args instanceof Array)) {
+					args = [ args ];     // 把参数转换成数组类型；因为下面的 apply() 参数要求的是数组；
+				}
+				result = _this[options].apply(_this, args);        // 调用插件输出的方法；
+			}
+		}else {
+			$.data(this, pluginName, new Plugin(this, $.extend(true, {}, options)));    // 否则用 $.data 新建一个插件，this 我就当时 $.fn 传进来的；
+		}
+		
+	});
+	return result || this;  // 输出返回结果或者插件本身
+};
+
+
+-- 吴老板写的插件是 $.fn.plugin = function
+-- 跟 $.fn.extend({ plugin: function }) 有点不一样；
+-- 应该是对 $.fn 用了 extend() 方法的原因；
+-- 其实是一致的。$.fn 是一个对象，extend() 是往对象添加属性方法，$.fn.plugin 是直接添加属性方法；
+
+
+
+
+jQuery 请指出'$'和'$.fn'的区别？或者说出'$.fn'的用途。 - liuhaozcx的专栏 - CSDN博客
+http://blog.csdn.net/liuhaozcx/article/details/23861377
 
 
 
@@ -343,14 +412,6 @@ transform:translate3d(0,0,0) 是开启硬件加速的；从 cpu 渲染变成 gpu
     }
 }
 
-
-
-
-？ 假如存在 modal，则？？
-
-if ($.modalStack.length) {
-    ($.modalStack.shift())();      
-}
 
 
 
