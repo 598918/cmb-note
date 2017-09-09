@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>picker</title>
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet/less" href="css/myui.less" />
+		<script src="js/less.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/adapter.js"></script>
+		<script src="js/modal.js"></script>
+		<script src="js/picker.js"></script>
+	</head>
+
+	<body>
+		<div class="content">
+			<input type="text" placeholder="选择手机" id="picker" readonly="">
+		</div>
+		<script>
+			$(function() {
+				$('#picker').picker({
+					cols: [{
+							textAlign: 'center',
+							values: ['赵', '钱', '孙', '李', '周', '吴', '郑', '王']
+							//如果你希望显示文案和实际值不同，可以在这里加一个displayValues: [.....]
+						},
+						{
+							textAlign: 'center',
+							values: ['杰伦', '磊', '明', '小鹏', '燕姿', '菲菲', 'Baby']
+						},
+						{
+							textAlign: 'center',
+							values: ['先生', '小姐']
+						}
+					]
+				});
+			});
+		</script>
+	</body>
+
+</html>
