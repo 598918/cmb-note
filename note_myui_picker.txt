@@ -1,0 +1,433 @@
+* 目前的结构很清晰啊，就是
+
+plugin = function()
+
+plugin.xx
+
+plugin.yy
+
+plugin.zz
+
+function _a
+
+function _b
+
+funciton _c
+
+$.fn.plugin = function(option){
+	return  this.each();
+}
+
+
+
+
+
+
+-----------------------
+
+？ col.calcSize(); 写在 col.calcSize = function () 前面会提示 func 没定义？？
+-- 不是应该有变量提升吗？
+
+
+？ rotateEffect: true; 会有什么效果？？
+
+
+？ $.fn.transform、 $.fn.transition(adapter.js)
+
+
+
+？ 确定按钮还没用；
+
+？ 样式还没完全写好；
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+* 输入：
+
+-- value，key(displayValue)
+
+-- 随时获取 getValue, setValue();
+
+-- 联动；多级菜单？？
+
+
+
+？ Picker() 还需要 return p？
+-- $.fn.picker() 里面以及有 return this.each 了；
+
+
+
+
+
+
+
+
+------------------------
+
+1. open()  -> p.layout()
+
+* 点击 input 出现 picker；
+-- p.input.on('click', openOnInput);
+
+** openOnInput()
+-- p.open()
+
+pageContent[0].offsetHeight: 24     // .content 的 height
+pageContent[0].scrollHeight: 24     // ？ 相对视窗.top 的滚动距离？
+p.input[0].offsetHeight:     22
+
+？ scrollHeight 能不能解决 validate.js 的问题；
+
+
+
+
+！ 怎么控制在底部显示？？
+-- position: fixed; 
+
+
+
+
+
+！ 为什么第二次点击 input 没有触发 open() ？ 
+-- container.onClose: onPickerClose()
+-- 其实就是设置：p.opened = false; 没有什么 destory 的过程；
+
+$(p.container).on('close', function () {    // defined in p.open()
+    onPickerClose();
+});
+
+？ 怎么触发的 p.container.trigger('close') ？？
+-- modal.js: modal.trigger('close');     // p.container = modal
+
+
+
+
+
+
+------------------------
+
+2. closeOnHtmlClick()
+
+！ 没有关闭 modal，是 .modal-out 的样式没起作用；
+-- 没把 .picker-modal 的相关样式写在 picker.less 里；
+-- 所以没法调用 modal.removeClass('modal-in').addClass('modal-out').transitionEnd() 
+
+
+
+
+
+
+
+
+------------------------
+
+3. 生成数据：
+
+
+3.1 p.layout()
+
+for (i = 0; i < p.params.cols.length; i++) {
+    var col = p.params.cols[i];
+    colsHTML += p.columnHTML(p.params.cols[i]);
+    p.cols.push(col);   // p.cols: [{ textAlign: 'center', values: ['杰伦', '磊', '明', '小鹏', '燕姿', '菲菲', 'Baby'] }, ...],
+}
+
+
+
+
+3.2 p.open() -> p.initPickerCol() -> col.updateItems() 
+
+if (valueCallbacks || typeof valueCallbacks === 'undefined') {
+    // p.cols.value & p.cols.displayValue
+    col.value = selectedItem.attr('data-picker-value');
+    col.displayValue = col.displayValues ? col.displayValues[activeIndex] : col.value;
+    // On change callback
+    if (previousActiveIndex !== activeIndex) {
+        if (col.onChange) {
+            col.onChange(p, col.value, col.displayValue);
+        }
+        p.updateValue();
+    }
+}
+
+-- 其实方法名应该叫 col.updateValue(); 因为只是更新当前 col 的 value 和 displayValue；
+
+
+
+
+3.3 p.updateValue()
+
+for (var i = 0; i < p.cols.length; i++) {
+    if (!p.cols[i].divider) {
+        newValue.push(p.cols[i].value);
+        newDisplayValue.push(p.cols[i].displayValue);
+    }
+}
+if (newValue.indexOf(undefined) >= 0) {
+    return;   // 返回 p.initPickerCol()
+}
+p.value = newValue;    // 生成了 p.value 和 p.displayValue
+p.displayValue = newDisplayValue;
+
+
+
+
+
+
+？ col.divider
+
+
+
+
+？ 怎么绑到 html 上？？
+-- p.open() -> p.columnHTML()
+
+p.columnHTML = function (col, onlyItems) {
+    var columnItemsHTML = '';
+    var columnHTML = '';
+    if (col.divider) {
+        columnHTML += '<div class="picker-items-col picker-items-col-divider ' + (col.textAlign ? 'picker-items-col-' + col.textAlign : '') + ' ' + (col.cssClass || '') + '">' + col.content + '</div>';
+    }
+    else {
+        for (var j = 0; j < col.values.length; j++) {
+            columnItemsHTML += '<div class="picker-item" data-picker-value="' + col.values[j] + '">' + (col.displayValues ? col.displayValues[j] : col.values[j]) + '</div>';
+        }
+
+        columnHTML += '<div class="picker-items-col ' + (col.textAlign ? 'picker-items-col-' + col.textAlign : '') + ' ' + (col.cssClass || '') + '"><div class="picker-items-col-wrapper">' + columnItemsHTML + '</div></div>';
+    }
+    return onlyItems ? columnItemsHTML : columnHTML;
+};
+
+
+
+
+
+？ 选中事件怎么影响 p.value 和 p.displayValue？？
+
+
+
+
+
+------------------------
+
+4. 滚动事件；选中事件；
+
+！选中事件？？原理？？
+-- 用 col.updateItems，关键是怎么得到一个 index？？
+
+* handleTouchMove
+-- col.updateItems(undefined, currentTranslate, 0, p.params.updateValuesOnTouchmove);
+
+* col.updateItems
+-- 里面定义了 picker-selected
+-- if(typeof activeIndex === 'undefined') activeIndex = -Math.round((translate - maxTranslate)/itemHeight);    【core】
+
+
+
+* 停止滚动事件：
+newTranslate = Math.max(Math.min(newTranslate, maxTranslate), minTranslate);
+
+// Active Index
+var activeIndex = -Math.floor((newTranslate - maxTranslate)/itemHeight);
+
+// Normalize translate
+if (!p.params.freeMode) newTranslate = -activeIndex * itemHeight + maxTranslate;
+
+// Transform wrapper
+col.wrapper.transform('translate3d(0,' + (parseInt(newTranslate,10)) + 'px,0)');
+
+// Update items
+col.updateItems(activeIndex, newTranslate, '', true);
+
+
+？ 逻辑有点复杂，未看；但是返回一个 activeIndex；
+
+
+
+
+
+* 滚动事件：
+-- col.updateItems() -> handleTouchMove()
+
+// Transform wrapper
+col.wrapper.transform('translate3d(0,' + currentTranslate + 'px,0)');
+
+// Update items
+col.updateItems(undefined, currentTranslate, 0, p.params.updateValuesOnTouchmove);
+
+
+
+
+* touchEnd 的回动效果：
+-- handleTouchEnd()
+
+returnTo = undefined;
+// Normalize translate
+if (currentTranslate < minTranslate) {
+    currentTranslate = minTranslate - Math.pow(minTranslate - currentTranslate, 0.8);
+    returnTo = 'min';
+}
+if (currentTranslate > maxTranslate) {
+    currentTranslate = maxTranslate + Math.pow(currentTranslate - maxTranslate, 0.8);
+    returnTo = 'max';
+}
+
+
+if (returnTo) {
+    if (returnTo === 'min') {
+        col.wrapper.transform('translate3d(0,' + minTranslate + 'px,0)');
+    }
+    else col.wrapper.transform('translate3d(0,' + maxTranslate + 'px,0)');
+}
+
+
+
+！ 结束的时候怎么设置控件的值？
+-- col.updateItems(activeIndex, newTranslate, '', true);
+-- var activeIndex = -Math.floor((newTranslate - maxTranslate)/itemHeight);
+
+
+
+
+
+----------------
+
+？ value 重叠了；
+
+-- 看 input 的 value 是怎么出现的？
+
+-- p.updateValue： $(p.input).val(p.params.formatValue ? p.params.formatValue(p, p.value, p.displayValue) : p.value.join(' '));
+-- p.updateValue 是被 col.updateItems 调用的；
+-- col.updateItems 被调用的地方就多了去了；
+-- col.updateItems 只被调用一次的情况：move。也会出错；
+-- col.updateItems 只是设置选中样式，和 col.value
+-- 问题还是出在 p.updateValue() 上；
+for (var i = 0; i < p.cols.length; i++) {
+    if (!p.cols[i].divider) {
+        newValue.push(p.cols[i].value);
+        newDisplayValue.push(p.cols[i].displayValue);
+    }
+}
+-- p.cols 出现 6 个数组就不对了；
+-- p.layout 里： 
+for (i = 0; i < p.params.cols.length; i++) {
+    var col = p.params.cols[i];
+    colsHTML += p.columnHTML(p.params.cols[i]);
+    p.cols.push(col);   // 每次都 puch 一次数组也是不对的；
+}
+-- 就是这里了；
+
+-- 妈的搞事情，p.cols = [] 被删了；
+
+
+
+
+
+
+
+------------------------
+
+5. touch 事件；
+
+* adapter.js
+$.support = (function() {
+    var support = {
+        touch: !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch)
+    };
+    return support;
+})();
+
+$.touchEvents = {
+    start: $.support.touch ? 'touchstart' : 'mousedown',
+    move: $.support.touch ? 'touchmove' : 'mousemove',
+    end: $.support.touch ? 'touchend' : 'mouseup'
+};
+
+
+
+col.initEvents = function (detach) {
+    var method = detach ? 'off' : 'on';
+    col.container[method]($.touchEvents.start, handleTouchStart);
+    col.container[method]($.touchEvents.move, handleTouchMove);
+    col.container[method]($.touchEvents.end, handleTouchEnd);
+    col.items[method]('click', handleClick);
+};
+
+
+
+？ 关键是获取不到 e.targetTouches[0] 对象；
+-- touchStartY = touchCurrentY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+
+-- touches:当前屏幕上所有触摸点的集合列表
+-- targetTouches: 绑定事件的那个结点上的触摸点的集合列表
+-- changedTouches: 触发事件时改变的触摸点的集合
+
+所以应该用 e.targetTouches 是对的啊？？
+-- 用网上的答案： e.originalEvent.targetTouches[0] 试试；
+-- work ！！
+
+
+
+
+------------------------
+
+6. p.setValue
+
+p.setValue = function (arrValues, transition) {
+	var valueIndex = 0;
+	for (var i = 0; i < p.cols.length; i++) {      // 发现没有进去；因为 picker 没有初始化，没有 p.cols
+		if (p.cols[i] && !p.cols[i].divider) {
+			p.cols[i].setValue(arrValues[valueIndex], transition);
+			valueIndex++;
+		}
+	}
+};
+
+$p.picker('open').picker('close').picker('setValue', [$li_a.attr('SAP_NBR')]);
+-- 看代码不是重新设置 p.values 和 p.displayValues。
+-- 只是设置了一个默认值；
+-- 所以 p.setValue 应该是设置每一个 col 的默认值；
+
+-- p.setValue() 要 open() 后才能用。相当于 init() 后才可以使用；
+
+
+
+* p.open
+
+if (!p.initialized) {
+    if (p.params.value) {
+        p.setValue(p.params.value, 0);
+    }
+}
+else {
+    if (p.value) p.setValue(p.value, 0);
+}
+
+-- 这段代码感觉有点多余，删了；
+
+
+
+
+
+TouchEvent里的targetTouches、touches、changedTouches的区别的具体体现是？ - JasmineOT的回答 - SegmentFault
+https://segmentfault.com/q/1010000002870710/a-1020000004869367
+
+
+
+
+
+
+
+
+
+
+
