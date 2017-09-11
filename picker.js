@@ -44,15 +44,6 @@
                     if ((!p.initialized && p.params.value) || (p.initialized && p.value)) updateItems = false;
                     p.initPickerCol(this, updateItems);
                 });
-
-                if (!p.initialized) {
-                    if (p.params.value) {
-                        p.setValue(p.params.value, 0);
-                    }
-                }
-                else {
-                    if (p.value) p.setValue(p.value, 0);
-                }
             }
 
             p.initialized = true;
@@ -63,12 +54,14 @@
             var pickerHTML = '';
             var pickerClass = '';
             var i;
+            p.cols = [];
             var colsHTML = '';
             for (i = 0; i < p.params.cols.length; i++) {
                 var col = p.params.cols[i];
                 colsHTML += p.columnHTML(p.params.cols[i]);
                 p.cols.push(col);
             }
+            console.log(p.cols);
             pickerClass = 'picker-modal picker-columns ' + (p.params.cssClass || '') + (p.params.rotateEffect ? ' picker-3d' : '');
             pickerHTML =
                 '<div class="' + (pickerClass) + '">' +
@@ -162,7 +155,6 @@
 
             // Set Value Function
             col.setValue = function (newValue, transition, valueCallbacks) {
-            	console.log('setting value');
                 if (typeof transition === 'undefined') transition = '';
                 var newActiveIndex = col.wrapper.find('.picker-item[data-picker-value="' + newValue + '"]').index();
                 if(typeof newActiveIndex === 'undefined' || newActiveIndex === -1) {
@@ -472,6 +464,8 @@
         }
         
         $('html').on('click', closeOnHTMLClick);
+        
+        return p;
 	};
 	
 	$.pickerModal = function (pickerModal, removeOnClose) {
@@ -491,6 +485,11 @@
         $.openModal(pickerModal);
         return pickerModal[0];
     };
+    
+    $(document).on("click", ".close-picker", function() {
+        var pickerToClose = $('.picker-modal.modal-in');
+        $.closeModal(pickerToClose);
+    });
 	
 	$.fn.picker = function(params) {
         var args = arguments;
