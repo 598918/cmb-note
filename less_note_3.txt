@@ -1,0 +1,164 @@
+@ 参数，一个 vs 几个的情况，分号；
+
+
+
+.dog(@name){
+　　&::after{
+　　　　content: @name;
+   }
+}
+.dog(@name;@age){
+　　height: @age * 4px;
+}
+.dog(@name;@age;@width:20px){    // @width: 20px 在这里不算参数了；相当于在里面定义一个 @width；
+　　height: @age * 12px;
+　　width: @width;
+}
+// 仅匹配到 .dog(@name){
+.one-dog{
+　　.dog('chihuahua');
+}    
+// 匹配到.dog(@name;@age) 和 .dog(@name;@age;@width:20px)
+ .two-three-dog{
+ 　　.dog('two-three-dog', 2);
+}
+
+输出：
+
+.one-dog::after {
+  content: 'chihuahua';
+}
+.two-three-dog {
+  height: 8px;
+  height: 24px;
+  width: 20px;
+}
+
+
+
+
+// 参数的模式匹配
+// 当第一参数值为mimi时调用该mixin
+.cat(mimi, @age){
+　　height: @age * 22px;    
+}
+// 当第一参数值为mini时调用该mixin
+.cat(mini, @age){      // 感觉这个方法覆盖了上面的方法
+　　height: @age * 12px;      
+}
+// 不管第一参数值为啥均调用该mixin
+.cat(@any, @age){
+　　color: #f3c;
+}
+.mycat{
+　　.cat(mini, 1);
+}
+
+输出：
+
+.mycat {
+  height: 12px;
+  color: #f3c;
+}
+
+
+
+
+
+
+
+
+------------------------------
+
+@{param}
+-- 感觉这种方式就是写属性，或者选择器的时候才用到；
+-- vs: @param 就是用在参数的情况下，不用 {}。
+
+
+  @color: color;
+  @dialog: .dialog;
+  @suffix: fix;
+  // 空格将被忽略，若要保留空格则需要使用单引号或双引号
+  @hi: 'hello ';
+  @dear: there  ;
+      
+  .dialog{
+  　　// 用于 rule属性部件，必须使用"@{变量名}" 的形式
+     background-@{color}: #888;
+     // 用于 rule属性，必须使用"@{变量名}" 的形式
+     @{color}: blue;
+  }
+  // 用于 选择器，必须使用"@{变量名}" 的形式
+  @{dialog}{
+     width: 200px;
+  }
+  @{dialog}::after{
+     content: ': @{hi}@{dear}!';    // 用于 字符串拼接，必须使用"@{变量名}" 的形式
+  }
+  @h: 1000px;
+  // 用于 选择器部件，必须使用"@{变量名}" 的形式
+  .ie-@{suffix}{
+  　　@h: 30px; // 存在作用域，局部作用域优先级高于全局作用域。
+     height: @h; // 用于 属性值，两种形式均可使用
+     line-height: 30px;
+  }
+
+
+输出：
+
+.dialog {
+  background-color: #888;
+  color: blue;
+}
+.dialog {
+  width: 200px;
+}
+.dialog::after {
+  content: ': hello there!';
+}
+.ie-fix {
+  height: 30px;
+  line-height: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+@rest, @argument
+-- 就是一股脑的全部输出；
+-- @rest 是剩余的部分一股脑输出；
+-- @argument 是全部一股脑输出；
+
+.dog(@type;@age;@rest...){
+　　height: @type * @age * 12px;
+　　border: @rest;
+}
+.cat(@solid;@w;@color){
+　　border: @arguments;
+}
+          
+.chihuahua{
+　　.dog(1;2;solid;1px;red);    
+}
+.mimi{
+　　.cat(solid;2px;blue);    
+}
+
+
+最终输出：
+
+.chihuahua {
+  height: 24px;
+  border: solid 1px red;
+}
+.mimi {
+  border: solid 2px blue;
+}
