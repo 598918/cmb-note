@@ -1,0 +1,162 @@
+* picker 获取 value 的方式；
+-- picker.cols[0].displayValue
+
+
+
+
+----------------
+
+？ 多层 picker 的原理；
+
+
+0. 数据结构
+var defaults = {
+	...
+	branchLinkData : {}, // {'lv1':[[],[]], 'lv2':[[],[]], ...}
+	branchLv : 1
+};
+
+
+
+1. 设置默认值： 招商银行；
+
+if(p.params.fixData){
+	$(p.input).attr('brn',p.params.fixData[0].code);
+	$(p.input).val(p.params.fixData[0].value);
+}
+
+
+* getCMBBranch();
+-- 看代码这个方法是根据 fixData[0].code 来查数，并且绑数到 p.params.cols 上；
+-- 不能直接绑数到 p.cols 上，因为还没初始化，没有 p.cols 这东东。绑数到 p.params.cols 上是对的；
+
+！ 要不要一级级不停的往下面查？
+-- 要。
+
+？ 能不能自由定义初始的 fixData？？
+
+function getCMBBranch() {
+	var callback = CMBAjax.createCallback({
+		success : function(message, obj) {
+			var list = obj['PamBranchChildZ1'];
+			if (list) {
+				var displayValues = [];
+				var values = [];
+				for ( var i = 0; i < list.length; i++) {
+					displayValues.push(list[i].BRN_NAM);
+					values.push(list[i].BRN_NBR);
+				}
+				p.params.cols = [ {
+					textAlign : 'center',
+					displayValues : displayValues,
+					values : values
+				} ];
+
+				if (p.inline) {
+					p.open();
+				}
+			}
+		},
+		fail : function(message, errMessage) {
+			alert('发生错误：' + errMessage);
+		},
+		scope : this
+	});
+
+	CMBAjax.remoteInvokeNew({
+		prccod : 'PamBranchChild',
+		webcod : '102005',
+		infbdy : {
+			PamBranchChildX1 : [ {
+				UPP_BRN : p.params.fixData[0].code
+			} ]
+		}
+	}, callback, null);
+};
+
+
+
+
+
+
+2. bindEvent
+-- p.bindEvent(p.container, p.cols[0]['values'],p.cols[0]['displayValues']);
+-- 向下查就是根据现有的 value 和 displayValue 来新建一个 picker了。
+-- 回滚不用查数，用以保存的数据就可以了；
+
+p.bindEvent = function(ele, values, displayValues) {
+	var $prevBtn = $(ele).find('#prevBtn');
+	var $nextBtn = $(ele).find('#nextBtn');
+	var $current = $(ele).find('.picker-selected');
+
+	$nextBtn.on('click', function() {
+		var newValues = [];
+		var newDisPlayValues = [];
+		var callback = CMBAjax.createCallback({
+			success : function(message, obj) {
+				var list = obj['PamBranchChildZ1'];
+				if (list && list.length > 0) {
+					p.params.branchLinkData['lv' + p.params['branchLv']] = [];
+					p.params.branchLinkData['lv' + p.params['branchLv']][0] = values;
+					p.params.branchLinkData['lv' + p.params['branchLv']][1] = displayValues;
+					
+					for ( var i = 0; i < list.length; i++) {
+						newValues.push(list[i].BRN_NBR);
+						newDisPlayValues.push(list[i].BRN_NAM);
+					}
+					p.params['branchLv']++;
+					p.params.cols[0].values = newValues;
+					p.params.cols[0].displayValues = newDisPlayValues;
+					p.close();
+					p.open();
+				}
+			},
+			fail : function(message, errMessage) {
+				alert('发生错误：' + errMessage);
+			},
+			scope : this
+		});
+
+		var nodeID = p.cols[0].value;
+		CMBAjax.remoteInvokeNew({
+			prccod : 'PamBranchChild',
+			webcod : '102005',
+			infbdy : {
+				PamBranchChildX1 : [ {
+					UPP_BRN : nodeID
+				} ]
+			}
+		}, callback, null);
+	});
+
+	$prevBtn.on('click', function() {
+		if (p.params['branchLv'] <= 1) {
+			$(p.input).attr('brn',p.params.fixData[0].code);
+			$(p.input).val(p.params.fixData[0].value);
+			p.close();
+			return;
+		}
+		p.params['branchLv']--;
+		p.params.cols[0].values = p.params.branchLinkData['lv' + p.params['branchLv']][0];
+		p.params.cols[0].displayValues = p.params.branchLinkData['lv' + p.params['branchLv']][1];
+		delete p.params.branchLinkData['lv' + p.params['branchLv']];
+		p.close();
+		p.open();
+	});
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
