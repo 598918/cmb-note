@@ -1,0 +1,317 @@
+1. 获取输入：
+
+ICacheTable input = context.getInputData().get(QueryRealBusBrnX1);
+if (input == null || input.getRecordCount() < 1){
+	context.setErrorMessage("输入参数不存在");
+	return -1;
+}
+
+String brnNbr = input.getSqlString(0, "BRN_NBR");
+String sumLvl = input.getSqlString(0, "SUM_LVL");
+
+
+// js: 
+var inputInfo = {
+	QueryRealBusBrnX1 : [ {
+		BRN_NBR : '100',
+		SUM_LVL : 'BBK1'
+	} ]
+};
+
+
+
+---------------
+
+？Set<String> 是什么数据类型？？
+-- Set<String> brnNbrs = new HashSet<String>();
+-- 初步理解成一个 string 的集合；
+
+public class SetTest2 {  
+  
+    public static void main(String[] args) {  
+        Set<String> set = new HashSet<String>();  
+          
+        set.add("a");  
+        set.add("b");  
+        set.add("c");  
+        set.add("d");  
+        set.add("e");  
+          
+        set.add("e");//不能放入重复数据  
+          
+        /** 
+         * 遍历方法一，迭代遍历 
+         */  
+        for(Iterator<String> iterator = set.iterator();iterator.hasNext();){  
+            System.out.print(iterator.next()+" ");  
+        }  
+          
+        System.out.println();  
+        System.out.println("********************");  
+          
+        /** 
+         * for增强循环遍历 
+         */  
+        for(String value : set){  
+            System.out.print(value+" ");  
+        }  
+    }  
+}  
+
+
+
+
+java中Set集合的遍历及实现类比较分析 - 粉末无颜的专栏 - CSDN博客
+http://blog.csdn.net/shenshen123jun/article/details/9074097
+
+
+---------------
+
+2. 判断机构权限：
+
+boolean allBranchFlag = false;
+Set<String> brnNbrs = new HashSet<String>();
+
+if ("100".equals(brnNbr) ) {
+	allBranchFlag = true;
+} else {
+	brnNbrs.addAll(Branch.getChildrens(brnNbr));
+}
+
+if (!allBranchFlag && brnNbrs.isEmpty() || brnNbrs.size() > 1000) {
+	context.setErrorMessage("解析机构异常，机构ID=" + brnNbr);
+	return -1;
+}
+
+
+
+
+
+
+
+
+---------------
+
+3. 拼接 sql，查数：
+
+String sql = "";
+String conSql = "";
+if(!allBranchFlag){
+	conSql += "AND A.BRN_NBR IN (" + Common.set2String(brnNbrs) + ") ";
+}
+
+if(StringUtil.isEmpty(sumLvl) || "CMB".equals(sumLvl)){
+	sql = "SELECT '100' AS BRN_NBR,SUM(SUM_CNT) SUM_CNT FROM BUS.REAL A WHERE A.DTA_DTE = CURRENT DATE " + conSql;
+}else if("BBK1".equals(sumLvl)){
+	sql ="SELECT A.BBK_NBR BRN_NBR,SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A WHERE A.DTA_DTE = CURRENT DATE " + conSql +"GROUP BY A.BBK_NBR ";
+}else if("GRP".equals(sumLvl)){
+	sql ="SELECT B.GRP_NBR BRN_NBR,SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A "
+			+ "INNER JOIN SCH.Q2SCGPBR B ON A.BRN_NBR=B.BRN_NBR "
+			+ "INNER JOIN SCH.Q2SCGPDA C ON B.GRP_NBR=C.GRP_NBR AND C.GRP_STS='A' "
+			+ "WHERE A.DTA_DTE = CURRENT DATE "+ conSql + "GROUP BY B.GRP_NBR ";
+}else if("BRN".equals(sumLvl)){
+	sql += "SELECT A.BRN_NBR,SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A WHERE A.DTA_DTE = CURRENT DATE " + conSql +"GROUP BY A.BRN_NBR ";
+}
+sql +="ORDER BY 2 DESC WITH UR ";
+
+ICacheTable result = new DBTable(context.getConnection(), QueryRealBusBrnZ1, sql).select();
+
+
+* SQL: 
+-- SELECT A.BBK_NBR BRN_NBR,SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A WHERE A.DTA_DTE = CURRENT DATE GROUP BY A.BBK_NBR ORDER BY 2 DESC WITH UR 
+-- 好坑，结果为0；
+
+
+
+* SELECT BBK_NBR AS BRN_NBR,SUM(AVG_CNT) AS AVG_CNT,SUM(SUM_CNT) AS SUM_CNT FROM BUS.HISTORY A WHERE DTA_YER='2017' GROUP BY BBK_NBR ORDER BY 1
+
+
+
+
+
+---------------
+
+4. 添加列，返回结果：
+
+result.addField("BRN_NAM");
+for (int i = 0; i < result.getRecordCount(); i++) {
+	result.update(i, "BRN_NAM", Branch.getName(result.getString(i, "BRN_NBR")));
+}
+
+context.addOutputData(result);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==================
+
+* 别名：
+
+
+** 表别名：
+"Websites" 和 "access_log" 表，并分别为它们指定表别名 "w" 和 "a"（通过使用别名让 SQL 更简短）：
+
+实例
+SELECT w.name, w.url, a.count, a.date 
+FROM Websites AS w, access_log AS a 
+WHERE a.site_id=w.id and w.name="菜鸟教程";
+
+
+** 列别名：
+SELECT name AS n, country AS c
+FROM Websites;
+
+
+** 合并列：
+SELECT name, CONCAT(url, ', ', alexa, ', ', country) AS site_info
+FROM Websites;
+
+
+
+
+
+
+
+
+
+---------------
+
+！ SUM(AVG_CNT) AS AVG_CNT
+！ 跟单纯的 select AVG_CNT 有什么不一样？
+-- 比如有几行的数值，SUM() 后会被合并成一行；
+
+
+
+
+
+---------------
+!  用了 SUM() 必须用 GROUP BY 吗？
+-- 好像是的；
+
+
+
+
+
+
+
+
+
+package com.cmb.bus.busmonitor.operation;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import com.cmb.bus.common.util.Branch;
+import com.cmb.bus.common.util.Common;
+import com.frm.base.exception.FrameworkException;
+import com.frm.base.model.ICacheTable;
+import com.frm.container.context.IContext;
+import com.frm.container.operation.IOperation;
+import com.frm.dao.model.imp.DBTable;
+
+/***
+ * 历史业务量查询
+ * 输入：YEAR-年份、BRN_NBR-机构、SUM_LVL-汇总级别、ORD_COL-排序字段
+ * 输出：BRN_NBR-机构、BRN_NAM-机构名称、AVG_CNT-日均业务量、SUM_CNT-累计业务量
+*/
+public class QueryHisBus implements IOperation {
+	public static final String QueryHisBusX1 = "QueryHisBusX1";
+	public static final String QueryHisBusZ1 = "QueryHisBusZ1";
+   
+	@Override
+	public int execute(IContext context) throws FrameworkException {
+		
+		ICacheTable input = context.getInputData().get(QueryHisBusX1);
+		if (input == null || input.getRecordCount() < 1){
+			context.setErrorMessage("输入参数不存在");
+			return -1;
+		}
+		
+		String year = input.getSqlString(0, "YEAR");
+		String brnNbr = input.getSqlString(0, "BRN_NBR");
+		String sumLvl = input.getSqlString(0, "SUM_LVL");
+		String ordCol = input.getSqlString(0, "ORD_COL");
+		
+		boolean allBranchFlag = false;
+		Set<String> brnNbrs = new HashSet<String>();
+		if ("100".equals(brnNbr) ) {
+			allBranchFlag = true;
+		} else {
+			brnNbrs.addAll(Branch.getChildrens(brnNbr));
+		}
+		
+		if (!allBranchFlag && brnNbrs.isEmpty() || brnNbrs.size() > 1000) {
+			context.setErrorMessage("解析机构异常，机构ID=" + brnNbr);
+			return -1;
+		}
+
+		String sql = "";
+		if("CMB".equals(sumLvl)){
+			sql = "SELECT '100' AS BRN_NBR,SUM(AVG_CNT) AS AVG_CNT,SUM(SUM_CNT) AS SUM_CNT FROM BUS.HISTORY A WHERE DTA_YER='" + year + "' ";
+			if(!allBranchFlag){
+				sql += "AND A.BRN_NBR IN (" + Common.set2String(brnNbrs) + ") ";
+			}
+		}else if("BBK1".equals(sumLvl)){
+			sql = "SELECT BBK_NBR AS BRN_NBR,SUM(AVG_CNT) AS AVG_CNT,SUM(SUM_CNT) AS SUM_CNT FROM BUS.HISTORY A WHERE DTA_YER='" + year + "' ";
+			if(!allBranchFlag){
+				sql += "AND A.BRN_NBR IN (" + Common.set2String(brnNbrs) + ") ";
+			}
+			sql += "GROUP BY BBK_NBR ";
+		}else if("GRP".equals(sumLvl)){
+			sql = "SELECT B.GRP_NBR AS BRN_NBR,SUM(A.AVG_CNT) AS AVG_CNT,SUM(A.SUM_CNT) AS SUM_CNT "
+					+ "FROM BUS.HISTORY A "
+					+ "INNER JOIN SCH.Q2SCGPBR B "
+					+ "      ON A.BRN_NBR = B.BRN_NBR "
+					+ "INNER JOIN SCH.Q2SCGPDA C ON B.GRP_NBR=C.GRP_NBR AND C.GRP_STS='A' "
+					+ "WHERE A.DTA_YER='" + year + "' ";
+			if(!allBranchFlag){
+				sql += "AND A.BRN_NBR IN (" + Common.set2String(brnNbrs) + ") ";
+			}
+			sql += "GROUP BY B.GRP_NBR ";
+		}else if("BRN".equals(sumLvl)){
+			sql = "SELECT BRN_NBR,AVG_CNT,SUM_CNT FROM BUS.HISTORY A WHERE DTA_YER='" + year + "' ";
+			if(!allBranchFlag){
+				sql += "AND A.BRN_NBR IN (" + Common.set2String(brnNbrs) + ") ";
+			}
+		}
+		if("AVG_CNT".equals(ordCol)){
+			sql += "ORDER BY 2 DESC ";
+		}else if("SUM_CNT".equals(ordCol)){
+			sql += "ORDER BY 3 DESC ";
+		}else{
+			sql += "ORDER BY 1";
+		}
+		
+		ICacheTable result = new DBTable(context.getConnection(), QueryHisBusZ1, sql).select();
+		result.addField("BRN_NAM");
+		for (int i = 0; i < result.getRecordCount(); i++) {
+			result.update(i, "BRN_NAM", Branch.getName(result.getString(i, "BRN_NBR")));
+		}
+	
+		context.addOutputData(result);
+		return 0;
+	}
+}
+
+
+
+
+
+
+
+
