@@ -1,0 +1,205 @@
+页面逻辑非常简单：
+-- 就是初始化、点击 search、input Change 的时候都查数 showCntResult()；
+
+$('#BRN_NBR').branch({
+	wkeChild : 'Common.BranchGroupChild',
+	permissionPage:custom.brnview,
+	initFn : function(){
+		if(AppConst.params.BRN_NBR){
+			$('#BRN_NBR').branch('setInputValue',AppConst.params.BRN_NBR,AppConst.params.BRN_NAM]);
+		}
+		showCntResult();
+		$("#searchButton").on("click",showCntResult);
+	},
+	changeFn : function(){showCntResult();}}
+);
+
+
+
+* 查数前先校验：
+
+function showCntResult(){
+	if(validateForm()){
+		var inputInfo = {
+			QueryRealBusWinRegX1:[{
+				BRN_NBR : $("#BRN_NBR").branch('getValue')
+		}]	
+	}
+	framework.preload();
+	framework.callWKE(queryAfter,'BusMonitor.QueryRealBusWinReg','102005',inputInfo,"","",true);
+	}
+}
+
+function validateForm(){
+	var flag = true;
+	var brnNbr = $("#BRN_NBR").branch('getValue')
+	if(brnNbr.charAt(0)=="G" && brnNbr.length == 6){
+		flag = true;
+	}else if(brnNbr.length == 3 && brnNbr != '100'){
+		flag = true;
+	}else{
+		framework.showMessage("info", "请选择分行或排班组！")
+		flag = false;
+	}
+	return flag;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==================
+
+【branch.js】
+
+？ branch 提供什么方法？？
+
+0. 根据页面 id，或者 fixeData 传入默认值；
+1. 点击下拉按钮出现 treeLayer;
+2. 点击小三角查下级；点击 a 是输入 input 的value，并且触发 changeFn；
+3. 收起 treeLayer，scrollTop；
+
+或者直接输入 brn_nbr 触发 changeFn；
+
+
+
+
+* 选中
+
+$("#" + this.inputID).click(function(){
+	$("#" + _this.inputID).select();    // ？ BRN_NBR_input 一个 $(input).select()； 有这个方法吗？？
+	_this.inputIsValid = false;
+});
+
+** select()
+-- input输入框中的元素被鼠标选中之后执行什么，执行的方法可以写在select后的括号里
+-- 具体操作，鼠标左键按下，选取文字，再松手，便会执行方法
+
+-- 所以几行代码的意思就是点击 input 后，input 的文字会被选中...
+
+
+
+$("#" + this.inputID).keydown(function(event){
+	if(event.which == 13){
+		// 查数；
+		// setInputValue();
+		// input.blur();
+		// changeFn(); 
+	}
+});
+
+
+
+
+
+！ f8 调试的过程好像是根据页面 id 查数，返回当前用户权限内的机构；
+
+if(this.options.permissionPage){
+	this.getPermissionBranch(this.options.permissionPage);
+}else if(this.options.fixData){
+	this.explainNode('', this.options.fixData);
+}
+
+
+Plugin.prototype.getPermissionBranch = function(pageID) {
+	...
+	for(var i=0; i<list.length; i++){
+		resultObj.push({code: list[i].COR_NBR, value: list[i].COR_NAM});
+		if(i == 0){
+			_fid = list[i].COR_NBR;
+			_fname = list[i].COR_NAM;
+		}
+	}
+	_this.explainNode('', resultObj);
+	_this.setInputValue(_fid, _fname);
+	_this.statusCheck(_fid);
+	if(typeof(_this.options.initFn) == "function")
+	_this.options.initFn();
+	...
+		
+};
+
+
+
+
+
+* 展开节点：
+[1] 如果已经存在的 ul，就直接展开/收起；
+[2] 没有的话就根据 nodes 构建 ul；
+[3.1] 绑定事件：小三角是查下一级；
+[3.2] 绑定事件：点击 a 是输入 input 的value，并且触发 changeFn；
+
+Plugin.prototype.explainNode = function(nodeID, nodes) {
+	var parentUL = this.elementId + '_ul_' + nodeID;
+	var parentLI = this.elementId + '_li_' + nodeID;
+	
+	if($("#" + parentUL).length > 0){
+		if($("#" + parentUL).is(":hidden")){
+			this.statusOpen($("#" + parentLI), $("#" + parentUL));
+		}else{
+			this.statusClose($("#" + parentLI), $("#" + parentUL));
+		}
+	}else{
+		var _this = this;
+		if(nodes && nodes.length>0){
+			if(nodeID)
+				$("#" + parentLI).append('<ul id="' + parentUL + '" class="branchUL"></ul>');
+			else
+				$("#" + this.dropDownDivID).append('<ul id="' + parentUL + '" class="branchUL"></ul>');
+
+			this.statusOpen($("#" + parentLI), $("#" + parentUL));
+			
+			for(var j=0; j<nodes.length; j++){
+				var item = nodes[j];
+				var liID = this.elementId + '_li_' + item.code;
+				var textID = this.elementId + '_text_' + item.code;
+				$("#" + parentUL).append('<li id="' + liID + '">' + 
+						'<span id="' + textID + '" code=' + item.code + ' value=' + item.value + '><a>' + item.code + ' ' + item.value + '</a></span></li>');
+
+				$("#" + textID).prepend('<i class="' + this.template.closeClass + '"> </i>');
+				$("#" + textID + " i").click(function(){_this.getRemoteData($(this).parent().attr("code"));});
+				$("#" + textID + " a").click(function(){
+					var _c = $(this).parent().attr("code");
+					var _v = $(this).parent().attr("value");
+
+					var _oc = $("#" + _this.inputHiddenID).val();
+					if(_oc && _c!=_oc){
+						_this.statusUncheck(_oc);
+					}
+
+					_this.setInputValue(_c, _v);
+					$("#" + _this.dropDownDivID).trigger('blur');
+					_this.statusCheck(_c);
+					if(typeof(_this.options.changeFn) == "function")
+						_this.options.changeFn(_c, _v);
+				});
+			}
+		}else{
+			var textID = this.elementId + '_text_' + nodeID;
+			$("#" + textID).find("i:first").removeClass().html("&nbsp;&nbsp;&nbsp;");
+			$("#" + textID).unbind("click");
+		}
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
