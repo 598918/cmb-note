@@ -1,0 +1,77 @@
+？ 如果已经初始化了，就是 $('ele').data('plugin') 已经可以返回一个对象了；这个时候要调用对象里的方法，应该怎么调？
+-- $('ele').data('tableControl')['filltable']     // 我的理解是这样...
+-- 等价于 $('ele').tableControl('filltable');     // ？ 这一步是怎么转的？？
+
+$table = $('#listTable').table({
+	queryDefine : QueryDefine,
+	rowSelectMode : 'Single',
+	pageSize : 20,
+	rowCheckbox: true,
+	colDragable: true,
+	rowDblClickFn : detailDblClick,
+	afterFillFn:function() {showEditButton();}
+});
+
+function searchButtonClick() {
+	$table.table('fillTable', 1);
+
+
+
+}
+
+
+
+
+-------------------
+
+$('xx').tableControl('filltable');
+
+
+
+$.fn[pluginName] = function(options, args) {
+	var result = null;
+	
+	this.each(function() {
+		var _this = $.data(this, pluginName);
+		if (typeof options === 'string') {
+			if (!_this) {
+				window.console.error('Not initialized, can not call method : ' + options);
+			} else if (!$.isFunction(_this[options]) || options.charAt(0) === '_') {
+				window.console.error('No such method : ' + options);
+			} else {
+				if (!(args instanceof Array)) {
+					args = [ args ];
+				}
+				result = _this[options].apply(_this, args);     // 【1】    // 里面的调用外面的，args 从哪里来？？
+			}
+		}else {
+			$.data(this, pluginName, new Table(this, $.extend(true, {}, options)));
+		}
+		
+	});
+	return result == null ? this : result;
+};
+
+
+
+var Table = function (element, options) {
+	this.$element = $(element);
+	this.elementId = element.id;
+	this.init(options);
+	return {
+		options: this.options,
+		exportToExcel: $.proxy(this.exportToExcel, this),
+		fillTable: $.proxy(this.fillTable, this),                       // 【1】
+		doRowSpan: $.proxy(this.doRowSpan, this),
+		getSelectRow: $.proxy(this.getSelectRow, this),
+		selectRow: $.proxy(this.selectRow, this),
+		unselectRow: $.proxy(this.unselectRow, this),
+		getTableData: $.proxy(this.getTableData, this),
+		removeSelectRow: $.proxy(this.removeSelectRow, this),
+		addRow : $.proxy(this.addRow, this),
+		editRow : $.proxy(this.editRow, this),
+		clearRow : $.proxy(this.clearRow, this),
+		openNewWindow : $.proxy(this.openNewWindow, this),
+		getWkeOutput : $.proxy(this.getWkeOutput, this)
+	};
+};
