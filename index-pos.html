@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" href="css/base.css" />
+		<style>
+			html, body {
+				height:100%;
+				font-size: 14px;
+				line-height: 1.6em;
+				font-family: "Microsoft YaHei", "SimSun";
+			}
+			
+			iframe
+			{
+				display:block;
+			}
+			.framework {
+				position: relative;
+				/*height: calc(100% - 40px);*/
+			}
+			
+			.frameworkHeader {
+				background: #393f4f;
+				height: 60px;
+				color: #fff;
+				font-size: 20px;
+				position: absolute;
+				z-index: 999;
+				top: 0;
+				left: 0;
+				right: 17px;
+			}
+			
+			.frameworkBody {
+				padding-top: 60px;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.frameworkFooter {
+				height:40px;
+				background: #ccc;
+			}
+		</style>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script>
+		</script>
+	</head>
+
+	<body class="framework">
+		<div class="frameworkHeader"></div>
+		<iframe class="frameworkBody" id="iframeId" src="main.html" scrolling="yes" frameborder="0" 
+			  style="width:100%;"></iframe>
+		<!--<div class="frameworkBody" style="height:1600px;"></div>-->
+		<!--<div class="frameworkFooter"></div>-->
+	</body>
+
+</html>
