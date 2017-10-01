@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet/less" href="less/myui.less" />
+		<script src="js/less.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/nav.js"></script>
+		<script>
+			$(function() {
+				var ifrm = document.getElementById('mainFrame');
+				ifrm.onload = ifrm.onreadystatechange = function() {
+					if(this.readyState && this.readyState != 'complete') return;
+					else {
+						$(this).contents().find('body').css('padding-top', '60px');
+					}
+				}
+			})
+		</script>
+	</head>
+
+	<body class="framework">
+		<div class="frameworkHeader header">
+			<ul class="nav" id="nav">
+				<li>
+					<a>产品管理</a>
+					<ul class="dropdown-menu" id="menu10" aria-labelledby="drop10">
+						<li>
+							<a href="">产品查询</a>
+							<ul>
+								<li><a href="">测试子菜单1</a></li>
+								<li><a href="">测试子菜单1</a></li>
+								<li><a href="">测试子菜单1</a></li>
+								<li><a href="">测试子菜单1</a></li>
+							</ul>
+						</li>
+						<li>
+							<a href="">产品维护</a>
+							<ul>
+								<li><a href="">测试子菜单2</a></li>
+								<li><a href="">测试子菜单2</a></li>
+								<li><a href="">测试子菜单2</a></li>
+								<li><a href="">测试子菜单2</a></li>
+							</ul>
+						</li>
+						<li>
+							<a paguid="3100" href="/webm6/LF62_Product/pages/reviselist.html?v=2.2.1" lnk_typ="EMB">修订历史</a>
+							<ul>
+								<li><a href="">测试子菜单3</a></li>
+								<li><a href="">测试子菜单3</a></li>
+								<li><a href="">测试子菜单3</a></li>
+								<li><a href="">测试子菜单3</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a>监测管理</a>
+					<ul class="dropdown-menu" id="menu13" aria-labelledby="drop13">
+						<li>
+							<a paguid="1001" href="/webm6/LF62_Detect/pages/detection.html?v=2.2.1" lnk_typ="POP">产品监测</a>
+							<ul>
+								<li><a href="">测试子菜单4</a></li>
+								<li><a href="">测试子菜单4</a></li>
+								<li><a href="">测试子菜单4</a></li>
+								<li><a href="">测试子菜单4</a></li>
+							</ul>
+						</li>
+						<li>
+							<a paguid="1010" href="/webm6/LV35_Report/pages/category.html?v=2.2.1" lnk_typ="EMB">报表</a>
+							<ul>
+								<li><a href="">测试子菜单5</a></li>
+								<li><a href="">测试子菜单5</a></li>
+								<li><a href="">测试子菜单5</a></li>
+								<li><a href="">测试子菜单5</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a>系统管理</a>
+					<ul class="dropdown-menu" id="menu20" aria-labelledby="drop20">
+						<li>
+							<a paguid="9001" href="/webm6/pages/userrole/userrole.html?v=2.2.1" lnk_typ="EMB">用户管理</a>
+							<ul>
+								<li><a href="">测试子菜单6</a></li>
+								<li><a href="">测试子菜单6</a></li>
+								<li><a href="">测试子菜单6</a></li>
+								<li><a href="">测试子菜单6</a></li>
+							</ul>
+						</li>
+						<li>
+							<a paguid="2001" href="/webm6/LV35_Report/pages/manage.html?v=2.2.1" lnk_typ="EMB">报表管理</a>
+							<ul>
+								<li><a href="">测试子菜单7</a></li>
+								<li><a href="">测试子菜单7</a></li>
+								<li><a href="">测试子菜单7</a></li>
+								<li><a href="">测试子菜单7</a></li>
+							</ul>
+						</li>
+						<li>
+							<a paguid="9002" href="/webm6/LV35_Resource/pages/mngfile.html?v=2.2.1" lnk_typ="EMB">资源管理</a>
+							<ul>
+								<li><a href="">测试子菜单8</a></li>
+								<li><a href="">测试子菜单8</a></li>
+								<li><a href="">测试子菜单8</a></li>
+								<li><a href="">测试子菜单8</a></li>
+							</ul>
+						</li>
+						<li>
+							<a paguid="9003" href="/webm6/LF62_Product/pages/aprsessionlist.html?v=2.2.1" lnk_typ="EMB">流程管理</a>
+							<ul>
+								<li><a href="">测试子菜单9</a></li>
+								<li><a href="">测试子菜单9</a></li>
+								<li><a href="">测试子菜单9</a></li>
+								<li><a href="">测试子菜单9</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+		</div>
+		<iframe class="frameworkBody" id="mainFrame" src="main.html" scrolling="yes" style="width:100%;"></iframe>
+	</body>
+
+</html>
