@@ -1,0 +1,85 @@
+@header-height: 50px;
+@Duration: 300ms;
+
+.header {
+    background: @color-primary;
+}
+
+.nav {
+    * {
+        transition: transform @Duration;
+    }
+    ul {
+        position: absolute;
+        z-index: -1;
+    }
+    li {
+        display: inline-block;
+        height:@header-height;
+        position: relative;
+        li {
+            height: @header-height - 10;
+        }
+    }
+    a {
+        line-height: @header-height;
+        display: block;
+        padding:0 20px;
+        color: #fff;
+        font-size: .8rem;
+        a {
+            line-height: @header-height - 10;  // ?? not working
+        }
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    & > li {
+        > a {
+            &:hover, &.active {
+                background: darken(@color-primary, 10%);
+            }
+            + ul {
+                transform:translate3d(0, -100%, 0);
+                visibility: hidden;
+                &.active {
+                    transform:translate3d(0, 0, 0);
+                    visibility: visible;
+                }
+                > li {
+                    width: 100%;
+                    > a{
+                        line-height: @header-height - 10;
+                        height: @header-height - 10;
+                        background: #80A0CD;
+                        &.active, &:hover {
+                            background: #96B7E4;
+                        }
+                        + ul {
+                            width:100%;
+                            top:0;
+                            transform:translate3d(50%, 0, 0);
+                            margin-top: 0;  // ??  -@header-height -10
+                            visibility: hidden;
+                            &.active {
+                                transform:translate3d(100%, 0, 0);
+                                visibility: visible;
+                            }
+                            > li {
+                                > a {
+                                    line-height: @header-height - 10;
+                                    height: @header-height - 10;
+                                    background: #96B7E4;
+                                    white-space: nowrap;
+                                    &:hover {
+                                        background: lighten(#96B7E4, 4%);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
