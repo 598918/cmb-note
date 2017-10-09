@@ -16,7 +16,10 @@
 					else {
 						$(this).contents().find('body').css('padding-top', '60px');
 					}
-				}
+				};
+				
+				var menuObj = [{"PAG_NAM":"首页","DES_MSG":"","UPP_PAG":"","PAG_IMG":"","PAG_UID":"0000","LNK_TYP":"EMB","PAG_URL":"${root}/pages/main/main.html?v=2.2.1","PAG_TYP":"MENU"},{"PAG_NAM":"新增产品分类","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3005","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/newcatalog.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"新增基础产品","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3006","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/new.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"修改信息项","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3007","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/modify.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"停售","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3008","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/halt.html?REV_TYP=S&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"下线","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3009","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/halt.html?REV_TYP=D&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"移交","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3010","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/handover.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"归并","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3011","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/merger.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"执行后评估","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3012","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/doposteval.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品监测","DES_MSG":"","UPP_PAG":"1000","PAG_IMG":"","PAG_UID":"1001","LNK_TYP":"POP","PAG_URL":"${root}/LF62_Detect/pages/detection.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"用户管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9001","LNK_TYP":"EMB","PAG_URL":"${root}/pages/userrole/userrole.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品管理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-sitemap","PAG_UID":"3000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"},{"PAG_NAM":"产品查询","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3001","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/main.html?PAG_TYP=QRY&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"监测管理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-signal","PAG_UID":"1000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"},{"PAG_NAM":"报表","DES_MSG":"","UPP_PAG":"1000","PAG_IMG":"","PAG_UID":"1010","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Report/pages/category.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"报表管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"2001","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Report/pages/manage.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品维护","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3002","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/main.html?PAG_TYP=MNT&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"资源管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9002","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Resource/pages/mngfile.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"修订历史","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3100","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/reviselist.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"流程管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9003","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/aprsessionlist.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"系统管理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-gear","PAG_UID":"9000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"}];
+				$('#nav').nav({'menu': menuObj});
 			})
 		</script>
 	</head>
@@ -24,48 +27,48 @@
 	<body class="framework">
 		<div class="frameworkHeader header">
 			<ul class="nav" id="nav">
-				<li>
+				<!--<li>
 					<a>产品管理</a>
-					<ul class="dropdown-menu" id="menu10" aria-labelledby="drop10">
+					<ul>
 						<li>
-							<a href="">产品查询</a>
+							<a href="">产品查询fdsfasdfasf</a>
 							<ul>
+								<li><a href="">测试子fsdf菜单1</a></li>
+								<li><a href="">测试子菜fdasfasdf单1</a></li>
 								<li><a href="">测试子菜单1</a></li>
-								<li><a href="">测试子菜单1</a></li>
-								<li><a href="">测试子菜单1</a></li>
-								<li><a href="">测试子菜单1</a></li>
+								<li><a href="">测试子fsdfa菜单1</a></li>
 							</ul>
 						</li>
 						<li>
-							<a href="">产品维护</a>
+							<a href="">产品维护jtyuy</a>
 							<ul>
 								<li><a href="">测试子菜单2</a></li>
 								<li><a href="">测试子菜单2</a></li>
-								<li><a href="">测试子菜单2</a></li>
+								<li><a href="">测试子菜fasdfasfasdfas单2</a></li>
 								<li><a href="">测试子菜单2</a></li>
 							</ul>
 						</li>
 						<li>
-							<a paguid="3100" href="/webm6/LF62_Product/pages/reviselist.html?v=2.2.1" lnk_typ="EMB">修订历史</a>
+							<a paguid="3100" href="/webm6/LF62_Product/pages/reviselist.html?v=2.2.1" lnk_typ="EMB">修订历uytuyt史</a>
 							<ul>
 								<li><a href="">测试子菜单3</a></li>
+								<li><a href="">测试子fasdfasdfasdfas菜单3</a></li>
 								<li><a href="">测试子菜单3</a></li>
-								<li><a href="">测试子菜单3</a></li>
-								<li><a href="">测试子菜单3</a></li>
+								<li><a href="">测试子fasdfasdfasdfasdfa菜单3</a></li>
 							</ul>
 						</li>
 					</ul>
 				</li>
 				<li>
 					<a>监测管理</a>
-					<ul class="dropdown-menu" id="menu13" aria-labelledby="drop13">
+					<ul>
 						<li>
-							<a paguid="1001" href="/webm6/LF62_Detect/pages/detection.html?v=2.2.1" lnk_typ="POP">产品监测</a>
+							<a>产品监测</a>
 							<ul>
 								<li><a href="">测试子菜单4</a></li>
 								<li><a href="">测试子菜单4</a></li>
-								<li><a href="">测试子菜单4</a></li>
-								<li><a href="">测试子菜单4</a></li>
+								<li><a href="">测试子rtwerweqrqwerwerqwerfqwefqwvev菜单4</a></li>
+								<li><a href="">测试子efewrwerewre菜单4</a></li>
 							</ul>
 						</li>
 						<li>
@@ -119,7 +122,7 @@
 							</ul>
 						</li>
 					</ul>
-				</li>
+				</li>-->
 			</ul>
 
 		</div>
