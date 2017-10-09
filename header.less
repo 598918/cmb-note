@@ -6,6 +6,7 @@
 }
 
 .nav {
+    background: @color-primary;
     * {
         transition: transform @Duration;
     }
@@ -18,28 +19,32 @@
         height:@header-height;
         position: relative;
         li {
+            display: block;
             height: @header-height - 10;
         }
     }
     a {
+        white-space: nowrap;
         line-height: @header-height;
         display: block;
         padding:0 20px;
         color: #fff;
-        font-size: .8rem;
-        a {
-            line-height: @header-height - 10;  // ?? not working
-        }
+        font-size: .7rem;
         &:hover {
             cursor: pointer;
         }
     }
     & > li {
         > a {
+            font-size: .8rem;
             &:hover, &.active {
                 background: darken(@color-primary, 10%);
             }
+            .fa {
+                margin-right:.25rem;
+            }
             + ul {
+                min-width:100%;
                 transform:translate3d(0, -100%, 0);
                 visibility: hidden;
                 &.active {
@@ -47,32 +52,34 @@
                     visibility: visible;
                 }
                 > li {
-                    width: 100%;
                     > a{
                         line-height: @header-height - 10;
                         height: @header-height - 10;
-                        background: #80A0CD;
+                        background: #32445C;
                         &.active, &:hover {
-                            background: #96B7E4;
+                            background: #3F5775;
                         }
                         + ul {
-                            width:100%;
+                            overflow: hidden;
+                            background: #3F5775;
                             top:0;
-                            transform:translate3d(50%, 0, 0);
-                            margin-top: 0;  // ??  -@header-height -10
+                            left:100%;
                             visibility: hidden;
+                            opacity: 0;
                             &.active {
-                                transform:translate3d(100%, 0, 0);
+                                opacity: 1;
                                 visibility: visible;
                             }
                             > li {
                                 > a {
+                                    position: relative;
+                                    left:-100%;
+                                    opacity: 0;
+                                    transition: opacity .2s ease .3s;
                                     line-height: @header-height - 10;
                                     height: @header-height - 10;
-                                    background: #96B7E4;
-                                    white-space: nowrap;
                                     &:hover {
-                                        background: lighten(#96B7E4, 4%);
+                                        background: lighten(#3F5775, 4%);
                                     }
                                 }
                             }
