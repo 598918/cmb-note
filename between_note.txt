@@ -1,0 +1,312 @@
+* 思路是想让 window.top.main 可以 flex: auto; 
+-- 但是 iframe 也要 flex: auto 吧？？
+
+
+-- 先让 iframe flex 完，再让 window.top.main flex ？？
+-- 那要设置 window.top.html 的 height；
+-- height： @iframe.content.height + 100px;
+-- 有没有办法直接获得 @iframe.content.height
+-- 那不是 iframe 高度发生变化，又要 reset 一次 window.top.html 的 height？ 那走不通；
+
+
+
+？ flex 的原理？？
+-- 外层容器有个固定的值？？
+
+
+
+
+
+？ 现在这种跟原先比有什么优势？？
+-- 好像没有，最多最多就多了个 footer；原先的方式也不是不能做到；
+
+
+
+
+？ 还能怎样改进？？
+-- 滚动里面的 iframe 外面的 header + footer 可以随着滚动；
+-- 插入一个元素的 height = iframe.content.height；
+
+
+
+获取 iframe 里面的元素
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------
+
+* 新的需求是让 iframe 的滚动条顶上去；
+-- 不能用 padding...
+
+
+
+iframe 加载事件
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------
+
+* 组件化
+
+* 下拉菜单；（+动效）
+
+
+[{"PAG_NAM":"首页","DES_MSG":"","UPP_PAG":"","PAG_IMG":"","PAG_UID":"0000","LNK_TYP":"EMB","PAG_URL":"${root}/pages/main/main.html?v=2.2.1","PAG_TYP":"MENU"},{"PAG_NAM":"新增产品分
+
+类","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3005","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/newcatalog.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"新增基础产
+
+品","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3006","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/new.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"修改信息
+
+项","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3007","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/modify.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"停
+
+售","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3008","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/halt.html?REV_TYP=S&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"下
+
+线","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3009","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/halt.html?REV_TYP=D&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"移
+
+交","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3010","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/handover.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"归
+
+并","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3011","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/merger.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"执行后评
+
+估","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3012","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/doposteval.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品监
+
+测","DES_MSG":"","UPP_PAG":"1000","PAG_IMG":"","PAG_UID":"1001","LNK_TYP":"POP","PAG_URL":"${root}/LF62_Detect/pages/detection.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"用户管
+
+理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9001","LNK_TYP":"EMB","PAG_URL":"${root}/pages/userrole/userrole.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品管
+
+理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-sitemap","PAG_UID":"3000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"},{"PAG_NAM":"产品查
+
+询","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3001","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/main.html?PAG_TYP=QRY&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"监测管
+
+理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-signal","PAG_UID":"1000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"},{"PAG_NAM":"报
+
+表","DES_MSG":"","UPP_PAG":"1000","PAG_IMG":"","PAG_UID":"1010","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Report/pages/category.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"报表管
+
+理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"2001","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Report/pages/manage.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品维
+
+护","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3002","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/main.html?PAG_TYP=MNT&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"资源管
+
+理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9002","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Resource/pages/mngfile.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"修订历
+
+史","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3100","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/reviselist.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"流程管
+
+理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9003","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/aprsessionlist.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"系统管
+
+理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-gear","PAG_UID":"9000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"}]
+
+
+
+
+
+$.nav();     // input
+？ 怎么配置 icon？？
+？ 怎么判断当前链接是直接打开，还是展开下级？？
+-- lv_3 往 lv_2 添加 li 的时候把上级的 href 设为 #
+
+1. 查数据库，得到一个 obj；
+-- 对象里面的属性应该是上级，新窗/当前、
+
+2. 上级为 0 就在顶层显示 
+$li.appendTo(this.ele);
+
+2.1 第二层；
+var parent = find('#_ul_lv1_' + up_id);
+if(!parent) {
+	createUL
+}
+$li.appendTo(parent); 
+
+2.2 第三层：
+var parent = find('#_ul_lv2_' + up_id);
+if(!parent) {
+	createUL
+}
+$li.appendTo(parent); 
+
+
+
+
+<ul class="nav" id="nav">
+
+ul.lv0
+ul.lv1
+ul.lv2
+
+
+
+1. init()
+
+var template = {
+	ul : '<ul></ul'>,
+	li: '<li></li>',
+	divider: '<li role="separator" class="divider"></li>'	
+	icon : '<i class="fa"></i>',
+	a: '<a></a>'
+
+for(i< menuObj.length) {
+	var menuRow = obj['UserRolePageQueryZ1'][i];
+	if (menuRow.UPP_PAG != '0000') {
+		continue;
+	}
+	
+	var $firLink = $(template.a).attr({
+						'id': 'drop'+i, 
+						'pagUid': menuRow.PAG_UID, 
+						'href': menuRow.PAG_URL, 
+						'lnk_typ': menuRow.LNK_TYP
+					})
+					.text(menuRow.PAG_NAM)
+					.prepend($(template.icon)
+					.addClass(menuRow.PAG_IMG));
+	var $firItem = $(this).addClass('lv0').append($(template.li).append($firLink));	
+	
+}
+
+
+
+
+？ 构建一棵树最快的算法？？
+-- 数组变成树 算法
+
+
+2. 箭头；
+
+？ 什么情况下会出现箭头？？
+-- 有 href
+-- 没有子菜单；
+
+$('#nav a').hover(function(){
+	if($(this).href && null != $(this).href && !$(this).siblings('ul')){
+		$(this).find('.fa-arrow').toggleClass('show');
+	}
+})
+
+.fa-arrow {
+	visiblity: hidden;
+	opacity:0;
+	$.show {
+		visiblity: visibel;
+		opacity:1;
+		left:0;
+	}
+}
+
+
+
+？ 怎么把 key 移到 r 里面？？
+-- 目测是因为对象之间的关联修改；
+
+
+
+
+
+
+？ 怎么单独排除第一层？？
+
+
+
+？ 获取第几层到第几层的菜单？？
+
+
+
+？ 递归怎么添加层级标识
+
+
+
+！ 第三层的 ul 出现方式不对。
+-- 继承了上级 ul 的 transform。
+
+
+
+
+
+
+
+
+
+
+
+
+transition: left .3s ease .25s, top .3s ease, opacity .2s ease
+
+
+
+！ 第二级菜单跟上级相同没关系，但三级菜单应该宽一些；
+-- 第二层要设置 li: min-width: 100%; 
+-- 第三层 a 设置成 white-space:nowrap; 
+
+
+
+！ 第三层菜单长短不一的情况？？
+-- 第三层 ul 不要设置宽度；
+
+
+！ 什么时候让第三层 a 消失？？
+-- 离开第二层 a，但是没有进入 第三层 a；
+-- 离开第三层 a；
+
+
+
+！ 第二层 a 比第一层 a 长的时候，动画效果有破绽；
+-- 顶层 ul 设置背景色，同时注意第一层 li 不要 float；
+
+
+
+$.search(); 
+$.usr(); 
+
+2. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
