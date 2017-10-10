@@ -1,0 +1,224 @@
+转自博客园:
+
+现在有一个数据，需要你渲染出对应的列表出来：
+
+var data = [
+  {"id":1},
+  {"id":2},
+  {"id":3},
+  {"id":4}, 
+];
+
+var str="<ul>";
+
+data.forEach(function(v,i){
+   str+="<li><span>"+v.id+"</span></li>"
+})
+
+str="</ul>"
+
+$(doucment).append(str);
+哼，easy!
+
+语罢，又是一道题飞来!
+
+哦，还带了儿子来当帮手。我一个循环再一个循环，轻松带走你们
+
+var data2 = [
+    {"id":1,children:[{"id":"child11"},{"id":"child12"}]},
+    {"id":2},
+    {"id":3children:[{"id":"child31"},{"id":"child32"}]},
+    {"id":4}, 
+];
+
+
+var str="<ul>";
+
+data2.forEach(function(v,i){
+    if(v.children&&v.children.length>0){
+        str+="<li><span>"+v.id+"</span>";
+        str+="<ul>";
+        v.children.forEach(function(value,index){
+             str+="<li><span>"+value.id+"</span>";
+        })
+        str="</ul>";
+        str="</li>";
+
+    }else{
+        str+="<li><span>"+v.id+"</span></li>"
+    }  
+})
+str="</ul>"
+
+$(doucment).append(str);
+还有谁？
+
+var json=[
+        {
+          name:123,id:1
+          children:[
+            {
+              name:453,id:456,children:[{name:789,id:777,children:[{name:"hahahqqq---qq",id:3232,children:[name:'son',id:"13132123211"]}]}]
+            },
+            {
+              name:"Cessihshis" , id:12121
+            }
+          ]
+        },
+        {
+          name:"啊啊啊11", id:12
+        },
+      ];
+竟然把全家都带来了，看我循环循环再循环大法。
+
+嗯，不知道他家几代同堂，我该循环几次？突然间你感觉遇到对手了。
+
+正纳闷着，突然有人拍了一下你的肩膀，兄弟，我这里有一本递归秘籍，我看你骨骼惊奇，是个练武奇才，10块钱卖你了。
+
+  function render(treeJson){   
+    if(!Array.isArray(treeJson)||treeJson.length<=0){return ""}   
+    var ul=$("<ul>");
+    treeJson.forEach(function(item,i){      
+      var li=$("<li><span class='treeName'>"+item.name+"</span></li>");
+      if(Array.isArray(item.children)&&item.children.length>0){
+        li.append(render(item.children))
+      }
+      ul.append(li);
+    })
+    return ul
+  }
+
+  $(document).append(render(json));
+好了不扯了，通过递归，无需再判断数据有多少层级，只有当前数组有children并且长度大于0，函数就会递归调用自身，并且返回一个ul。
+
+这样一来，一颗非常简陋的树就生成了，不过通常树都带有radio或者checkbox选择框，而且很多时候都需要对树的右侧进行拓展，比如加一些新增，编辑等按钮什么的，可以考虑多传一个对象作为参数。
+
+      var checkbox={
+        radio:"<label class='myTreeIcon'><input type='radio'  name='selectTreeRedio'><span></span></label>",
+
+        multi:"<input type='checkbox' name='selectTreeRedio'>"
+      }
+
+
+      function render(treeJson,option={type:0,expandDom:function(){}}){   
+         if(!Array.isArray(treeJson)||treeJson.length<=0){return ""}   
+          var {type,expandDom}=option;        
+          var ul=$("<ul>");
+          treeJson.forEach(function(item,i){
+            var str="";
+            if(type==1){
+              str+=checkbox.multi
+            }else if(type==2){
+              str+=checkbox.radio
+            }
+            var li=$("<li data-id='"+item+"'>"+str+"<span class='treeName'>"+item.name+"</span></li>");
+            expandDom&&expandDom(li,item);
+            if(item.children&&item.children.length>0){
+              li.append(render(item.children,option))
+            }
+            ul.append(li);
+        })
+        return ul
+      }
+
+      //option使用了一个默认对象，默认为不需要选择框和不需要拓展， 如果传入的type为1或者2，则生成checkbox或者radio，由于radio样式比较丑，用label包起来自己模拟选中的效果；如果传入拓展参数，则把当前的父级li以及当前的参数传入，以便进行拓展。
+
+
+      $("#tree").append(render(json,{
+        type:1,
+        expandDom:function(el,data){
+          el.append("<button>编辑</button><button>测试</button><a data-msg='"+JSON.stringify(data)+"'></a>")
+        }
+      }))
+有时候后台返回的可能不是拼装好层级的数组，而是带有pid标识的所有数组的集合，比如：
+
+var data = [
+  {"id":2,"name":"第一级1","pid":0},
+  {"id":3,"name":"第二级1","pid":2},
+  {"id":5,"name":"第三级1","pid":4},
+  {"id":100,"name":"第三级2","pid":3},
+  {"id":6,"name":"第三级2","pid":3},
+  {"id":601,"name":"第三级2","pid":6},
+  {"id":602,"name":"第三级2","pid":6},
+  {"id":603,"name":"第三级2","pid":6}
+];
+为了用递归来渲染出树来，这时，就需要我们手动来将层级装好了：
+
+   function arrayToJson(treeArray){
+    var r = [];
+    var tmpMap ={};
+
+    for (var i=0, l=treeArray.length; i<l; i++) {
+     // 以每条数据的id作为obj的key值，数据作为value值存入到一个临时对象里面
+      tmpMap[treeArray[i]["id"]]= treeArray[i]; 
+    } 
+
+    for (i=0, l=treeArray.length; i<l; i++) {
+      var key=tmpMap[treeArray[i]["pid"]];
+      
+      //循环每一条数据的pid，假如这个临时对象有这个key值，就代表这个key对应的数据有children，需要Push进去
+      if (key) {
+        if (!key["children"]){
+            key["children"] = [];
+            key["children"].push(treeArray[i]);
+        }else{
+          key["children"].push(treeArray[i]);
+        }       
+      } else {
+        //如果没有这个Key值，那就代表没有父级,直接放在最外层
+        r.push(treeArray[i]);
+      }
+    }
+    return r
+   }
+现在我们已经实现了将没有层级结构的数组转化为带有层级的数组，那么问题来了，树形图还常常会需要带搜索功能，有没有办法把带层级结构的数组转化为不带层级结构的一个数组呢？因为如果不带层级的话，进行搜索等操作时就非常方便，一个filter基本就可以搞定了。
+
+   var jsonToArray=function (nodes) {
+      var r=[];
+      if (Array.isArray(nodes)) {
+        for (var i=0, l=nodes.length; i<l; i++) {
+          r.push(nodes[i]);
+          if (Array.isArray(nodes[i]["children"])&&nodes[i]["children"].length>0)
+           //将children递归的push到最外层的数组r里面
+            r = r.concat(jsonToArray(nodes[i]["children"]));
+              delete nodes[i]["children"]
+        }
+      } 
+      return r;
+    }
+这样，不管后台返回什么格式给我们，我们都可以自由的互转了，不管是带层级的转不带层级的，还是把不带层级的转化为带有层级的，都只需要调用一个函数就可以轻松解决。
+
+不过这里有一个隐患，就是由于对象的引用关系，操作后虽然返回了我们需要东西，但是会改变原来的数据。
+
+为了不影响到原来的数据，我们需要复制一份数据，需要进行一次深拷贝。
+
+为什么是深拷贝而不是浅拷贝？因为浅拷贝只会复制最外面的一层，假入某一个key值里面又是一个对象，那对复制后的对象的这个key的值进行操作通用会影响到原来的对象。浅拷贝的方法有很多，ES6的assign,jq第一个参数不为true的 $.extend(),数组的slice(0)，还有很多很多。
+
+对于标准的json格式的对象，可以用JSON.parse(JSON.stringify(obj))来实现。当然，本文写的是递归，所以还是来手写一个
+
+function deepCopy(obj){
+    var object;
+    if(Object.prototype.toString.call(obj)=="[object Array]"){    
+      object=[];
+      for(var i=0;i<obj.length;i++){
+        object.push(deepCopy(obj[i]))
+      }   
+      return object
+    }
+
+    if(Object.prototype.toString.call(obj)=="[object Object]"){   
+      object={};
+      for(var p in obj){
+        object[p]=obj[p]
+      }   
+      return object
+    }
+  }
+其实有点类似于浅拷贝，浅拷贝会复制一层，那么我们判断某个值是对象，通过递归再来一次（好比饮料中奖再来一瓶一样，如果中奖了，就递归再来一瓶，又中奖就又递归再来一瓶，直到不再中奖），也就是说我们通过无尽的浅拷贝来达到复制一个完全的新的对象的效果。
+
+这样，对树结构操作时，只需要传入深拷贝后新对象，就不会影响原来的对象了；
+
+jsonToArray(deepCopy(data));
+亦或是
+
+arrayToJson(deepCopy(data))：
