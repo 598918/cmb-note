@@ -1,11 +1,10 @@
 @header-height: 50px;
 @Duration: 300ms;
-
 .header {
     background: @color-primary;
 }
 
-.nav {
+.nav ul {
     background: @color-primary;
     * {
         transition: transform @Duration;
@@ -16,7 +15,7 @@
     }
     li {
         display: inline-block;
-        height:@header-height;
+        height: @header-height;
         position: relative;
         li {
             display: block;
@@ -24,62 +23,84 @@
         }
     }
     a {
+        position: relative;
         white-space: nowrap;
         line-height: @header-height;
         display: block;
-        padding:0 20px;
+        padding: 0 20px;
         color: #fff;
-        font-size: .7rem;
         &:hover {
             cursor: pointer;
         }
+        .fa-arrow-right {
+            visibility: hidden;
+            opacity: 0;
+            margin-left: .4rem;
+            transform: translate3d(-1rem, 0, 0);
+            font-size: .5rem;
+            &.show {
+                visibility: visible;
+                opacity: .3;
+                transform: translate3d(0, 0, 0);
+            }
+        }
     }
-    & > li {
-        > a {
+    &>li {
+        >a {
             font-size: .8rem;
-            &:hover, &.active {
+            .fa-arrow-right {
+                display: none;
+            }
+            &:hover,
+            &.active {
                 background: darken(@color-primary, 10%);
             }
             .fa {
-                margin-right:.25rem;
+                margin-right: .4rem;
             }
-            + ul {
-                min-width:100%;
-                transform:translate3d(0, -100%, 0);
+            +ul {
+                min-width: 100%;
+                transform: translate3d(0, -100%, 0);
                 visibility: hidden;
                 &.active {
-                    transform:translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
                     visibility: visible;
                 }
-                > li {
-                    > a{
+                >li {
+                    >a {
+                        font-size: .7rem;
                         line-height: @header-height - 10;
                         height: @header-height - 10;
                         background: #32445C;
-                        &.active, &:hover {
+                        &.active,
+                        &:hover {
                             background: #3F5775;
                         }
-                        + ul {
+                        .fa-arrow-right {
+                            display: inline-block;
+                        }
+                        +ul {
                             overflow: hidden;
                             background: #3F5775;
-                            top:0;
-                            left:100%;
+                            top: 0;
+                            left: 100%;
                             visibility: hidden;
                             opacity: 0;
+                            transform: none;
                             &.active {
                                 opacity: 1;
                                 visibility: visible;
                             }
-                            > li {
-                                > a {
-                                    position: relative;
-                                    left:-100%;
+                            >li {
+                                >a {
+                                    left: -100%;
                                     opacity: 0;
                                     transition: opacity .2s ease .3s;
                                     line-height: @header-height - 10;
                                     height: @header-height - 10;
+                                    background: none;
                                     &:hover {
-                                        background: lighten(#3F5775, 4%);
+                                        background: lighten(#3F5775, 12%);
                                     }
                                 }
                             }
