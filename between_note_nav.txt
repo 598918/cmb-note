@@ -1,0 +1,375 @@
+* 组件化
+
+* 下拉菜单；（+动效）
+
+
+[{"PAG_NAM":"首页","DES_MSG":"","UPP_PAG":"","PAG_IMG":"","PAG_UID":"0000","LNK_TYP":"EMB","PAG_URL":"${root}/pages/main/main.html?v=2.2.1","PAG_TYP":"MENU"},{"PAG_NAM":"新增产品分类","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3005","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/newcatalog.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"新增基础产品","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3006","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/new.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"修改信息项","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3007","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/modify.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"停售","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3008","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/halt.html?REV_TYP=S&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"下线","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3009","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/halt.html?REV_TYP=D&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"移交","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3010","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/handover.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"归并","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3011","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/merger.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"执行后评估","DES_MSG":"","UPP_PAG":"3002","PAG_IMG":"","PAG_UID":"3012","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/doposteval.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品监测","DES_MSG":"","UPP_PAG":"1000","PAG_IMG":"","PAG_UID":"1001","LNK_TYP":"POP","PAG_URL":"${root}/LF62_Detect/pages/detection.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"用户管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9001","LNK_TYP":"EMB","PAG_URL":"${root}/pages/userrole/userrole.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品管理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-sitemap","PAG_UID":"3000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"},{"PAG_NAM":"产品查询","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3001","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/main.html?PAG_TYP=QRY&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"监测管理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-signal","PAG_UID":"1000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"},{"PAG_NAM":"报表","DES_MSG":"","UPP_PAG":"1000","PAG_IMG":"","PAG_UID":"1010","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Report/pages/category.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"报表管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"2001","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Report/pages/manage.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"产品维护","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3002","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/main.html?PAG_TYP=MNT&v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"资源管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9002","LNK_TYP":"EMB","PAG_URL":"${root}/LV35_Resource/pages/mngfile.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"修订历史","DES_MSG":"","UPP_PAG":"3000","PAG_IMG":"","PAG_UID":"3100","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/reviselist.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"流程管理","DES_MSG":"","UPP_PAG":"9000","PAG_IMG":"","PAG_UID":"9003","LNK_TYP":"EMB","PAG_URL":"${root}/LF62_Product/pages/aprsessionlist.html?v=2.2.1","PAG_TYP":"CONT"},{"PAG_NAM":"系统管理","DES_MSG":"","UPP_PAG":"0000","PAG_IMG":"fa fa-gear","PAG_UID":"9000","LNK_TYP":"EMB","PAG_URL":"","PAG_TYP":"MENU"}]
+
+
+
+
+
+$.nav();     // input
+？ 怎么配置 icon？？
+？ 怎么判断当前链接是直接打开，还是展开下级？？
+-- lv_3 往 lv_2 添加 li 的时候把上级的 href 设为 #
+
+1. 查数据库，得到一个 obj；
+-- 对象里面的属性应该是上级，新窗/当前、
+
+2. 上级为 0 就在顶层显示 
+$li.appendTo(this.ele);
+
+2.1 第二层；
+var parent = find('#_ul_lv1_' + up_id);
+if(!parent) {
+	createUL
+}
+$li.appendTo(parent); 
+
+2.2 第三层：
+var parent = find('#_ul_lv2_' + up_id);
+if(!parent) {
+	createUL
+}
+$li.appendTo(parent); 
+
+
+
+
+<ul class="nav" id="nav">
+
+ul.lv0
+ul.lv1
+ul.lv2
+
+
+
+1. init()
+
+var template = {
+	ul : '<ul></ul'>,
+	li: '<li></li>',
+	divider: '<li role="separator" class="divider"></li>'	
+	icon : '<i class="fa"></i>',
+	a: '<a></a>'
+
+for(i< menuObj.length) {
+	var menuRow = obj['UserRolePageQueryZ1'][i];
+	if (menuRow.UPP_PAG != '0000') {
+		continue;
+	}
+	
+	var $firLink = $(template.a).attr({
+						'id': 'drop'+i, 
+						'pagUid': menuRow.PAG_UID, 
+						'href': menuRow.PAG_URL, 
+						'lnk_typ': menuRow.LNK_TYP
+					})
+					.text(menuRow.PAG_NAM)
+					.prepend($(template.icon)
+					.addClass(menuRow.PAG_IMG));
+	var $firItem = $(this).addClass('lv0').append($(template.li).append($firLink));	
+	
+}
+
+
+
+
+？ 构建一棵树最快的算法？？
+-- 数组变成树 算法
+
+
+$('#nav a').hover(function(){
+	if($(this).href && null != $(this).href && !$(this).siblings('ul')){
+		$(this).find('.fa-arrow').toggleClass('show');
+	}
+})
+
+.fa-arrow {
+	visiblity: hidden;
+	opacity:0;
+	$.show {
+		visiblity: visibel;
+		opacity:1;
+		left:0;
+	}
+}
+
+
+
+？ 怎么把 key 移到 r 里面？？
+-- 目测是因为对象之间的关联修改；
+
+
+
+
+
+
+？ 怎么单独排除第一层？？
+
+
+
+？ 获取第几层到第几层的菜单？？
+
+
+
+？ 递归怎么添加层级标识
+
+
+
+！ 第三层的 ul 出现方式不对。
+-- 继承了上级 ul 的 transform。
+
+
+
+
+
+
+
+
+
+1. 跳转方法；
+
+
+
+
+2. tmpMap
+-- 有 21 个，以 pag_uid 为键值；
+
+for(var i = 0, l = treeArray.length; i < l; i++) {
+	// 以每条数据的id作为obj的key值，数据作为value值存入到一个临时对象里面
+	tmpMap[treeArray[i]["PAG_UID"]] = treeArray[i];
+}
+
+
+
+
+3. r
+-- r.push(treeArray[i]);  // treeArray[i] 不是一成不变的，它不停的被添加了 children；
+
+for(i = 0, l = treeArray.length; i < l; i++) {
+	var key = tmpMap[treeArray[i]["UPP_PAG"]];
+
+	//循环每一条数据的pid，假如这个临时对象有这个key值，就代表这个key对应的数据有children，需要Push进去
+	if(key) {
+		if(!key["children"]) {
+			key["children"] = [];
+			key["children"].push(treeArray[i]);
+		} else {
+			key["children"].push(treeArray[i]);
+		}
+	} else {
+		//如果没有这个Key值，那就代表没有父级,直接放在最外层
+		r.push(treeArray[i]);
+	}
+}
+return r;
+
+
+
+
+
+4. 递归；
+-- 结构相同，就可以用递归啦？？
+
+function render(treeJson) {
+	if(!Array.isArray(treeJson) || treeJson.length <= 0) {
+		return ""
+	}
+	var ul = $("<ul>");
+	treeJson.forEach(function(item, i) {
+		var icon = item.PAG_IMG ? "<i class='" + item.PAG_IMG + "'></i>" : "";
+		var li = $("<li><a href=" + item.PAG_URL + ">" + icon + item.PAG_NAM + "<i class='fa fa-arrow-right'></i></a></li>");
+		if(Array.isArray(item.children) && item.children.length > 0) {
+			li.append(render(item.children));
+		}
+		ul.append(li);
+	})
+	return ul;
+}
+
+
+
+
+
+
+--------------------------------
+
+？ 递归即使添加回调函数，好像也只能处理当前层，无法添加层级信息？？
+
+var checkbox = {
+	radio: "<label class='myTreeIcon'><input type='radio'  name='selectTreeRedio'><span></span></label>",
+
+	multi: "<input type='checkbox' name='selectTreeRedio'>"
+}
+
+function render(treeJson, option = {
+	type: 0,
+	expandDom: function() {}
+}) {
+	if(!Array.isArray(treeJson) || treeJson.length <= 0) {
+		return ""
+	}
+	var {
+		type,
+		expandDom
+	} = option;
+	var ul = $("<ul>");
+	treeJson.forEach(function(item, i) {
+		var str = "";
+		if(type == 1) {
+			str += checkbox.multi
+		} else if(type == 2) {
+			str += checkbox.radio
+		}
+		var li = $("<li data-id='" + item + "'>" + str + "<span class='treeName'>" + item.name + "</span></li>");
+		expandDom && expandDom(li, item);
+		if(item.children && item.children.length > 0) {
+			li.append(render(item.children, option))
+		}
+		ul.append(li);
+	})
+	return ul
+}
+
+//option使用了一个默认对象，默认为不需要选择框和不需要拓展， 如果传入的type为1或者2，则生成checkbox或者radio，由于radio样式比较丑，用label包起来自己模拟选中的效果；如果传入拓展参数，则把当前的父级li以及当前的参数传入，以便进行拓展。
+
+$("#tree").append(render(json, {
+	type: 1,
+	expandDom: function(el, data) {
+		el.append("<button>编辑</button><button>测试</button><a data-msg='" + JSON.stringify(data) + "'></a>")
+	}
+}))
+
+
+
+
+
+
+---------------
+
+* json 转数组；
+
+var jsonToArray = function(nodes) {
+	var r = [];
+	if(Array.isArray(nodes)) {
+		for(var i = 0, l = nodes.length; i < l; i++) {
+			r.push(nodes[i]);
+			if(Array.isArray(nodes[i]["children"]) && nodes[i]["children"].length > 0)
+				//将children递归的push到最外层的数组r里面
+				r = r.concat(jsonToArray(nodes[i]["children"]));
+			delete nodes[i]["children"]
+		}
+	}
+	return r;
+}
+
+
+
+
+
+---------------
+
+* 为了不影响到原来的数据，我们需要复制一份数据，需要进行一次深拷贝。
+
+-- 为什么是深拷贝而不是浅拷贝？因为浅拷贝只会复制最外面的一层，假入某一个key值里面又是一个对象，那对复制后的对象的这个key的值进行操作通用会影响到原来的对象。
+-- 浅拷贝的方法有很多，ES6的assign,jq第一个参数不为true的 $.extend(),数组的slice(0)，还有很多很多。
+
+
+** 对于标准的json格式的对象，可以用JSON.parse(JSON.stringify(obj))来实现。当然，本文写的是递归，所以还是来手写一个
+
+function deepCopy(obj){
+    var object;
+    if(Object.prototype.toString.call(obj)=="[object Array]"){    
+      object=[];
+      for(var i=0;i<obj.length;i++){
+        object.push(deepCopy(obj[i]))
+      }   
+      return object
+    }
+
+    if(Object.prototype.toString.call(obj)=="[object Object]"){   
+      object={};
+      for(var p in obj){
+        object[p]=obj[p]
+      }   
+      return object
+    }
+  }
+其实有点类似于浅拷贝，浅拷贝会复制一层，那么我们判断某个值是对象，通过递归再来一次（好比饮料中奖再来一瓶一样，如果中奖了，就递归再来一瓶，又中奖就又递归再来一瓶，直到不再中奖），也就是说我们通过无尽的浅拷贝来达到复制一个完全的新的对象的效果。
+
+这样，对树结构操作时，只需要传入深拷贝后新对象，就不会影响原来的对象了；
+
+jsonToArray(deepCopy(data));
+亦或是
+arrayToJson(deepCopy(data))：
+
+
+
+
+6. 看能不能配置显示几层的菜单？？
+
+
+
+
+
+
+
+7. 动画效果未优化；
+
+8. nav > li 那部分优化；
+
+
+
+
+
+！ 第二级菜单跟上级相同没关系，但三级菜单应该宽一些；
+-- 第二层要设置 li: min-width: 100%; 
+-- 第三层 a 设置成 white-space:nowrap; 
+
+
+
+！ 第三层菜单长短不一的情况？？
+-- 第三层 ul 不要设置宽度；
+
+
+！ 什么时候让第三层 a 消失？？
+-- 离开第二层 a，但是没有进入 第三层 a；
+-- 离开第三层 a；
+
+
+
+！ 第二层 a 比第一层 a 长的时候，动画效果有破绽；
+-- 顶层 ul 设置背景色，同时注意第一层 li 不要 float；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
