@@ -1,0 +1,69 @@
+* 思路是想让 window.top.main 可以 flex: auto; 
+-- 但是 iframe 也要 flex: auto 吧？？
+
+
+-- 先让 iframe flex 完，再让 window.top.main flex ？？
+-- 那要设置 window.top.html 的 height；
+-- height： @iframe.content.height + 100px;
+-- 有没有办法直接获得 @iframe.content.height
+-- 那不是 iframe 高度发生变化，又要 reset 一次 window.top.html 的 height？ 那走不通；
+
+
+
+？ flex 的原理？？
+-- 外层容器有个固定的值？？
+
+
+
+
+
+？ 现在这种跟原先比有什么优势？？
+-- 好像没有，最多最多就多了个 footer；原先的方式也不是不能做到；
+
+
+
+
+？ 还能怎样改进？？
+-- 滚动里面的 iframe 外面的 header + footer 可以随着滚动；
+-- 插入一个元素的 height = iframe.content.height；
+
+
+
+获取 iframe 里面的元素
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------
+
+* 新的需求是让 iframe 的滚动条顶上去；
+-- 不能用 padding...
+
+
+
+iframe 加载事件
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
