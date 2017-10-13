@@ -48,7 +48,20 @@ function validateForm(){
 
 
 
+---------------------
 
+String sql = 
+		"SELECT SUM(CASE WHEN SVR_REG = '2' THEN SUM_CNT ELSE 0 END) AS COM_CNT, "
+		+ "     SUM(CASE WHEN SVR_REG = '1' THEN SUM_CNT ELSE 0 END) AS VIP_CNT, "
+		+ "     SUM(CASE WHEN SVR_REG = '3' THEN SUM_CNT ELSE 0 END) AS CMP_CNT, "
+		+ "     SUM(CASE WHEN SVR_REG NOT IN ('1','2','3') THEN SUM_CNT ELSE 0 END) AS OTH_CNT, "
+		+ "     BRN_NBR  "
+		+ "FROM BUS.REAL "
+		+ "WHERE DTA_DTE = CURRENT DATE ";
+if(!allBranchFlag){
+	sql += "AND BRN_NBR IN (" + Common.set2String(brnNbrs) + ") ";
+}
+sql += "GROUP BY BRN_NBR WITH UR ";
 
 
 
