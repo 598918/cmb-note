@@ -1,0 +1,91 @@
+* 核心都是为了构建一个 p，作为参数
+var p = $.extend(defaults, params);
+$(this).picker(p);
+
+
+
+--------------------
+
+* date() 的用法；
+
+[today.getFullYear(), formatNumber(today.getMonth()+1), formatNumber(today.getDate()), today.getHours(), formatNumber(today.getMinutes())]
+-- formatNumber() 只是用来在个位数前面加 “0”。
+
+
+
+
+
+
+--------------------
+
+？ cols 里面的 days 怎么获得初始值？？
+
+cols: [
+        // Years
+    {
+        values: initYears
+    },
+    // Months
+    {
+        values: initMonthes
+    },
+    // Days
+    {
+        values: getDays()     // ？？
+    },
+    ...
+
+
+var getDays = function(max) {
+    var days = [];
+    for(var i=1; i<= (max||31);i++) {
+        days.push(i < 10 ? "0"+i : i);
+    }
+    return days;
+};
+-- 空的话就用 31 来算；
+
+
+
+
+
+
+--------------------
+
+！ onChange 怎么运行的？？
+
+onChange: function (picker, values, displayValues) {
+    var days = getDaysByMonthAndYear(picker.cols[1].value, picker.cols[0].value);
+    var currentValue = picker.cols[2].value;
+    if(currentValue > days.length) currentValue = days.length;
+    picker.cols[2].setValue(currentValue);
+},
+
+-- 只判断“日”有无问题；
+-- 如果当前的“日”超出“年月”限定的“日”，则用“年月”限定的“日”替代当前“日”
+
+
+
+
+
+--------------------
+
+？ getDaysByMonthAndYear()
+-- 干嘛用的？？
+-- 目测应该是返回输入年月的天数；
+
+var getDaysByMonthAndYear = function(month, year) {
+    var int_d = new Date(year, parseInt(month)+1-1, 1);    // 下月第一天；
+    var d = new Date(int_d - 1);                           // 本月最后一天；
+    return getDays(d.getDate());
+};
+
+
+* 精简版
+var getDaysByMonthAndYear = function(month, year) {
+    var int_d = new Date(year, parseInt(month), 0);        // 当月最后一天；
+    return getDays(int_d.getDate());
+};
+
+
+
