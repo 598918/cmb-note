@@ -1,5 +1,7 @@
 javascript常用数组算法总结 - front-Thinking - 博客园
 http://www.cnblogs.com/front-Thinking/p/4797440.html
 
+http://www.dbvis.com/products/dbvis/doc/7.0/doc/ug/procEditor/procEditor.html
+
 
 
