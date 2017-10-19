@@ -1,7 +1,22 @@
 javascript常用数组算法总结 - front-Thinking - 博客园
 http://www.cnblogs.com/front-Thinking/p/4797440.html
 
-http://www.dbvis.com/products/dbvis/doc/7.0/doc/ug/procEditor/procEditor.html
+
+
+Javascript - 随笔分类 - _落雨 - 博客园
+http://www.cnblogs.com/ae6623/category/677398.html
 
 
 
+
+sql case 用法总结 - 我是攻城狮 - 博客园
+http://www.cnblogs.com/4littleProgrammer/p/4820006.html
+
+
+
+
+
+【已读】
+
+TouchEvent里的targetTouches、touches、changedTouches的区别的具体体现是？ - JasmineOT的回答 - SegmentFault
+https://segmentfault.com/q/1010000002870710/a-1020000004869367
