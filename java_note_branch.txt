@@ -1,0 +1,440 @@
+？ 怎么跑里面的方法？？
+
+？ 感觉 branch 的缓存表是时刻保存的，怎么做到的？？
+
+
+
+
+
+
+
+
+
+* 查询机构名称：
+public static String getName(String cacheTable, String brnNbr) throws FrameworkException {
+    if (StringUtil.isEmpty(brnNbr)) {
+        return "";
+    }
+    
+    if(isGroup(brnNbr)){
+    	return getGroupName(brnNbr);
+    }
+    
+    ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(cacheTable);
+    if(corBrnTable == null){
+    	return "";
+    }
+    
+    String name = "";
+
+    List<Integer> rowIdList = corBrnTable.select("BRN_NBR", brnNbr);
+    if (null != rowIdList && rowIdList.size() > 0) {
+        name = corBrnTable.getString(rowIdList.get(0), "BRN_NAM");
+    }
+    
+    return name;
+}
+
+
+
+
+---------------------------
+
+？ List<String> list = new ArrayList<String>();
+？ List 是什么类型的数据？？
+？ <String> 又是什么意思？？
+？ ArrayList<String> ？？
+？ 这些都是属于 java 的那些是知识点？？
+
+
+
+* 获取父级机构：
+* 输入：cacheTable 字符串，名字；要查询的机构号；
+
+public static String[] getParents(String cacheTable, String brnNbr) throws FrameworkException {
+    if (StringUtil.isEmpty(brnNbr)) {
+        return null;
+    }
+
+    List<String> list = new ArrayList<String>();
+
+	ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(cacheTable);
+	if(corBrnTable == null){
+        return new String[0];
+	}
+	
+    List<Integer> rowIdList = corBrnTable.select("BRN_NBR", brnNbr);           // 猜测：根据输入的机构号查到一条记录
+
+    while (rowIdList != null && rowIdList.size() > 0) {
+        String _brnNbr = corBrnTable.getString(rowIdList.get(0), "BRN_NBR");
+        String _uppBrn = corBrnTable.getString(rowIdList.get(0), "UPP_BRN");
+        list.add(_brnNbr);                                                     // list 就保存一个字符串？？  而且不是应该返回 _uppBrn 吗？？
+        rowIdList = corBrnTable.select("BRN_NBR", _uppBrn);
+    }
+
+    return list.toArray(new String[0]);                                         // 不是应该返回 rowIdList 吗？？
+}
+
+
+
+？ new String[0]
+-- 一个空的 String 数组？？
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+/**
+ * 获取自身及所有上级机构（无序）
+ * @param brnNbr
+ * @return
+ * @throws FrameworkException
+ */
+public static Set<String> getParentSet(String cacheTable, String brnNbr) throws FrameworkException {
+	if(StringUtil.isEmpty(brnNbr)){
+		return null;
+	}
+	
+	Set<String> set = new HashSet<String>();
+
+	ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(cacheTable);
+	if(corBrnTable == null){
+		return set;
+	}
+	
+    List<Integer> rowIdList = corBrnTable.select("BRN_NBR", brnNbr);
+
+    while (rowIdList != null && rowIdList.size() > 0) {
+        String _brnNbr = corBrnTable.getString(rowIdList.get(0), "BRN_NBR");
+        String _uppBrn = corBrnTable.getString(rowIdList.get(0), "UPP_BRN");
+        set.add(_brnNbr);
+        rowIdList = corBrnTable.select("BRN_NBR", _uppBrn);
+    }
+	
+	return set;
+}
+
+
+
+？ Set<String> set = new HashSet<String>();
+
+？ 跟上面的比，return 的是 set
+
+
+
+
+
+
+
+
+
+---------------------------
+
+/**
+ * 获取指定机构A下的所有机构
+ * 
+ * @param brnNbr
+ * @param brnSet
+ * @param corBrnTable
+ * @throws FrameworkException
+ */
+private static void getChildrens(String brnNbr, final Set<String> brnSet, ICacheTableR corBrnTable) throws FrameworkException {
+    brnSet.add(brnNbr);
+    List<Integer> rowIdList = corBrnTable.select("UPP_BRN", brnNbr);
+    if (null != rowIdList && rowIdList.size() > 0) {
+        for (Integer rowId : rowIdList) {
+            getChildrens(corBrnTable.getString(rowId, "BRN_NBR"), brnSet, corBrnTable);
+        }
+    }
+}
+
+
+？ for (Integer rowId : rowIdList)  
+-- java 的循环结构？？
+
+？ 这个方法是个递归？？
+-- 没有 return 什么东西吗？？
+
+
+
+
+
+
+
+
+---------------------------
+
+/**
+ * 使用指定缓存单元，判断child机构是否属于parent机构的下属（相等也算）
+ * @param cacheName
+ * @param parentBrn
+ * @param childBrn
+ * @return
+ * @throws FrameworkException
+ */
+public static boolean isBelong(String cacheName, String parentBrn, String childBrn) throws FrameworkException {
+	if (StringUtil.isEmpty(childBrn) || StringUtil.isEmpty(parentBrn)) {
+		return false;
+	}
+	
+	if (childBrn.equals(parentBrn)) {
+		return true;
+	}
+	
+	if(isGroup(parentBrn) && !isGroup(childBrn)){
+		//父机构为排班组，子机构非排班组：取出子机构所属排班组，判断与父机构是否相同
+		//注意：排班组下属支行，不自动将支行的下属二级支行归纳到排班组
+		String grpNbr = getGroup(childBrn);
+		if (parentBrn.equals(grpNbr)) {
+			return true;
+		}
+	}else if(!isGroup(parentBrn) && isGroup(childBrn)){
+		//子机构为排班组，父机构非排班组：取出子机构所属分行，判断是否在父机构范围之内
+		String bbkNbr = getBbkNbr(childBrn);
+		return isBelong(cacheName, parentBrn, bbkNbr);
+	}else if(isGroup(parentBrn) && isGroup(childBrn)){
+		//均为排班组，返回false，因为前面已判断是否相等
+		return false;
+	}else{
+		ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(cacheName);
+		if(corBrnTable == null){
+			return false;
+		}
+		
+        List<Integer> rowIdList = corBrnTable.select("BRN_NBR", childBrn);
+
+        if (null == rowIdList || rowIdList.size() == 0) {
+            return false;
+        }
+        String corBrn = corBrnTable.getString(rowIdList.get(0), "UPP_BRN");
+
+        return isBelong(cacheName, parentBrn, corBrn);    // 【core】 递归判断下级是否等于上级
+	}
+	
+	return false;
+}
+
+
+* isGroup 是判断是否为排班组；
+
+
+
+
+
+---------------------------
+
+/**
+ * 判断是否排班组
+ * @param brnNbr
+ * @return
+ * @throws FrameworkException
+ */
+public static boolean isGroup(String brnNbr) throws FrameworkException {
+	if(!StringUtil.isEmpty(brnNbr) && brnNbr.trim().length() == 6 && brnNbr.startsWith("G")){     // 【CORE】
+		return true;
+	}
+	return false;
+}
+
+
+
+
+
+
+
+---------------------------
+
+/**
+ * 获取机构所属排班组
+ * 
+ * @param brnNbr 支行机构号
+ * @return
+ * @throws FrameworkException
+ */
+public static String getGroup(String brnNbr) throws FrameworkException {
+    if (StringUtil.isEmpty(brnNbr)) {
+        return "";
+    }
+    
+    ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(GROUPBRNCACHETABLE);
+	if(corBrnTable == null){
+		return "";
+	}
+
+    List<Integer> rowIdList = corBrnTable.select("BRN_NBR", brnNbr);
+    if (null != rowIdList && rowIdList.size() > 0) {
+        return corBrnTable.getString(rowIdList.get(0), "GRP_NBR");
+    }
+    
+    return "";
+}
+
+
+
+
+* 我的理解，操作缓存表就像操作数据库一样：
+-- corBrnTable.select("BRN_NBR", brnNbr)
+-- 这样相当于 select table.BRN_NBR = brnNbr 的记录；
+-- 然后获得当前记录的 GRP_NBR 字段：
+-- return corBrnTable.getString(rowIdList.get(0), "GRP_NBR");
+
+
+
+
+
+
+
+
+
+---------------------------
+
+/**
+ * 查询排班组下属支行（不自动计算二级支行）
+ * @param grpNbr 排班组编号
+ * @return
+ * @throws FrameworkException
+ */
+public static Set<String> getGroupBrn(String grpNbr) throws FrameworkException {
+	Set<String> set = new HashSet<String>();
+	
+	if(isGroup(grpNbr)){
+        ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(GROUPBRNCACHETABLE);
+		if(corBrnTable == null){
+			return set;
+		}
+
+        List<Integer> rowIdList = corBrnTable.select("GRP_NBR", grpNbr);    // 选取 GRP_NBR = grpNbr 的记录；
+        if (null != rowIdList && rowIdList.size() > 0) {
+            for (Integer rowId : rowIdList) {
+            	set.add(corBrnTable.getString(rowId, "BRN_NBR"));           // 输出 brnNbr
+            }
+        }
+	}
+		
+	return set;
+}
+
+
+
+
+
+
+---------------------------
+
+* 只需判断字段 BRN_TYP = B
+
+/**
+ * 判断是否支行
+ * @param application
+ * @param brnNbr
+ * @return
+ * @throws FrameworkException
+ */
+public static boolean isBrnNbr(String brnNbr) throws FrameworkException {
+	if(StringUtil.isEmpty(brnNbr) || brnNbr.length() != 6 || isGroup(brnNbr)){
+		return false;
+	}
+	
+    ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(CACHETABLE);
+	if(corBrnTable == null){
+		return false;
+	}
+
+    List<Integer> rowIdList = corBrnTable.select("BRN_NBR", brnNbr);
+    if (null != rowIdList && rowIdList.size() > 0) {
+    	String val = corBrnTable.getString(rowIdList.get(0), "BRN_TYP");
+		if (!StringUtil.isEmpty(val) && val.equals("B")) {
+			return true;
+		}
+    }
+	
+	return false;
+}
+
+
+
+
+
+
+
+
+---------------------------
+
+/**
+ * 获取指定机构的上级分行（基层）
+ * 支持排班组
+ * 
+ * @param brnNbr
+ * @return
+ * @throws FrameworkException
+ */
+public static String getBbkNbr(String brnNbr) throws FrameworkException {
+	if (null == brnNbr || brnNbr.trim().length() != 6) {
+		return brnNbr;
+	}
+
+	if(isGroup(brnNbr)){
+        ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(GROUPCACHETABLE);
+		if(corBrnTable == null){
+			return "";
+		}
+		
+        List<Integer> rowIdList = corBrnTable.select("GRP_NBR", brnNbr);
+        
+        if (null != rowIdList && rowIdList.size() > 0) {
+            return corBrnTable.getString(rowIdList.get(0), "BBK_NBR");              // 如果是排班组就获取分行代码；
+        }
+	}else{
+		ICacheTableR corBrnTable = ContainerFactory.getContainer().getCacheTable(CACHETABLE);
+		if(corBrnTable == null){
+			return "";
+		}
+		
+        List<Integer> rowIdList = corBrnTable.select("BRN_NBR", brnNbr);
+
+        while (rowIdList != null && rowIdList.size() > 0) {
+            String _uppBrn = corBrnTable.getString(rowIdList.get(0), "UPP_BRN");
+            if(isBbkNbr(_uppBrn)){
+            	return _uppBrn;                                                    // 上级不是分行难道就不返回了？？
+            }
+            rowIdList = corBrnTable.select("BRN_NBR", _uppBrn);
+        }
+	}
+
+	return "";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
