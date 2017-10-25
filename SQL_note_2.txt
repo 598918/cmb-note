@@ -1,0 +1,538 @@
+* LIKE
+
+-- G 开始： WHERE name LIKE 'G%';
+-- k 结束： WHERE name LIKE '%k';
+-- 包含：   WHERE name LIKE '%oo%';
+-- 不包含： WHERE name NOT LIKE '%oo%';
+
+
+
+
+-----------------
+
+%	        替代 0 个或多个字符
+_	        替代一个字符     // 相当于 js 中的 *
+[charlist]	字符列中的任何单一字符
+
+[^charlist]
+或
+[!charlist]	不在字符列中的任何单一字符
+
+
+* 选取 name 以 "G"、"F" 或 "s" 开始的所有网站：
+-- WHERE name REGEXP '^[GFs]';
+
+！ 上面不是说 ^ 要写在 [] 里面吗？？
+-- 不是。写在里面是否的意思了。
+
+
+
+
+
+* 选取 name 以 A 到 H 字母开头的网站：
+-- WHERE name REGEXP '^[A-H]';
+
+
+
+
+
+*选取 name 不以 A 到 H 字母开头的网站：
+WHERE name REGEXP '^[^A-H]';  
+
+! 或 [!A-H]
+
+
+
+
+
+* between、not between
+
+
+
+
+
+-----------------
+
+？ AND NOT country IN ('USA', 'IND');  vs
+-- AND country NOT IN ('USA', 'IND');
+
+
+
+
+
+
+-----------------
+
+？ join 是新表？？
+
+SELECT Websites.id, Websites.name, access_log.count, access_log.date
+FROM Websites
+INNER JOIN access_log
+ON Websites.id=access_log.site_id;
+
+-- 好像确实是新表。
+-- 那么 INNER JOIN 有什么特别的地方吗？？
+
+
+
+-- 首先，连接的结果可以在逻辑上看作是由SELECT语句指定的列组成的新表。
+-- 左连接与右连接的左右指的是以两张表中的哪一张为基准，它们都是外连接。
+-- 外连接就好像是为非基准表添加了一行全为空值的万能行，用来与基准表中找不到匹配的行进行匹配。
+-- 假设两个没有空值的表进行左连接，左表是基准表，左表的所有行都出现在结果中，右表则可能因为无法与基准表匹配而出现是空值的字段。
+
+
+
+
+
+
+
+-----------------
+
+* LEFT JOIN 
+
+-- 从左表（table1）返回所有的行，即使右表（table2）中没有匹配。如果右表中没有匹配，则结果为 NULL。
+
+
+
+* 右连也差不多的；
+
+SELECT Websites.name, access_log.count, access_log.date
+FROM access_log
+RIGHT JOIN Websites
+ON access_log.site_id=Websites.id
+ORDER BY access_log.count DESC;
+
+
+
+* FULL OUTER JOIN
+
+-- 返回左表（Websites）和右表（access_log）中所有的行。
+-- 如果 "Websites" 表中的行在 "access_log" 中没有匹配或者 "access_log" 表中的行在 "Websites" 表中没有匹配，也会列出这些行。
+
+
+
+
+
+
+
+-----------------
+
+* UNION
+-- 感觉只是把两个表的某个字段记录抽出来；
+-- UNION 是不重复的记录；UNION ALL 是抽取所有的记录；
+
+
+
+
+
+** 带 where 的：
+
+SELECT country, name FROM Websites
+WHERE country='CN'
+UNION ALL
+SELECT country, app_name FROM apps
+WHERE country='CN'
+ORDER BY country;
+
+-- ORDER BY 是抽取之后才排序的；
+
+
+
+
+
+
+
+
+-----------------
+
+* SELECT INTO 
+
+-- 创建 Websites 的备份复件：
+
+SELECT *
+INTO WebsitesBackup2016
+FROM Websites;
+
+
+
+-- 只复制一些列插入到新表中：
+
+SELECT name, url
+INTO WebsitesBackup2016
+FROM Websites;
+
+
+
+
+-- 只复制中国的网站插入到新表中：
+
+SELECT *
+INTO WebsitesBackup2016
+FROM Websites
+WHERE country='CN';
+
+
+
+
+-- 复制多个表中的数据插入到新表中：
+
+SELECT Websites.name, access_log.count, access_log.date
+INTO WebsitesBackup2016
+FROM Websites
+LEFT JOIN access_log
+ON Websites.id=access_log.site_id;
+
+
+
+
+
+
+
+
+-------------------
+
+？ 感觉就是反过来写而已啊。
+
+SELECT *
+INTO newtable [IN externaldb]
+FROM table1;
+
+
+
+我们可以从一个表中复制所有的列插入到另一个已存在的表中：
+
+INSERT INTO table2
+SELECT * FROM table1;
+
+或者我们可以只复制希望的列插入到另一个已存在的表中：
+
+INSERT INTO table2
+(column_name(s))
+SELECT column_name(s)
+FROM table1;
+
+
+
+
+
+
+
+
+-------------------
+
+* 普通约束
+
+create table tb2(
+    tb2_id int unique,
+    tb2_name varchar(20),
+    tb2_age int,
+    unique(tb2_name)
+);
+
+
+* 有约束名的约束
+
+create table tb3(
+    tb3_id int ,
+    tb3_name varchar(20),
+    tb3_age int,
+    constraint no_id unique (tb3_id)
+);
+
+
+
+* 补加约束
+
+alter table tb3 add constraint un_name unique (tb3_name);
+
+
+
+
+* 删约束
+
+ALTER TABLE Persons DROP CONSTRAINT uc_PersonID
+
+
+
+
+
+
+-------------------
+
+* 可以由两个列组成一个 primary key
+
+CREATE TABLE Persons
+(
+P_Id int NOT NULL,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255),
+CONSTRAINT pk_PersonID PRIMARY KEY (P_Id,LastName)
+)
+
+注释：在上面的实例中，只有一个主键 PRIMARY KEY（pk_PersonID）。然而，pk_PersonID 的值是由两个列（P_Id 和 LastName）组成的。
+
+
+
+
+
+
+-------------------
+
+* 补加 primary key： 
+
+ALTER TABLE Persons
+ADD PRIMARY KEY (P_Id)
+
+
+
+** 多个列的 PRIMARY KEY 约束：
+
+MySQL / SQL Server / Oracle / MS Access：
+ALTER TABLE Persons
+ADD CONSTRAINT pk_PersonID PRIMARY KEY (P_Id,LastName)
+
+
+
+
+
+
+
+-------------------
+
+撤销 PRIMARY KEY 约束：
+
+** MySQL：
+ALTER TABLE Persons
+DROP PRIMARY KEY
+
+** SQL Server / Oracle / MS Access：
+ALTER TABLE Persons
+
+
+
+
+
+
+-------------------
+
+* FOREIGN KEY
+-- 一个表的某一列指向另一个表的 primary key。
+
+CREATE TABLE Orders
+(
+O_Id int NOT NULL PRIMARY KEY,
+OrderNo int NOT NULL,
+P_Id int FOREIGN KEY REFERENCES Persons(P_Id)
+)
+
+
+？ FOREIGN KEY 约束用于预防破坏表之间连接的行为。
+
+？ FOREIGN KEY 约束也能防止非法数据插入外键列，因为它必须是它指向的那个表中的值之一。
+
+
+
+？ 命名 FOREIGN KEY 约束，并定义多个列的 FOREIGN KEY 约束：
+-- 哪里有多个列？？
+
+CREATE TABLE Orders
+(
+O_Id int NOT NULL,
+OrderNo int NOT NULL,
+P_Id int,
+PRIMARY KEY (O_Id),
+CONSTRAINT fk_PerOrders FOREIGN KEY (P_Id)
+REFERENCES Persons(P_Id)
+)
+
+
+
+
+
+
+
+
+
+-------------------
+
+* 补加：
+
+ALTER TABLE Orders
+ADD FOREIGN KEY (P_Id)
+REFERENCES Persons(P_Id)
+
+
+？ 多列？？
+ALTER TABLE Orders
+ADD CONSTRAINT fk_PerOrders
+FOREIGN KEY (P_Id)
+REFERENCES Persons(P_Id)
+
+
+
+
+
+
+
+
+
+
+
+-------------------
+
+* 撤销：
+
+ALTER TABLE Orders
+DROP FOREIGN KEY fk_PerOrders
+
+ALTER TABLE Orders
+DROP CONSTRAINT fk_PerOrders
+
+
+
+
+
+
+
+-------------------
+
+* check：
+
+？ 如果对一个表定义 CHECK 约束，那么此约束会基于行中其他列的值在特定的列中对值进行限制。
+
+
+CREATE TABLE Persons
+(
+P_Id int NOT NULL,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255),
+CONSTRAINT chk_Person CHECK (P_Id>0 AND City='Sandnes')
+)
+
+
+
+
+
+-------------------
+
+？ 在不读取整个表的情况下，索引使数据库应用程序可以更快地查找数据。
+？ how？？
+
+
+CREATE UNIQUE INDEX index_name
+ON table_name (column_name)
+-- 索引号是可以相同的；
+
+
+
+？ 索引是怎么用的？？
+
+CREATE INDEX PIndex
+ON Persons (LastName)
+
+如果您希望索引不止一个列，您可以在括号中列出这些列的名称，用逗号隔开：
+CREATE INDEX PIndex
+ON Persons (LastName, FirstName)
+
+
+
+
+
+
+-------------------
+
+* 删除表内的数据，但并不删除表本身： 
+TRUNCATE TABLE table_name
+
+
+
+
+-------------------
+
+* 修改操作：
+？ 不是 update 吗？？还是说 modify 只是针对表头？？
+
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype
+
+
+
+My SQL / Oracle：
+ALTER TABLE table_name
+MODIFY COLUMN column_name datatype
+
+Oracle 10G 之后版本:
+ALTER TABLE table_name
+MODIFY column_name datatype;
+
+
+
+
+-------------------
+
+我们通常希望在每次插入新记录时，自动地创建主键字段的值。
+我们可以在表中创建一个 auto-increment 字段。
+
+？ 删除记录后这个字段会怎样？？
+
+
+
+CREATE TABLE Persons
+(
+ID int IDENTITY(1,1) PRIMARY KEY,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255)
+)
+
+-- 在上面的实例中，IDENTITY 的开始值是 1，每条新记录递增 1。
+-- 提示：要规定 "ID" 列以 10 起始且递增 5，请把 identity 改为 IDENTITY(10,5)。
+
+
+
+
+
+** ORACLE
+
+CREATE SEQUENCE seq_person
+MINVALUE 1
+START WITH 1
+INCREMENT BY 1
+CACHE 10
+
+-- 上面的代码创建一个名为 seq_person 的 sequence 对象，它以 1 起始且以 1 递增。该对象缓存 10 个值以提高性能。
+-- cache 选项规定了为了提高访问速度要存储多少个序列值。
+
+-- 要在 "Persons" 表中插入新记录，我们必须使用 nextval 函数（该函数从 seq_person 序列中取回下一个值）：
+INSERT INTO Persons (ID,FirstName,LastName)
+VALUES (seq_person.nextval,'Lars','Monsen')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
