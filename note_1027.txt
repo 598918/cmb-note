@@ -1,0 +1,113 @@
+1. $.touchEvents.start 的 start，move，end 分别指代什么动作？？
+
+eventsTarget.off($.touchEvents.start, handleTouchStart);
+
+$.touchEvents = {
+    start: $.support.touch ? 'touchstart' : 'mousedown',
+    move: $.support.touch ? 'touchmove' : 'mousemove',
+    end: $.support.touch ? 'touchend' : 'mouseup'
+};
+
+-- 理解成 mousedown, mousemove, mouseup 就可以了；
+
+
+
+
+
+
+
+=======================
+
+2. move 的时候干了什么事情？？
+
+* start： 
+-- 记录开始点击的坐标： touchesStart.x、 touchesStart.y
+
+touchesStart.x = e.type === 'touchstart' ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+touchesStart.y = e.type === 'touchstart' ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+
+
+
+
+-----------------
+
+* move：
+
+！ container[0].scrollTop > container[0].offsetHeight 是什么情况？？
+-- 字面上的理解是，拖动距离不要超出本身的高度；
+
+-- container 跟随鼠标移动：
+container.transform('translate3d(0,' + translate + 'px,0)');
+
+
+
+
+-----------------
+
+* end：
+
+-- 触发定义好的 refresh 事件：
+
+if (refresh) {
+    //防止二次触发
+    if(container.hasClass('refreshing')) return;
+    container.addClass('refreshing');
+    container.trigger('refresh');
+} 
+
+
+! 怎么把 container 挪回原先的位置？？
+-- 通过 addClass('transitioning')
+if (translate) {
+    container.addClass('transitioning');
+    translate = 0;
+}
+
+transform: translate3d(0, 0, 0);
+&.transitioning, &.refreshing {
+  transition: transform 400ms; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. 箭头去哪了？？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
