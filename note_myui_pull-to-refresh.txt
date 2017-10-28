@@ -1,0 +1,107 @@
+1. 理解怎么使用，提供什么接口；
+
+<div class="content pull-to-refresh-content" data-ptr-distance="55">
+
+？ 难点应该是怎么定义 refresh 事件？？
+
+
+？ 没有输入完成动作？？
+？ 比如说拖动后添加一个 card 的事件，写在哪里？？
+
+$(document).on('refresh', '.pull-to-refresh-content',function(e) {
+	...
+	$.pullToRefreshDone('.pull-to-refresh-content');    // 额，这个只是重置，别想多了；
+
+
+}
+
+-- 应该是自定义了事件 .pull-to-refresh-content: refresh
+
+$('xx').on('refresh', function(){}); 
+
+if($('xx').scrollTop > 44){ 
+	$('xx').trigger('refresh'); 
+}
+
+
+-- 当用户开始下拉的时候， pull-to-refresh-layer会增加一个额外的 pull-down 类。
+
+-- 当用户下拉使pull-to-refresh-content元素下降超过44px时(即pull-to-refresh-layer元素完全可视)，pull-to-refresh-layer元素将自动添加"pull-up"类，使箭头转向180度，以提醒用户界面将在他松开手指时刷新。
+
+-- 当用户在“pull-up”状态释放下拉区块使页面刷新时，pull-to-refresh-layer区块将会添加一个"refreshing"类。在“refreshing”状态，箭头将会隐藏，同时会展现一个加载提示符。这个时候你通常需要进行Ajax异步
+
+请求并刷新页面内容。
+
+
+
+
+
+
+$.pullToRefreshTrigger(ptrContent) //触发特定界面的下拉刷新
+
+
+$.destroyPullToRefresh(ptrContent) //销毁/禁用 下拉刷新
+
+
+$.initPullToRefresh(ptrContent) - 初始化/启用下拉刷新
+
+
+
+
+-----------------
+
+! 手工 initPullToRefresh() ？？
+
+
+
+
+
+
+-----------------
+
+* 事件的触发
+
+1. 定义 refresh 事件：
+
+* 应该是这样被定义：
+
+$('..pull-to-refresh-content').on('refresh', function(){
+	...
+}); 
+
+
+-- 但是 msui 写成这样：
+$(document).on('refresh', '.pull-to-refresh-content',function(e) {})
+
+
+
+
+2. 触发：
+
+* 绑定 handleTouchEnd 事件的时候 trigger refresh：
+eventsTarget.on($.touchEvents.end, handleTouchEnd);
+
+container.trigger('refresh');
+
+
+
+
+
+-----------------
+
+* 一开始不要获取 scrollTop, offsetHeight 这些属性；
+-- 浏览器还没渲染完；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
