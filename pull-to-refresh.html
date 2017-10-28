@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>下拉刷新</title>
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet/less" href="less/myui.less" />
+		<script src="js/less.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/adapter.js"></script>
+		<script src="js/pull-to-refresh.js"></script>
+		
+		
+	</head>
+
+	<body>
+		<div id="test">111</div>
+		<br><br><br><br><br><br><br><br>
+		<div class="content pull-to-refresh-content" style="height:100px;">
+			下拉刷新？？
+		</div>
+		
+		<script>
+			$(function(){
+				$.initPullToRefresh('.pull-to-refresh-content');
+				
+				$(document).on('refresh', '.pull-to-refresh-content',function(e) {
+				    // 模拟2s的加载过程
+				    setTimeout(function() {
+				        // 加载完毕需要重置
+				        $.pullToRefreshDone('.pull-to-refresh-content');
+				    }, 100);
+				});
+			})
+		</script>
+	</body>
+
+</html>
