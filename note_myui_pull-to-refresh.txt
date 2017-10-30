@@ -1,57 +1,99 @@
-1. 理解怎么使用，提供什么接口；
+$.touchEvents.start 的 start，move，end 分别指代什么动作？？
 
-<div class="content pull-to-refresh-content" data-ptr-distance="55">
+eventsTarget.off($.touchEvents.start, handleTouchStart);
 
-？ 难点应该是怎么定义 refresh 事件？？
+$.touchEvents = {
+    start: $.support.touch ? 'touchstart' : 'mousedown',
+    move: $.support.touch ? 'touchmove' : 'mousemove',
+    end: $.support.touch ? 'touchend' : 'mouseup'
+};
 
-
-？ 没有输入完成动作？？
-？ 比如说拖动后添加一个 card 的事件，写在哪里？？
-
-$(document).on('refresh', '.pull-to-refresh-content',function(e) {
-	...
-	$.pullToRefreshDone('.pull-to-refresh-content');    // 额，这个只是重置，别想多了；
-
-
-}
-
--- 应该是自定义了事件 .pull-to-refresh-content: refresh
-
-$('xx').on('refresh', function(){}); 
-
-if($('xx').scrollTop > 44){ 
-	$('xx').trigger('refresh'); 
-}
-
-
--- 当用户开始下拉的时候， pull-to-refresh-layer会增加一个额外的 pull-down 类。
-
--- 当用户下拉使pull-to-refresh-content元素下降超过44px时(即pull-to-refresh-layer元素完全可视)，pull-to-refresh-layer元素将自动添加"pull-up"类，使箭头转向180度，以提醒用户界面将在他松开手指时刷新。
-
--- 当用户在“pull-up”状态释放下拉区块使页面刷新时，pull-to-refresh-layer区块将会添加一个"refreshing"类。在“refreshing”状态，箭头将会隐藏，同时会展现一个加载提示符。这个时候你通常需要进行Ajax异步
-
-请求并刷新页面内容。
+-- 理解成 mousedown, mousemove, mouseup 就可以了；
 
 
 
 
 
 
-$.pullToRefreshTrigger(ptrContent) //触发特定界面的下拉刷新
 
+=======================
 
-$.destroyPullToRefresh(ptrContent) //销毁/禁用 下拉刷新
+move 的时候干了什么事情？？
 
+* start： 
+-- 记录开始点击的坐标： touchesStart.x、 touchesStart.y
 
-$.initPullToRefresh(ptrContent) - 初始化/启用下拉刷新
+touchesStart.x = e.type === 'touchstart' ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+touchesStart.y = e.type === 'touchstart' ? e.originalEvent.targetTouches[0].pageY : e.pageY;
 
 
 
 
 -----------------
 
-! 手工 initPullToRefresh() ？？
+* move：
 
+！ container[0].scrollTop > container[0].offsetHeight 是什么情况？？
+-- 字面上的理解是，拖动距离不要超出本身的高度；
+
+-- container 跟随鼠标移动：
+container.transform('translate3d(0,' + translate + 'px,0)');
+
+
+
+** 箭头随下拉移动的几种状态：
+1. 下拉一开始，就添加 pull-down；         【1】
+2. 下拉距离大于某个值，就 pull-up 旋转；  【2】
+3. 复位就去掉 pull-up，pull-down；        【3】
+
+
+if (touchesDiff > 0 && scrollTop <= 0 || scrollTop < 0) {
+    if (useTranslate) {
+        e.preventDefault();
+        translate = (Math.pow(touchesDiff, 0.85) + startTranslate);
+        container.transform('translate3d(0,' + translate + 'px,0)');
+    } else {}
+    if ((useTranslate && Math.pow(touchesDiff, 0.85) > triggerDistance)) {
+        refresh = true;
+        container.addClass('pull-up').removeClass('pull-down');      【2】
+    } else {
+        refresh = false;
+        container.removeClass('pull-up').addClass('pull-down');      【1】
+    }
+} else {
+    container.removeClass('pull-up pull-down');                      【3】
+    refresh = false;
+    return;
+}
+
+
+
+
+-----------------
+
+* end：
+
+-- 触发定义好的 refresh 事件：
+
+if (refresh) {
+    //防止二次触发
+    if(container.hasClass('refreshing')) return;
+    container.addClass('refreshing');
+    container.trigger('refresh');
+} 
+
+
+! 怎么把 container 挪回原先的位置？？
+-- 通过 addClass('transitioning')
+if (translate) {
+    container.addClass('transitioning');
+    translate = 0;
+}
+
+transform: translate3d(0, 0, 0);
+&.transitioning, &.refreshing {
+  transition: transform 400ms; 
+}
 
 
 
@@ -91,13 +133,6 @@ container.trigger('refresh');
 
 * 一开始不要获取 scrollTop, offsetHeight 这些属性；
 -- 浏览器还没渲染完；
-
-
-
-
-
-
-
 
 
 
