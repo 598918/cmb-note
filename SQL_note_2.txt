@@ -78,7 +78,9 @@ ON Websites.id=access_log.site_id;
 -- 首先，连接的结果可以在逻辑上看作是由SELECT语句指定的列组成的新表。
 -- 左连接与右连接的左右指的是以两张表中的哪一张为基准，它们都是外连接。
 -- 外连接就好像是为非基准表添加了一行全为空值的万能行，用来与基准表中找不到匹配的行进行匹配。
--- 假设两个没有空值的表进行左连接，左表是基准表，左表的所有行都出现在结果中，右表则可能因为无法与基准表匹配而出现是空值的字段。
+-- 假设两个没有空值的表进行左连接，左表是基准表，左表的所有行都出现在结果中，右表则可能因为无法与基准表匹配
+
+而出现是空值的字段。
 
 
 
@@ -107,7 +109,9 @@ ORDER BY access_log.count DESC;
 * FULL OUTER JOIN
 
 -- 返回左表（Websites）和右表（access_log）中所有的行。
--- 如果 "Websites" 表中的行在 "access_log" 中没有匹配或者 "access_log" 表中的行在 "Websites" 表中没有匹配，也会列出这些行。
+-- 如果 "Websites" 表中的行在 "access_log" 中没有匹配或者 "access_log" 表中的行在 "Websites" 表中没有匹配，
+
+也会列出这些行。
 
 
 
@@ -271,7 +275,9 @@ City varchar(255),
 CONSTRAINT pk_PersonID PRIMARY KEY (P_Id,LastName)
 )
 
-注释：在上面的实例中，只有一个主键 PRIMARY KEY（pk_PersonID）。然而，pk_PersonID 的值是由两个列（P_Id 和 LastName）组成的。
+注释：在上面的实例中，只有一个主键 PRIMARY KEY（pk_PersonID）。然而，pk_PersonID 的值是由两个列（P_Id 和 
+
+LastName）组成的。
 
 
 
@@ -505,12 +511,26 @@ START WITH 1
 INCREMENT BY 1
 CACHE 10
 
--- 上面的代码创建一个名为 seq_person 的 sequence 对象，它以 1 起始且以 1 递增。该对象缓存 10 个值以提高性能。
+-- 上面的代码创建一个名为 seq_person 的 sequence 对象，它以 1 起始且以 1 递增。该对象缓存 10 个值以提高性能
+
+。
 -- cache 选项规定了为了提高访问速度要存储多少个序列值。
 
 -- 要在 "Persons" 表中插入新记录，我们必须使用 nextval 函数（该函数从 seq_person 序列中取回下一个值）：
 INSERT INTO Persons (ID,FirstName,LastName)
 VALUES (seq_person.nextval,'Lars','Monsen')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
