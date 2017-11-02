@@ -1,0 +1,49 @@
+
+【ckeditor】
+
+
+-- lang
+-- skins
+
+-- ckeditor.js
+-- config.js
+-- contents.css
+-- styles.js
+
+
+<textarea id="contenteditor"></textarea>
+
+// 文本编辑器
+var currenteditor = null;
+CKEDITOR.disableAutoInline = true;
+var contenthandle = CKEDITOR.replace( 'contenteditor' );
+$('body.edit .demo').on("click","[data-target=#editorModal]",function(e) {
+	e.preventDefault();
+	currenteditor = $(this).parents('.box').find('.box-content');
+	var eText = currenteditor.prop("outerHTML");
+	contenthandle.setData(eText);
+});
+
+
+
+
+
+
+【ace】
+
+-- ace.js
+-- mode-javascript.js
+-- worker-javascript.js
+
+
+
+<div id="code" style="min-height:400px">
+function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}
+</div>
+
+// js 编辑器
+var editor = ace.edit("code");
+editor.getSession().setMode("ace/mode/javascript");
