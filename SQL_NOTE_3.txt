@@ -84,7 +84,7 @@ SELECT A.BRN_NBR SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A
 
 ----------------------------
 
-？ 当前排名和历史排名 sql 上有啥不同？？
+！ 当前排名和历史排名 sql 上有啥不同？？
 
 
 SELECT B.GRP_NBR BRN_NBR,SUM(A.SUM_CNT) SUM_CNT FROM BUS.REAL A 
@@ -125,3 +125,194 @@ SELECT B.GRP_NBR AS BRN_NBR,SUM(A.AVG_CNT) AS AVG_CNT,SUM(A.SUM_CNT) AS SUM_CNT 
 
 43','755540','752522','755541','656','752521','756','744124','755483','755484','755485','755539','755486','755487','755538','755489','755536','752590','755535','755480','755481','755482') 
 	GROUP BY B.GRP_NBR ORDER BY 3 DESC 
+
+
+
+-- 额，好像就是统计今天的和今年的区别；
+
+
+
+
+
+
+
+----------------------------
+
+* foreign key
+-- 结合 reference 来用，就是值参考 reference 表的值的范围；
+
+CREATE TABLE Orders
+(
+O_Id int NOT NULL,
+OrderNo int NOT NULL,
+P_Id int,
+PRIMARY KEY (O_Id),
+CONSTRAINT fk_PerOrders FOREIGN KEY (P_Id)
+REFERENCES Persons(P_Id)
+)
+
+
+个人觉得，foreign key就是表与表之间的某种约定的关系，由于这种关系的存在，我们能够让表与表之间的数据，更加的完整，关连性更强。关于完整性，关连性我举个例子，大家就会明白了。
+有二张表，一张是用户表，一张是订单表：
+1，如果我删除了用户表里的用户，那么订单表里面根这个用户有关的数据，就成了无头数据了，不完整了。
+2，如果我在订单表里面，随便插入了一条数据，这个订单在用户表里面，没有与之对应的用户。这样数据也不完整了。
+如果有外键的话，就方便多了，可以不让用户删除数据，或者删除用户的话，通过外键同样删除订单表里面的数据，这样也能让数据完整。
+
+
+
+
+
+
+
+
+
+
+
+
+
+* auto-increasment
+
+
+mysql:  AUTO_INCREMENT
+-- ID int NOT NULL AUTO_INCREMENT,
+
+MS SQL Server: IDENTITY 
+-- ID int IDENTITY(1,1) PRIMARY KEY,
+
+oracle: SEQUENCE
+CREATE SEQUENCE seq_person
+MINVALUE 1
+START WITH 1
+INCREMENT BY 1
+CACHE 10
+
+要在 "Persons" 表中插入新记录，我们必须使用 nextval 函数（该函数从 seq_person 序列中取回下一个值）：
+INSERT INTO Persons (ID,FirstName,LastName)
+VALUES (seq_person.nextval,'Lars','Monsen')
+
+
+
+
+
+-------------------
+
+* index
+
+？ 用户无法看到索引，它们只能被用来加速搜索/查询。
+-- 就是潜在的增加性能的东东？？
+
+？ 它的原理是什么？？
+
+-- 你可以先看看数据结构->排序，查找，B-Tree，red-black tree等内容。然后看看数据库系统原理的一些基本概念，不用全看懂。然后下载MySQL数据库，安装，写一些测试程序，往表里写个百八十万条记录，然后查询。
+
+。。
+
+-- 如果您希望索引不止一个列，您可以在括号中列出这些列的名称，用逗号隔开：
+CREATE (UNIQUE) INDEX PIndex
+ON Persons (LastName, FirstName)
+
+
+
+
+
+-------------------
+
+.1 什么是索引？
+
+　　SQL索引有两种，聚集索引和非聚集索引，索引主要目的是提高了SQL Server系统的性能，加快数据的查询速度与减少系统的响应时间 
+
+下面举两个简单的例子：
+
+图书馆的例子：一个图书馆那么多书，怎么管理呢？建立一个字母开头的目录，例如：a开头的书，在第一排，b开头的在第二排，这样在找什么书就好说了，这个就是一个聚集索引，可是很多人借书找某某作者的，不知道书
+
+名怎么办？图书管理员在写一个目录，某某作者的书分别在第几排，第几排，这就是一个非聚集索引
+
+字典的例子：字典前面的目录，可以按照拼音和部首去查询，我们想查询一个字，只需要根据拼音或者部首去查询，就可以快速的定位到这个汉字了，这个就是索引的好处，拼音查询法就是聚集索引，部首查询就是一个非聚
+
+集索引.
+
+    看了上面的例子，下面的一句话大家就很容易理解了：聚集索引存储记录是物理上连续存在，而非聚集索引是逻辑上的连续，物理存储并不连续。就像字段，聚集索引是连续的，a后面肯定是b，非聚集索引就不连续了，
+
+就像图书馆的某个作者的书，有可能在第1个货架上和第10个货架上。还有一个小知识点就是：聚集索引一个表只能有一个，而非聚集索引一个表可以存在多个。
+
+
+
+
+SQL索引一步到位 - 老Key - 博客园
+http://www.cnblogs.com/AK2012/archive/2013/01/04/2844283.html
+
+
+SQL Server--索引 - CSDN博客
+http://blog.csdn.net/liujiahan629629/article/details/7803929
+
+
+
+
+
+
+-------------------
+
+* 视图：
+-- 就像虚拟表；数据都是最新的；
+
+CREATE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+
+
+？ 怎么更新视图？？
+
+
+
+
+
+
+-------------------
+
+* 日期
+
+
+-- 如果有分秒的信息，下面的 sql 将得不到数据：
+
+SELECT * FROM Orders WHERE OrderDate='2008-11-11'
+
+或
+
+SELECT * FROM Orders WHERE OrderDate='2008-11-11 00：00：00'
+
+
+
+GETDATE()	返回当前的日期和时间
+DATEPART()	返回日期/时间的单独部分
+DATEADD()	在日期中添加或减去指定的时间间隔
+DATEDIFF()	返回两个日期之间的时间
+CONVERT()	用不同的格式显示日期/时间
+
+
+
+
+
+
+-------------------
+
+* 判断是否 NULL
+
+-- SQL Server / MS Access
+SELECT ProductName,UnitPrice*(UnitsInStock+ISNULL(UnitsOnOrder,0))
+FROM Products
+
+-- Oracle
+Oracle 没有 ISNULL() 函数。不过，我们可以使用 NVL() 函数达到相同的结果：
+SELECT ProductName,UnitPrice*(UnitsInStock+NVL(UnitsOnOrder,0))
+FROM Products
+
+-- MySQL
+MySQL 也拥有类似 ISNULL() 的函数。不过它的工作方式与微软的 ISNULL() 函数有点不同。
+在 MySQL 中，我们可以使用 IFNULL() 函数，如下所示：
+SELECT ProductName,UnitPrice*(UnitsInStock+IFNULL(UnitsOnOrder,0))
+FROM Products
+
+-- 或者我们可以使用 COALESCE() 函数，如下所示：
+SELECT ProductName,UnitPrice*(UnitsInStock+COALESCE(UnitsOnOrder,0))
+FROM Products
