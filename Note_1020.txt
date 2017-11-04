@@ -1,0 +1,189 @@
+把 java 的数据类型对比教程来看看。
+
+
+
+
+* 监控管理
+
+
+？ 怎么调用 WEB-INF 里面的 LV35_Framework.Front-1.1.5.jar 资源呢？？
+
+
+
+
+
+
+
+
+2. 前端平台
+
+
+
+
+
+
+3. 做一个拖拽插件；
+
+
+
+
+4. 做一个 table 插件；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. 前端平台跑起来
+-- 放到哪个目录？？
+-- 看吴老板写的路径，应该是放到和 component 平级；这样结构上也比较合理；
+
+define(['framework_front/components/config', 'libs/jui/jquery-ui.min.js', 'libs/jui/jquery.ui.touch-punch.min.js', 'libs/jui/jquery.htmlClean.js'], function(config){
+
+？ 这里的路径和 framework、require.js 有什么联系？？
+
+
+？ framework.js、component/config.js 之间的关系？？
+
+
+
+
+
+
+
+
+---------------------
+
+2. 看完吴老板修改的代码结构
+
+
+
+2.1 拖动
+-- 新的拖动在哪里？？
+
+$(".sidebar-nav .lyrow").draggable({
+	connectToSortable : ".demo",
+	helper : "clone",
+	handle : ".drag, .preview",
+
+
+？ 为什么不用原先的 drag，要用 preview？？
+-- 因为代码结构改动了？？
+
+
+
+先不管 .preview， 回头再改。
+
+
+
+
+
+
+
+---------------------
+
+2.2 拖一个 input 什么过来看看先；
+
+！ tpl 是怎么被调用的呢？？
+-- input.js 里面；路径不对；
+
+
+
+
+
+
+---------------------
+
+2.3 拖动一个组件过来代码是怎么产生的？
+
+* drag 的时候 clone；
+
+？ clone 哪个标签里面的内容？？
+
+？ 比如 tpl 里的，怎么被调用？？
+
+
+index.js: config.genCompnonets();   -> config.js: genCompnonets()   -> input(select、label).create()    -> 
+
+define(['text!framework_front/components/form/label/label.tpl'], function(template){
+	function create(selector) {
+		var $sel = $(selector);
+		$sel.append(template);
+	}
+	
+	return {
+		create : create
+	};
+});
+
+？ template 是怎么被定义成 xx.tpl 的？？
+
+
+
+
+？ 有 bug，删除 row 会把 container 都删掉了；
+
+
+
+
+
+
+---------------------
+
+颜色方案；
+
+1. buttons: 
+
+<div class="m-btns-group">
+	<button class="m-btn">
+		<i class="fa fa-square green"></i>
+
+
+
+$('color-scheme .fa').click(function(){
+	if(this.hasClass('green')){
+		var $('<link rel="stylesheet" href="new-"+ green +".css" />').appendTo($(head));
+		$('head').find('link[href="new.css"]').remove();
+	}
+})
+
+
+
+
+
+
+
+2. 调整颜色
+
+
+
+
+
+
+
+---------------------
+
+! 原先的输出也是错的；应该输出元素本身在内的 html；
+-- $("xxx").prop("outerHTML");
+
+
+
+* 有 bug，刚开始没法一下子去到源码；
+-- 默认打开源码模式试试；
+config.startupMode = 'source';
+
+
+
+
+
+
