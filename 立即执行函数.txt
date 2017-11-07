@@ -1,0 +1,184 @@
+？ 立即执行函数写法？？
+
+使用"立即执行函数"（Immediately-Invoked Function Expression，IIFE），可以达到不暴露私有成员的目的。
+　　var module1 = (function(){
+　　　　var _count = 0;
+　　　　var m1 = function(){
+　　　　　　//...
+　　　　};
+　　　　var m2 = function(){
+　　　　　　//...
+　　　　};
+　　　　return {
+　　　　　　m1 : m1,
+　　　　　　m2 : m2
+　　　　};
+　　})();
+
+使用上面的写法，外部代码无法读取内部的_count变量。
+　　console.info(module1._count); //undefined
+
+！ 外部代码无法获取内部变量_count，但是可以获取 m1，m2？？
+-- 可以；
+-- 但 module1.m1 只是打印函数；module1.m1() 才是执行函数；
+
+
+
+
+------------------------
+
+？ 不要立即执行会怎样？？
+var module1 = function() {　　　　
+	var _count = 0;　　　　
+	var m1 = function() {　　　　　　
+		_count++;　　　　
+		return _count;
+	};　　　　
+	var m2 = function() {　　　　　　
+		_count * 2;　　　　
+		return _count;
+	};　　　　
+	return {　　　　　　
+		m1: m1,
+		m2: m2　　　　
+	};　　
+};
+
+console.log(module1.m1());
+
+-- 输出：module1.m1 is not a function
+？ why？？这不是一个函数表达式吗？？
+
+-- module1 只是被声明了，还没有被执行；
+-- 只有被执行了，才会有返回值；
+
+
+
+
+
+
+------------------------
+
+-- 要在函数体后面加括号就能立即调用，则这个函数必须是函数表达式，不能是函数声明。
+
+【1】
+var module1 = function() {　　　　
+	var _count = 0;　　　　
+	var m1 = function() {　　　　　　
+		_count++;　　　　
+		return _count;
+	};　　　　
+	var m2 = function() {　　　　　　
+		_count * 2;　　　　
+		return _count;
+	};　　　　
+	return {　　　　　　
+		m1: m1,
+		m2: m2　　　　
+	};　　
+}();
+
+
+【2】
+var module1 = (function() {　　　　
+	var _count = 0;　　　　
+	var m1 = function() {　　　　　　
+		_count++;　　　　
+		return _count;
+	};　　　　
+	var m2 = function() {　　　　　　
+		_count * 2;　　　　
+		return _count;
+	};　　　　
+	return {　　　　　　
+		m1: m1,
+		m2: m2　　　　
+	};　　
+})();
+
+-- 【2】比【1】多了一个括号，() 括起来就表示里面是个表达式了，再加个()就立即执行；
+
+
+
+
+------------------------
+
+？ 函数表达式要怎么用？？
+-- 函数声明是用函数名；
+-- 函数表达式后面可以加括号立即调用该函数，函数声明不可以，只能以 fnName() 形式调用。
+
+
+
+
+
+
+
+------------------------
+
+2. 放大模式，
+
+var module1 = (function (mod){
+　　　　mod.m3 = function () {
+　　　　　　//...
+　　　　};
+　　　　return mod;
+　　})(module1);
+
+上面的代码为module1模块添加了一个新方法m3()，然后返回新的module1模块。
+-- module1 是会变成参数 mod；
+
+？ 解决什么问题？？
+-- 一个模块需要继承另一个模块
+
+
+
+
+
+
+
+
+------------------------
+
+-- 独立性是模块的重要特点，模块内部最好不与程序的其他部分直接交互。
+-- 为了在模块内部调用全局变量，必须显式地将其他变量输入模块。
+
+var module1 = (function ($, YAHOO) {
+	//...
+})(jQuery, YAHOO);
+
+？ 跟平时写的代码有什么联系？？
+
+
+
+$(document).ready(function() {
+	...
+})
+？ $(document).ready() 是怎么实现的呢？？
+
+
+
+function getPreviewHtml(){
+	var $preview = $(".demo").clone();
+}
+？ 现在回头看，$() 就能选中元素觉得很神奇；
+
+
+
+;(function($, window, document, undefined) {
+	...
+})(jQuery, window, document);
+-- 插件的写法就是“马上执行”；
+-- 其实它可以不用包起来，包起来是为了不和其他代码发生冲突；
+
+
+
+
+Javascript模块化编程（一）：模块的写法 - 阮一峰的网络日志
+http://www.ruanyifeng.com/blog/2012/10/javascript_module.html
+
+
+
+
+
+
+
