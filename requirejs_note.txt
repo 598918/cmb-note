@@ -1,0 +1,236 @@
+* require.js
+
+？ 自己把 between 的项目用 require.js 写一下；
+
+
+4. 组件之间的关系： 
+
+-- LV35_Framework.Front -> src/main/resource -> framework.js
+
+-- framework.js 和 new.html 最终是平级的
+
+！ 吴老板把 require.js 改名成 framework.js 了？？
+-- 应该是的；
+
+
+
+
+4.1 马上执行？？
+
+-- ;(function(){})()
+
+;(function(
+		AppConst, 
+		iVersion, 
+		iRelRoot, 
+		iImportCss
+	){
+	setUrlInfo();
+	
+	require.config({baseUrl: AppConst.root});
+
+	//配置文件需要加上版本
+	var libsConfig = AppConst.root + '/framework_front/libs/config.js';                  // 【1】
+	if(AppConst.version){
+		libsConfig += '?v=' + AppConst.version
+	}
+
+	require([libsConfig], function(){              // 在这里引入 config.js
+		require(['bootstrap'], function(){
+			if(AppConst.explorerType == 'IE' && AppConst.explorerVersion < 9){
+				require(['html5shiv','respond']);
+			}
+			
+			//加载组件配置 -> 主页面js -> 主页面css
+			require(['framework_front/components/config'], function(){           // 【2】
+				var pageUrl,cssUrl;
+				if(iRelRoot){
+					var singlePage = AppConst.page.split('.')[0];
+					pageUrl = iRelRoot + singlePage;
+					cssUrl = iRelRoot + singlePage;
+				}else{
+					var singlePage = AppConst.pageRelUrl.split('.')[0];
+					pageUrl = singlePage;
+					cssUrl = singlePage;
+				}
+				
+				require([pageUrl], function(){
+					if(iImportCss){
+						require(['css!' + cssUrl]);
+					}
+					
+					if(AppConst.explorerType == 'IE' && AppConst.explorerVersion < 10){
+						$(function() {
+							$("input, textarea").placeholder();
+						});
+					}
+				});
+			});
+		});
+	});
+})(AppConst, iVersion, iRelRoot, iImportCss);
+
+
+
+4.1.1 require 的语法？
+
+-- require.config({baseUrl: AppConst.root});
+-- require(['bootstrap'], function(){})
+
+
+
+4.1.3 require 要依赖的资源会先加载吗？？
+-- 并没有。比如 bootstrap.js 就比 framework_front/components/config 先加载；
+
+
+
+
+4.1.2 lib/config.js 和 component/config.js 有什么不同？？
+
+* config.js 
+require.config({
+	baseUrl: AppConst.root,
+	paths: {
+		'jquery': 'framework_front/libs/jquery/jquery',
+		'jquery.placeholder': 'framework_front/libs/jquery/jquery.placeholder',
+		'bootstrap': 'framework_front/libs/bootstrap/bootstrap',
+		'html5shiv': 'framework_front/libs/plugin-h5/html5shiv',
+		'respond': 'framework_front/libs/plugin-h5/respond',
+		'echart': 'framework_front/libs/echart/echarts',
+		'datecontrol': 'framework_front/libs/datecontrol/WdatePicker'
+	},
+	map: {
+		'*': {
+			'css': 'framework_front/libs/require/css',
+			'text': 'framework_front/libs/require/text',
+			'domReady': 'framework_front/libs/require/domReady'
+			}
+	},
+	shim: {
+		'bootstrap': ['jquery','css!framework_front/libs/bootstrap/bootstrap','css!framework_front/libs/font-awesome/font-awesome'] 
+	}
+});
+
+
+require.config({
+	paths: {
+		'framework': 'framework_front/components/framework/framework',
+		'loading': 'framework_front/components/loading/loading',
+		'cookie': 'framework_front/components/cookie/cookie',
+		'branch': 'framework_front/components/branch/branch',
+		'table': 'framework_front/components/table/table',
+		'tablestatic': 'framework_front/components/table/tableStatic',
+		'excel': 'framework_front/components/excel/excel',
+		'user': 'framework_front/components/user/user',
+		'users': 'framework_front/components/users/users',
+		'singleselect': 'framework_front/components/singleselect/singleselect',
+		'multiselect': 'framework_front/components/multiselect/multiselect',
+		'dragModal': 'framework_front/components/dragModal/dragModal',
+		'validation': 'framework_front/components/validation/validation',
+		'upload': 'framework_front/components/upload/upload',
+		'uploads': 'framework_front/components/uploads/uploads',
+		'editor': 'framework_front/components/editor/editor'
+	},
+	shim: {
+		//ext: {
+		//	deps: [
+		//		'css!framework_front/components/ext1/ext1'
+        //	]
+		//}
+		//'framework': ['framework_front/components/framework/CMBAjax'],
+	}
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5. tpl 是怎么被调用的？？
+
+
+
+------------------
+
+* require.js 可以设置一个主入口程序 main.js;
+
+<script src="js/require.js" data-main="js/main"></script>
+
+// main.js
+require(['moduleA', 'moduleB', 'moduleC'], function (moduleA, moduleB, moduleC){
+	// some code here
+});
+
+
+
+
+------------------
+
+* require.config({})
+-- 吴老板把 require.config({}) 写到一个文件里了；
+
+var libsConfig = AppConst.root + '/framework_front/libs/config.js';
+if(AppConst.version){
+	libsConfig += '?v=' + AppConst.version
+}
+require([libsConfig], function(){
+	...
+})
+
+
+
+* 但是也配置了一个 baseUrl
+-- require.config({baseUrl: AppConst.root});
+
+
+
+
+
+------------------
+
+* CommonJS 的写法：
+
+var math = require('math');
+math.add(2, 3);
+
+-- 会因为延时加载不上而发生错误；所以要用 AMD，异步的；
+
+
+
+
+* AMD
+-- 也采用require()语句加载模块，但是不同于CommonJS，它要求两个参数：
+
+require([module], callback);
+
+require(['math'], function (math) {
+	math.add(2, 3);
+});
+
+
+
+
+
+------------------
+
+Javascript模块化编程（三）：require.js的用法 - 阮一峰的网络日志
+http://www.ruanyifeng.com/blog/2012/11/require_js.html
+
+
+
