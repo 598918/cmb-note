@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>图片浏览器</title>
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet/less" href="less/myui.less" />
+		<script src="js/less.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/adapter.js"></script>
+		<script src="js/swiper.js"></script>
+		<script src="js/swiper-init.js"></script>
+		<script src="js/photo-browser.js"></script>
+	</head>
+
+	<body>
+		<div class="page-current">
+			<a href="#" class="button pb-popup">Popup</a>	
+		</div>
+		
+		<script>
+			$(function() {
+				var myPhotoBrowserCaptions = $.photoBrowser({
+					photos: [{
+							url: 'img/e1.jpg',
+							caption: 'Caption 1 Text'
+						},
+						{
+							url: 'img/e2.jpg',
+							caption: 'Second Caption Text'
+						},
+						// 这个没有标题
+						{
+							url: 'img/e3.jpg',
+						},
+					],
+					theme: 'dark',
+					type: 'standalone'
+				});
+				$(document).on('click', '.pb-popup', function() {
+					myPhotoBrowserCaptions.open();
+				});
+			})
+		</script>
+	</body>
+
+</html>
