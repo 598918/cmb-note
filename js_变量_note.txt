@@ -1,0 +1,107 @@
+* 前一个例子传参了，改变的只是参数；
+* 后一个例子改的都是全局变量 a；
+
+var a = 1;
+function fn(a) {
+	console.log(a);
+	a = 2;
+}
+fn(a);
+console.log(a);   // 先 1 后  1
+
+var a = 1;
+function fn() {
+	console.log(a);
+	a = 2;
+}
+fn();
+console.log(a);   // 先 1 后 2
+
+
+
+
+
+
+
+---------------------
+
+var a = 1;
+function fn() {
+	var a = 2;
+	console.log(a);
+}
+fn();
+console.log(a); 
+
+输出：
+2 
+1
+
+
+
+
+var a = 1;
+function fn() {
+	console.log(a);
+	var a = 2;
+}
+fn();
+console.log(a); 
+
+输出 
+undefined
+1
+
+
+
+-- 后面的 1 好理解，都是全局变量嘛。
+？ 但局部变量 a 如果说是被变量提升的话，为什么不把被提升的 a = 2 也一块提升了呢？？
+
+
+
+
+
+
+
+
+---------------------
+
+var foo = 1;
+function bar() {
+	foo = 10;
+	return;
+	function foo() {}
+}
+bar();
+console.log(foo)  // foo 应该是10？？然而输出的是 1 ？？
+
+-- 好像有点点可以理解；先解释阶段：
+
+vo = {
+foo: undefined
+bar: <Function "bar">
+}
+
+-- foo 已经被定义成局部变量了，不会影响外面的全局变量 foo = 1；
+
+
+
+
+
+
+
+---------------------
+
+var foo=1;
+function bar( ) {
+	foo=10;
+	return function foo() { };
+}
+bar( );
+alert(foo);
+
+-- 最后对于这道题 为什么结果是10 不是1 
+-- 你只要明白 return function foo() { }; 其实是一个函数表达式 不是函数定义. 原因就在这里
+
+
+
