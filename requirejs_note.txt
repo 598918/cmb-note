@@ -3,7 +3,78 @@
 ？ 自己把 between 的项目用 require.js 写一下；
 
 
-4. 组件之间的关系： 
+？ path 只是定义路径，没有引进吧？？
+？ 真实的 path 是不是 baseUrl + path？？
+
+
+？ bs and jq？？
+是不是和 shim 有关，shim 是用来加载不是 AMD 标准写的东东；
+
+shim: {
+	'bootstrap': ['jquery','css!framework_front/libs/bootstrap/bootstrap','css!framework_front/libs/font-awesome/font-awesome'] 
+}
+
+
+shim: {
+	'underscore':{
+		exports: '_'
+	},
+	'backbone': {
+		deps: ['underscore', 'jquery'],
+		exports: 'Backbone'
+	}
+}
+
+？ shim 有好几种写法吗？？
+-- 估计是第一个参数的 deps 写成数组；
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------
+
+* AMD 标准
+-- define 里面的东东要 return 同名的对象出来吗？？
+
+
+// a.js
+define(function(){  
+      
+    function add(v1,v2)  
+    {  
+        return v1+v2;  
+    }  
+      
+    return {"add":add};  
+  
+});  
+
+
+define(['xxx/a'], function(){
+	a.add();
+})
+
+-- require 跟文件名有关系，跟文件名里面的方法名倒是没啥关系；
+
+
+
+
+ 
+
+
+
+
+-------------------
+
+【组件之间的关系】
 
 -- LV35_Framework.Front -> src/main/resource -> framework.js
 
@@ -13,7 +84,112 @@
 -- 应该是的；
 
 
+// new.js
+define(['components/config', 'ace/ace.js', 'skin/js/jquery-ui.min.js', 'skin/js/jquery.ui.touch-punch.min.js', 'skin/js/jquery.htmlClean.js', 
+        'ckeditor/ckeditor.js','ckeditor/lang/zh-cn.js', 'ckeditor/config.js'], function(config){
+	...
+})
 
+-- components/config.js 定义了前端开发平台的一堆控件；
+
+// components/config.js
+require.config({
+	paths: {
+		'row': 'components/row/row',
+		...
+	}
+});
+
+//目录配置及映射关系
+define(['row', 'p', 'address', 'blockquote', 'ol', 'ul', 'dl', 'table', 'form', 
+        'input', 'textarea', 'checkbox', 'checkbox_inline', 'select', 'label', 'title'], 
+function(row, p, address, blockquote, ol, ul, dl, table, form, 
+		input, textarea, checkbox, checkbox_inline, select, label, title){
+
+	function genCompnonets(){
+		var id = "";
+
+		//行、列
+		id = 'component_row';
+		$('.sidebar-nav').append(genUl('布局', id));
+		row.create('#' + id);    // 这里用的是 row return 的 create() 方法；
+	}
+	
+	function genUl(title, boxesid){
+		var html = 
+			'<ul class="nav nav-list accordion-group"> \
+				<li class="nav-header"><i class="fa fa-caret-down"></i>' + title + '</li> \
+				<li class="boxes" id="' + boxesid + '"> \
+				</li> \
+			</ul>';
+		return html;
+	}
+	
+	return {
+		genCompnonets : genCompnonets
+	};
+});
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------
+
+* 组件的 js，tpl
+
+？tpl 是怎么被调用的？？
+
+define(['text!components/form/input/input.tpl'], function(template){
+	function create(selector) {
+		var $sel = $(selector);
+		$sel.append(template);
+	}
+	
+	return {
+		create : create
+	};
+});
+
+？ text!xxx ？？
+
+
+
+【注】 这也是一个模块的写法；
+
+　　// math.js
+　　define(function (){
+　　　　var add = function (x,y){
+　　　　　　return x+y;
+　　　　};
+　　　　return {
+　　　　　　add: add
+　　　　};
+　　});
+
+　　加载方法如下：
+　　// main.js
+　　require(['math'], function (math){
+　　　　alert(math.add(1,1));
+　　});
+
+
+
+
+
+
+
+
+
+
+=======================
 
 4.1 马上执行？？
 
@@ -69,6 +245,7 @@
 		});
 	});
 })(AppConst, iVersion, iRelRoot, iImportCss);
+
 
 
 
@@ -144,28 +321,6 @@ require.config({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-5. tpl 是怎么被调用的？？
-
-
-
 ------------------
 
 * require.js 可以设置一个主入口程序 main.js;
@@ -233,4 +388,8 @@ Javascript模块化编程（三）：require.js的用法 - 阮一峰的网络日
 http://www.ruanyifeng.com/blog/2012/11/require_js.html
 
 
+
+
+使用requireJS加载不符合AMD规范的js文件：shim的使用方式和实现原理 - CSDN博客
+http://blog.csdn.net/aitangyong/article/details/44225859
 
