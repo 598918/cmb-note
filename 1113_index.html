@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" href="less/bootstrap.min.css" />
+		<link rel="stylesheet/less" href="less/myui.less" />
+		<script src="js/less.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/nav.js"></script>
+		<script src="js/user.js"></script>
+		<script>
+			$(function() {
+				var ifrm = document.getElementById('mainFrame');
+				ifrm.onload = ifrm.onreadystatechange = function() {
+					if(this.readyState && this.readyState != 'complete') return;
+					else {
+						$(this).contents().find('body').css('padding-top', '50px');
+					}
+				};
+
+				var menuObj = [{
+					"PAG_NAM": "经营综述",
+					"DES_MSG": "",
+					"UPP_PAG": "0000",
+					"PAG_IMG": "",
+					"PAG_UID": "1000",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/pages/main/main.html?v=2.2.1",
+					"PAG_TYP": "MENU"
+				}, {
+					"PAG_NAM": "管理报表",
+					"DES_MSG": "",
+					"UPP_PAG": "0000",
+					"PAG_IMG": "",
+					"PAG_UID": "2000",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/LF62_Product/pages/newcatalog.html?v=2.2.1",
+					"PAG_TYP": "CONT"
+				}, {
+					"PAG_NAM": "即时查询",
+					"DES_MSG": "",
+					"UPP_PAG": "0000",
+					"PAG_IMG": "",
+					"PAG_UID": "3000",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/LF62_Product/pages/new.html?v=2.2.1",
+					"PAG_TYP": "CONT"
+				}, {
+					"PAG_NAM": "计划管理",
+					"DES_MSG": "",
+					"UPP_PAG": "0000",
+					"PAG_IMG": "",
+					"PAG_UID": "4000",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/LF62_Product/pages/modify.html?v=2.2.1",
+					"PAG_TYP": "CONT"
+				}, {
+					"PAG_NAM": "系统管理",
+					"DES_MSG": "",
+					"UPP_PAG": "0000",
+					"PAG_IMG": "",
+					"PAG_UID": "5000",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/LF62_Product/pages/halt.html?REV_TYP=S&v=2.2.1",
+					"PAG_TYP": "CONT"
+				}, {
+					"PAG_NAM": "经营分析",
+					"DES_MSG": "",
+					"UPP_PAG": "1000",
+					"PAG_IMG": "",
+					"PAG_UID": "1001",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/LF62_Product/pages/halt.html?REV_TYP=S&v=2.2.1",
+					"PAG_TYP": "CONT"
+				}, {
+					"PAG_NAM": "重点产品",
+					"DES_MSG": "",
+					"UPP_PAG": "1000",
+					"PAG_IMG": "",
+					"PAG_UID": "1002",
+					"LNK_TYP": "EMB",
+					"PAG_URL": "${root}/LF62_Product/pages/halt.html?REV_TYP=S&v=2.2.1",
+					"PAG_TYP": "CONT"
+				}];
+				$('#nav').nav({
+					'menu': menuObj
+				});
+
+				$('#user').user({
+					"USR_IMG": "",
+					"USR_NAM": "吴汝林",
+					"USR_UID": "80074378",
+					"USR_YID": "074378",
+					"USR_LNK": [{
+							"URL": "",
+							"NUM": 168,
+							"ICO": "fa fa-bell",
+							"NAM": "待办"
+						},
+						{
+							"URL": "",
+							"NUM": "",
+							"ICO": "fa fa-file-text",
+							"NAM": "已办"
+						}, {
+							"URL": "",
+							"NUM": "",
+							"ICO": "fa fa-spinner",
+							"NAM": "其他"
+						}
+					]
+				});
+			})
+		</script>
+	</head>
+
+	<body class="framework">
+		<div class="frameworkHeader header">
+			<div class="logo col-xs-2">
+				<img src="img/cmb.png"> 中间业务管理分析平台
+			</div>
+			<div class="nav col-xs-7" id="nav">
+			</div>
+			<div class="user col-xs-1" id="user">
+			</div>
+			<div class="search col-xs-2">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Search...">
+					<span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+				</div>
+			</div>
+		</div>
+		<iframe class="frameworkBody" id="mainFrame" src="main.html" scrolling="yes" style="width:100%;"></iframe>
+	</body>
+
+</html>
