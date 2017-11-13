@@ -1,0 +1,87 @@
+.summary {
+    background: #fff;
+    border:1px solid #d9d9d9;
+    overflow: hidden;
+    h1 {
+        font-size: .8rem;
+        text-indent: .5rem;
+        color:@color-text;
+        line-height: 2.5;
+        i {
+            margin-right: .25rem;
+            color: @color-text-gray;
+        }
+    }
+    .target {
+        margin:.5rem 0 1rem;
+        overflow: hidden;
+    }
+    .execute {
+        .indicator {
+            overflow: hidden;
+            margin-bottom: .2rem;
+            .chart {
+                width:60px;
+                height:60px;
+                margin-right: .75rem;
+                float:left;
+            }
+            h6 {
+                display: inline-block;
+                padding:.2rem .5rem;
+                border-radius: .2rem;
+                background: #f0f0f0;
+                font-size:.6rem;
+                text-align: center;
+                border:1px dashed #d9d9d9;
+                margin: .25rem 0;
+            }
+            p {
+                text-indent: .5rem;
+            }
+        }
+    }
+    .date {
+        color:@color-text-gray;
+        font-size:.6rem;
+        margin-left:1rem;
+    }
+}
+
+.analysis {
+    background: #fff;
+    border:1px solid #d9d9d9;
+    border-top:none;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    padding-bottom: .5rem;
+    .col-xs-4 {
+        border-right:1px solid #d9d9d9;
+        &:last-child {
+            border:none;
+        }
+        .chart {
+            1height:300px;
+            1width:500px;
+            margin: .75rem auto;
+        }
+    }
+}
+
+.news {
+    -webkit-transform: translateZ(0);   // fix jumping in chrome 
+    position: fixed;
+    bottom: 0;
+    left:0;
+    right:0;
+    height: 2rem;
+    background: #333;
+    color:#ccc;
+    text-align: center;
+    line-height: 2rem;
+    i {
+        margin-right: .25rem;
+        font-size: .6rem;
+        color:#FFA243;
+    }
+}
