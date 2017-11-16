@@ -1,0 +1,447 @@
+* 堆栈
+-- 栈是后进先出；堆是不定期清除；
+
+
+JAVA中的栈和堆 - 自学开发的老司机 - 博客园
+https://www.cnblogs.com/ibelieve618/p/6380328.html
+
+
+
+
+--------------------
+
+！ this.name 的 this？
+-- 把类看成一个插件，this 就是指插件本身；
+
+
+public class Logger {
+   private String format;
+   public String getFormat() {
+      return this.format;
+   }
+   public void setFormat(String format) {
+      this.format = format;
+   }
+}
+
+
+
+
+public class Puppy{
+   int puppyAge;
+   public Puppy(String name){
+      System.out.println("Passed Name is :" + name ); 
+   }
+
+   public void setAge( int age ){
+       puppyAge = age;    // ？ 为什么这里不像上面一样要用 this？？ 因为 public 和 private 吗？？
+   }
+
+   public int getAge( ){
+       System.out.println("Puppy's age is :" + puppyAge ); 
+       return puppyAge;
+   }
+
+   public static void main(String []args){
+      System.out.println(puppyAge);                                  // 会报错：非静态变量被静态方法引用；
+
+      Puppy myPuppy = new Puppy( "tommy" );                          // new 就是一个创建插件的过程？？然后才能调用插件里的各种属性和方法？？
+      myPuppy.setAge( 2 );                                           // 把上一行注释掉然后获取 puppyAge，会输出 0；
+      myPuppy.getAge( );
+
+      System.out.println("Variable Value :" + myPuppy.puppyAge );    // 必须要初始化构造方法才能访问成员变量吗？？
+   }
+}
+
+
+
+
+* 局部变量没有默认值，所以局部变量量被声明后，必须经过初始化，才可以使用。
+ 
+-- 下面这样写是错的：
+int age;
+
+
+
+* 静态方法不能使用类的非静态变量
+
+private static int numInstances = 0;
+protected static int getCount() {
+	return numInstances;
+}
+
+
+
+
+
+
+
+
+
+------------------
+
+public class Hello {
+    String s = "Hello";
+ 
+    public Hello(String s) {
+       System.out.println("s = " + s);
+       System.out.println("1 -> this.s = " + this.s);
+       this.s = s;         // ？ 如果不同名，是不是可以直接 a = s, 不用 this.a = s？？     // 真的可以。
+       System.out.println("2 -> this.s = " + this.s);
+    }
+ 
+    public static void main(String[] args) {
+       Hello x = new Hello("HelloWorld!");
+       System.out.println("s=" + x.s);//验证成员变量值的改变
+    }
+}
+
+结果为：s = HelloWorld!
+1 -> this.s = Hello
+2 -> this.s = HelloWorld!
+s=HelloWorld!
+
+-- 所以结论是，构造函数用 this 有点没必要，除非是同名变量；
+
+
+
+
+
+------------------
+
+class A {
+    public A() {
+       new B(this).print();     // 最终输出是B 的方法；
+    }
+    public void print() {
+       System.out.println("HelloAA from A!");
+    }
+}
+class B {
+    A a;
+    public B(A a) {             // ？两个参数啊，只传一个的话要怎么理解？？
+       this.a = a;
+    }
+    public void print() {
+       a.print();//调用A的方法
+       System.out.println("HelloAB from B!");
+    }
+}
+public class Test {
+    public static void main(String[] args) {
+       A aaa = new A();
+    }
+}
+
+
+* 输出：
+HelloAA from A!
+HelloAB from B!
+
+
+
+
+
+------------------
+
+* this 在这个例子是为了避免同名；
+
+public class Test {
+    int i = 1;
+ 
+    public Test() {
+       Thread thread = new Thread() {
+           public void run() {
+              for (int j=0;j<20;j++) {
+                  Test.this.run();//调用外部类的方法
+                  try {
+                     sleep(1000);
+                  } catch (InterruptedException ie) {
+                  }
+              }
+           }
+       }; // 注意这里有分号
+       thread.start();
+    }
+ 
+    public void run() {
+       System.out.println("i = " + i);
+       i++;
+    }
+   
+    public static void main(String[] args) throws Exception {
+       new Test();
+    }
+}
+
+
+
+
+
+
+------------------
+
+public class Test {
+    Test(String str) {
+       System.out.println(str);	     // 【2】
+    }
+    Test() {
+       this("this测试成功！");       // 【1】
+    }
+ 
+    public static void main(String[] args) {
+       Test Test1 = new Test();
+    }
+}
+
+-- 【1】调用 【2】
+？ 但是不是应该写成 this.Test("this测试成功！") 吗？？
+
+-- 在构造函数中，通过this可以调用同一类中别的构造函数
+
+
+
+
+
+
+
+------------------
+
+* 在构造函数中用 this() 就是直接调用构造函数；
+-- 如果存在几个构造函数，就根据参数的个数看调用的是哪个了。
+
+public class ThisTest {
+    private int age;
+    private String str;
+ 
+    ThisTest(String str) {
+       this.str=str;
+       System.out.println(str);
+    }
+    ThisTest(String str,int age) {
+       this(str);
+       this.age=age;
+       System.out.println(age);
+    }
+ 
+    public static void main(String[] args) {
+       ThisTest thistest = new ThisTest("this测试成功",25);
+      
+    }
+}
+
+结果为：
+this测试成功
+25
+
+值得注意的是： 
+1：在构造调用另一个构造函数，调用动作必须置于最起始的位置。 
+2：不能在构造函数以外的任何函数内调用构造函数。 
+3：在一个构造函数内只能调用一个构造函数。
+
+
+
+
+
+------------------
+
+* 感觉是一种技巧，但是怎么运用？？
+
+public class TestClass {
+    int x;
+    int y;
+ 
+    static void showtest(TestClass tc) {//实例化对象
+       System.out.println(tc.x + " " + tc.y);
+    }
+    void seeit() {
+       showtest(this);
+    }
+ 
+    public static void main(String[] args) {
+       TestClass p = new TestClass();
+       p.x = 9;
+       p.y = 10;
+       p.seeit();
+    }
+}
+
+
+
+
+java 中的this关键字的几种用法 - nolonely - 博客园
+https://www.cnblogs.com/nolonely/p/5916602.html
+
+
+
+
+
+
+
+
+
+======================
+
+？ final？？
+
+
+public class Test {
+	public static void main(String[] args) {
+		// TODO 自动生成方法存根
+	}
+
+	public void f1() {
+		System.out.println("f1");
+	}
+
+	// 无法被子类覆盖的方法
+	public final void f2() {
+		System.out.println("f2");
+	}
+
+	public void f3() {
+		System.out.println("f3");
+	}
+
+	private void f4() {
+		System.out.println("f4");
+	}
+}
+
+
+
+public class Test2 extends Test {
+
+	public void f1() {
+		System.out.println("Test父类方法f1被覆盖!");
+	}
+
+	public static void main(String[] args) {
+		Test2 t = new Test2();
+		t.f1();    【1】
+		t.f2(); // 调用从父类继承过来的final方法
+		t.f3(); // 调用从父类继承过来的方法
+//		 t.f4(); //调用失败，无法从父类继承获得  【2】
+	}
+}
+
+
+-- 【1】的方法被重载，如果加了 final 将不能被重载；
+-- 【2】出错的原因是父类的 f4 是 private 的；
+
+
+
+
+
+
+
+
+--------------------
+
+* final 变量可以设置成空白，然后根据不同的实例初始化，从而有不同的值；
+-- final 空白变量不能直接输出；其实什么变量都不能不经初始化就输出；
+
+public class Test2 { 
+    private final String S = "final实例变量S"; 
+    private final int A = 100; 
+    public final int B = 90; 
+
+    public static final int C = 80; 
+    private static final int D = 70; 
+
+    public final int E; //final空白,必须在初始化对象的时候赋初值 
+
+    public Test2(int x) { 
+            E = x; 
+    } 
+
+    public static void main(String[] args) { 
+            Test2 t = new Test2(2); 
+            //t.A=101;    //出错,final变量的值一旦给定就无法改变 
+            //t.B=91; //出错,final变量的值一旦给定就无法改变 
+            //t.C=81; //出错,final变量的值一旦给定就无法改变 
+            //t.D=71; //出错,final变量的值一旦给定就无法改变 
+
+            System.out.println(t.A); 
+            System.out.println(t.B); 
+            System.out.println(t.C); //不推荐用对象方式访问静态字段 
+            System.out.println(t.D); //不推荐用对象方式访问静态字段 
+            System.out.println(Test2.C); 
+            System.out.println(Test2.D); 
+            //System.out.println(Test2.E); //出错,因为E为final空白,依据不同对象值有所不同. 
+            System.out.println(t.E); 
+
+            Test2 t1 = new Test2(3); 
+            System.out.println(t1.E); //final空白变量E依据对象的不同而不同 
+    } 
+}
+
+
+
+
+
+
+
+--------------------
+
+* static
+
+-- private是访问权限限定，static表示不要实例化就可以使用
+-- static 代码块是马上执行；
+
+public class Test5 { 
+        private static int a; 
+        private int b; 
+
+        static { 
+                Test5.a = 3; 
+                System.out.println(a); 
+                Test5 t = new Test5(); 
+                t.f(); 
+                t.b = 1000; 
+                System.out.println(t.b); 
+        } 
+
+        static { 
+                Test5.a = 4; 
+                System.out.println(a); 
+        } 
+
+        public static void main(String[] args) { 
+                // TODO 自动生成方法存根 
+        } 
+
+        static { 
+                Test5.a = 5; 
+                System.out.println(a); 
+        } 
+
+        public void f() { 
+                System.out.println("hhahhahah"); 
+        } 
+}
+ 
+运行结果：
+3
+hhahhahah
+1000
+4
+5
+
+
+
+
+
+
+Java关键字final、static使用总结 - 熔 岩 - 51CTO技术博客
+http://lavasoft.blog.51cto.com/62575/18771/
+
+
+
+-------------------
+
+* 犹太人的观念和习惯；
+-- 重视教育，重视周末和家庭相处，重视商业；
+
+
+	
