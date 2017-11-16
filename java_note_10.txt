@@ -1,0 +1,357 @@
+【数组】
+
+import java.util.Arrays;
+
+
+// 排序
+int array[] = { 2, 5, -2, 6, -3, 8, 0, -7, -9, 4 };
+Arrays.sort(array);
+
+
+// 搜索
+Arrays.binarySearch(array, 2);
+
+
+
+// 填充
+String[] a = new String[6];
+Arrays.fill(a, "Hello");
+Arrays.fill(a, 3, 5,"World");
+结果是 a[] = {Hello,Hello,Hello,World,World,Hello};
+
+
+
+// 比较
+byte[] arr1 = new byte[] { 12, 31, 22 , 44 };
+byte[] arr2 = new byte[] { 12, 31, 22 , 44 };
+byte[] arr3 = new byte[] { 31, 44, 12 , 22 };
+    
+boolean retval=Arrays.equals(arr1, arr2);
+System.out.println("arr1 and arr2 equal: " + retval);   // true
+
+boolean retval2=Arrays.equals(arr1, arr3);
+System.out.println("arr1 and arr3 equal: " + retval2);  // false
+
+
+
+// 插入
+Java 实例 – 数组添加元素 | 菜鸟教程
+http://www.runoob.com/java/arrays-insert.html
+
+
+
+
+？ 冒泡排序：
+public class BubbleSort {
+/**
+ * N个数字要排序完成，总共进行N-1趟排序，每i趟的排序次数为(N-i)次，所以可以用双重循环语句，外层控制循环多少趟，内层控制每一趟的循环次数。
+ * @param args
+ */
+    public static void main(String[] args) {
+        int arr[] = {26,15,29,66,99,88,36,77,111,1,6,8,8};
+
+
+
+
+        for(int i=0;i < arr.length-1;i++) {//外层循环控制排序趟数
+            for(int j=0; j< arr.length-i-1;j++) {
+                        //内层循环控制每一趟排序多少次
+                // 把小的值交换到前面
+                if (arr[j]>arr[j+1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+            System.out.print("第"+(i+1)+"次排序结果：");
+                                //列举每次排序的数据
+            for(int a=0;a<arr.length;a++) {
+                System.out.print(arr[a] + "\t");
+            }
+            System.out.println("");
+        }
+        System.out.println("最终排序结果：");
+        for(int a = 0; a < arr.length;a++) {
+            System.out.println(arr[a] + "\t");
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+* reverse
+-- 根本就不是 Arrays，是 ArrayList 好吗。
+
+？ ArrayList<String>、Collections ？？
+-- Collections 是一个工具类，可以排序什么的，参看后面的链接；
+
+
+** 泛型 <>
+-- 里面没有东西就是不限定数据类型；
+-- <? extends T>表示该通配符所代表的类型是T类型的子类。
+-- <? super T>表示该通配符所代表的类型是T类型的父类。
+
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Test {
+	public static void main(String[] args) {
+        ArrayList<String> arrayList = new ArrayList<String>();
+        arrayList.add("A");
+        arrayList.add("B");
+        arrayList.add("C");
+        arrayList.add("D");
+        arrayList.add("E");
+        System.out.println("反转前排序: " + arrayList);
+        Collections.reverse(arrayList);
+        System.out.println("反转后排序: " + arrayList);
+    }
+}
+
+
+JAVA基础知识之Collections工具类 - fysola - 博客园
+https://www.cnblogs.com/fysola/p/6021134.html
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+？ asList、(int) 强行转型？？
+
+public class Main {
+    public static void main(String[] args) {
+        Integer[] numbers = { 8, 2, 7, 1, 4, 9, 5};
+        int min = (int) Collections.min(Arrays.asList(numbers));
+        int max = (int) Collections.max(Arrays.asList(numbers));
+        System.out.println("最小值: " + min);
+        System.out.println("最大值: " + max);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+？ interger， asList？？
+
+Integer[] numbers = { 8, 2, 7, 1, 4, 9, 5};
+int min = (int) Collections.min(Arrays.asList(numbers));
+
+
+
+* 数组合并：
+-- Arrays.asList, list.addAll, list.toString
+
+public class Main {
+    public static void main(String args[]) {
+        String a[] = { "A", "E", "I" };
+        String b[] = { "O", "U" };
+        List list = new ArrayList(Arrays.asList(a));
+        list.addAll(Arrays.asList(b));
+        Object[] c = list.toArray();
+        System.out.println(Arrays.toString(c));
+    }
+}
+
+
+
+
+
+* 数组填充
+-- Arrays.fill
+
+public class FillTest {
+    public static void main(String args[]) {
+        int array[] = new int[6];
+        Arrays.fill(array, 100);
+        for (int i=0, n=array.length; i < n; i++) {
+            System.out.println(array[i]);
+        }
+        System.out.println();
+        Arrays.fill(array, 3, 6, 50);
+        for (int i=0, n=array.length; i< n; i++) {
+            System.out.println(array[i]);
+        }
+    }
+}
+
+
+
+
+
+* 数组扩容：其实是新建数组
+-- System.arraycopy
+
+public class Main {
+    public static void main(String[] args) {
+        String[] names = new String[] { "A", "B", "C" };
+        String[] extended = new String[5];
+        extended[3] = "D";
+        extended[4] = "E";
+        System.arraycopy(names, 0, extended, 0, names.length);
+        for (String str : extended){
+            System.out.println(str);
+        }
+    }
+}
+
+
+
+
+
+
+* 删除元素：
+-- ArrayList.add, ArrayList.remove
+
+public class Main {
+    public static void main(String[] args)  {
+        ArrayList<String> objArray = new ArrayList<String>();
+        objArray.clear();
+        objArray.add(0,"第 0 个元素");
+        objArray.add(1,"第 1 个元素");
+        objArray.add(2,"第 2 个元素");
+        System.out.println("数组删除元素前："+objArray);
+        objArray.remove(1);
+        objArray.remove("0th element");
+        System.out.println("数组删除元素后："+objArray);
+    }
+}
+
+
+
+
+* 数组差集
+-- 其实就是两数组相减
+-- ArrayList.removeAll
+
+public class Main {
+    public static void main(String[] args)  {
+        ArrayList objArray = new ArrayList();
+        ArrayList objArray2 = new ArrayList();
+        objArray2.add(0,"common1");
+        objArray2.add(1,"common2");
+        objArray2.add(2,"notcommon");
+        objArray2.add(3,"notcommon1");
+        objArray.add(0,"common1");
+        objArray.add(1,"common2");
+        objArray.add(2,"notcommon2");
+        System.out.println("array1 的元素" +objArray);
+        System.out.println("array2 的元素" +objArray2);
+        objArray.removeAll(objArray2);
+        System.out.println("array1 与 array2 数组差集为："+objArray);
+    }
+}
+
+以上代码运行输出结果为：
+array1 的元素[common1, common2, notcommon2]              // 减去下面的数组
+array2 的元素[common1, common2, notcommon, notcommon1]
+array1 与 array2 数组差集为：[notcommon2]
+
+
+
+
+* 数组交集：
+-- ArrayList.retainAll
+-- objArray.retainAll(objArray2);
+
+
+
+
+* 数组查找
+-- ArrayList.contains
+
+public class Main {
+    public static void main(String[] args)  {
+        ArrayList<String> objArray = new ArrayList<String>();
+        ArrayList<String> objArray2 = new ArrayList<String>();
+        objArray2.add(0,"common1");
+        objArray2.add(1,"common2");
+        objArray2.add(2,"notcommon");
+        objArray2.add(3,"notcommon1");
+        objArray.add(0,"common1");
+        objArray.add(1,"common2");
+        System.out.println("objArray 的数组元素："+objArray);
+        System.out.println("objArray2 的数组元素："+objArray2);
+        System.out.println("objArray 是否包含字符串common2? ： "
+        +objArray.contains("common1"));
+        System.out.println("objArray2 是否包含数组 objArray? ："
+        +objArray2.contains(objArray) );
+    }
+}
+
+以上代码运行输出结果为：
+objArray 的数组元素：[common1, common2]
+objArray2 的数组元素：[common1, common2, notcommon, notcommon1]
+objArray 是否包含字符串common2? ： true
+objArray2 是否包含数组 objArray? ：false   // 应该是 true？？
+
+
+
+
+
+
+
+* 数组并集
+-- 利用 set 的唯一性
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        String[] arr1 = { "1", "2", "3" };
+        String[] arr2 = { "4", "5", "6" };
+        String[] result_union = union(arr1, arr2);
+        System.out.println("并集的结果如下：");
+ 
+        for (String str : result_union) {
+            System.out.println(str);
+        }
+    }
+
+    public static String[] union(String[] arr1, String[] arr2) {
+        Set<String> set = new HashSet<String>();
+ 
+        for (String str : arr1) {
+            set.add(str);
+        }
+ 
+        for (String str : arr2) {
+            set.add(str);
+        }
+ 
+        String[] result = {  };
+ 
+        return set.toArray(result);
+    }
+}
