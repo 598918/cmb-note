@@ -1,0 +1,188 @@
+date -> text
+
+text -> date
+
+
+----------------------------
+
+？ SimpleDateFormat
+
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+public class Test {
+    public static void main(String[] args){
+        Date date = new Date();
+        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        System.out.println(date);
+        System.out.println(sdf.format(date));
+    }
+}
+
+输出：
+-- Mon Nov 20 10:01:57 CST 2017
+-- 2017-11-20 10:01:57
+
+
+
+** 实例 1： 使用 SimpleDateFormat
+-- 查一下菜鸟的 api，其中的字母重复是几位来表示单位的意思；
+
+String strDateFormat = "yyyy-MM-dd";
+SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+System.out.println(sdf.format(date));
+
+
+
+
+
+** 实例2：用 printf
+-- %t 相当于转义符，F 是参数；
+-- %n 是换行；
+
+Date date = new Date();
+System.out.printf("年-月-日格式：%tF%n",date);  
+
+
+？ 2.1 一次性输出多个参数：
+-- 索引必须紧跟在%后面，而且必须以$结束
+-- 第一个的 s 代表什么？？
+-- 第二个 B 和 d 在 api 里面也找不到。
+
+Java 日期时间 | 菜鸟教程
+http://www.runoob.com/java/java-date-time.html
+
+System.out.printf("%1$s %2$tB %2$td, %2$tY", "Due date:", date);
+
+
+？ 2.2 使用 < 
+-- 或者，你可以使用 < 标志。它表明先前被格式化的参数要被再次使用
+-- 什么格式化？？
+
+System.out.printf("%s %tB %<te, %<tY", "Due date:", date);
+
+
+
+
+
+
+
+
+
+
+Java 日期时间 | 菜鸟教程
+http://www.runoob.com/java/java-date-time.html
+
+
+深入理解Java：SimpleDateFormat安全的时间格式化 - peida - 博客园
+http://www.cnblogs.com/peida/archive/2013/05/31/3070790.html
+
+
+Java 格式化输出 printf 例子 | 菜鸟教程
+http://www.runoob.com/w3cnote/java-printf-formate-demo.html
+
+
+
+----------------------------
+
+？ 未看
+
+public class DateDemo {
+ 
+   public static void main(String args[]) {
+      SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd"); 
+ 
+      String input = args.length == 0 ? "1818-11-11" : args[0]; 
+ 
+      System.out.print(input + " Parses as "); 
+ 
+      Date t; 
+ 
+      try { 
+          t = ft.parse(input); 
+          System.out.println(t); 
+      } catch (ParseException e) { 
+          System.out.println("Unparseable using " + ft); 
+      }
+   }
+}
+
+1818-11-11 Parses as Wed Nov 11 00:00:00 GMT 1818
+
+2007-12-01 Parses as Sat Dec 01 00:00:00 GMT 2007
+
+
+
+
+
+
+----------------------------
+
+！ calendar 的 api？？
+-- 算了，暂时就了解到这种程度；
+
+public class Test {
+    public static void main(String[] args){
+    	 Calendar cal = Calendar.getInstance();
+         int day = cal.get(Calendar.DATE);
+         int month = cal.get(Calendar.MONTH) + 1;
+         int year = cal.get(Calendar.YEAR);
+         int dow = cal.get(Calendar.DAY_OF_WEEK);
+         int dom = cal.get(Calendar.DAY_OF_MONTH);
+         int doy = cal.get(Calendar.DAY_OF_YEAR);
+  
+         System.out.println("当期时间: " + cal.getTime());
+         System.out.println("日期: " + day);
+         System.out.println("月份: " + month);
+         System.out.println("年份: " + year);
+         System.out.println("一周的第几天: " + dow);  // 星期日为一周的第一天输出为 1，星期一输出为 2，以此类推
+         System.out.println("一月中的第几天: " + dom);
+         System.out.println("一年的第几天: " + doy);
+    }
+}
+
+输出：
+当期时间: Mon Nov 20 10:11:34 CST 2017
+日期: 20
+月份: 11
+年份: 2017
+一周的第几天: 2
+一月中的第几天: 20
+一年的第几天: 324
+
+
+
+
+
+
+
+
+
+
+
+----------------------------
+
+public class Test {
+    public static void main(String[] args){
+    	Long timeStamp = System.currentTimeMillis();  //获取当前时间戳
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(timeStamp))));   // 时间戳转换成时间
+        System.out.println(sd);
+    }
+}
+
+输出：
+2017-11-20
+
+
+
+！ System.currentTimeMillis？？
+-- 返回 static long
+
+
+
+
+
+
