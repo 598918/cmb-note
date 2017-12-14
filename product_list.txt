@@ -1,0 +1,249 @@
+1. 初始化表格，用户，机构，按钮；
+
+2. genSearchPrdLv1, genSearchPrdLv2, genSearchPrdLv3, 都用 creatPrdSelect 这个方法来生成单选框；
+
+
+
+
+----------------------
+
+! 双击详情页是怎么得到参数的？？
+
+$('#detailBtn').on("click", function(selRow){goToDetailPage(LinkPagUid.detail,selRow);});
+
+function goToDetailPage(id, selRow) {		
+	if (selRow && selRow.PRD_CD) {			
+	} else {
+		var rows = $table.table('getSelectRow');	  // 被骗了，执行的跟 click 的 btn 没啥关系；
+		var len = rows.length;
+		if(len != 1){
+			framework.showMessage('info', "请选择一条记录！");
+			return;
+		}
+		selRow = rows[0];
+	}	
+	var otherParams = 'PRD_CD=' + selRow.PRD_CD + '&UPD_DTE=' + $('#SEARCH_VERDTE').val();  	
+	framework.openPageById(id, otherParams, '_frame');	
+}
+
+
+
+
+
+----------------------
+
+搞清楚整个页面逻辑，全部流程走一遍；
+
+1. 怎么产生的 2、3 级产品？？
+-- 就是 change 的时候执行下一级查询啦。
+-- 知道原理就行了，没必要纠结过多的细节，感觉这里面的代码也不是十分完美；
+
+
+！产品1 onChange 的时候生成产品2，但是参数是怎么传递的？？
+
+function genSearchPrdLv1(lv1_val,lv2_val,lv3_val) {
+	creatPrdSelect('SEARCH_PRD_LV1', '', genSearchPrdLv2, function() {
+		if (lv1_val) {
+			$('#SEARCH_PRD_LV1').val(lv1_val);
+			genSearchPrdLv2(lv1_val,lv2_val,lv3_val);
+		} 
+		if(!lv2_val && !lv3_val){
+			$table.table('fillTable', 1);		
+		}
+	});
+}
+
+// 产品类
+function genSearchPrdLv2(lv1_val,lv2_val,lv3_val) {
+	if (!lv1_val || lv1_val == '') {
+		creatPrdSelect('SEARCH_PRD_LV2', lv1_val, null,null, true);		
+	} else {
+		creatPrdSelect('SEARCH_PRD_LV2', lv1_val, genSearchPrdLv3, function() {
+			if (lv2_val) {
+				$('#SEARCH_PRD_LV2').val(lv2_val);
+				genSearchPrdLv3(lv2_val,lv3_val);
+			}
+			if(!lv3_val){
+				$table.table('fillTable', 1);
+			}
+		});		
+	}
+	creatPrdSelect('SEARCH_PRD_LV3', lv1_val, null,null, true);
+}
+
+
+
+$('#SEARCH_PRD_LV1').change(test);
+
+function test(lv1_val,lv2_val,lv3_val) {
+	console.log(lv1_val + '   ' + lv2_val + '   ' + lv3_val);
+}
+
+-- 输出：obj，undefined，undefined
+
+？ 也许我理解的 onChange 和 select 里面定义的 ChangeFn 不是同一回事；
+
+果然：
+
+// singleselect.js
+if(typeof(this.options.changeFn)=="function"){
+	this.$element.change(function(){
+		_this.options.changeFn(_this.$element.val(), _this.getText(), _this.$element);
+	});
+}
+
+
+就是说，select change 的时候执行了：
+genSearchPrdLv2(_this.$element.val(), _this.getText(), _this.$element);
+-- 参数是偷偷地添加的；
+
+
+
+
+
+
+----------------------
+
+2. 点击搜索按钮，怎么输出表格？？
+
+-- $('#searchButton').on("click", function(){$table.table('fillTable',1);}); // 查询
+-- 1 是 第一页的意思；
+
+-- fillTable -> inputInfo = this.generateInput(curPage, queryData); -> var value = $("#" + val).val();
+-- 所以是偷偷地获取了一堆控件的值，然后去查数据库，输出 table。
+
+
+
+
+
+
+
+
+
+
+
+=================================
+
+？ 工作条不可能只有查用户吧，还有查 table.js 的工作条，产品的工作条，user 的工作条；
+
+
+* UserRolePageQuery
+-- common 这个组件没有这个用例，所以还没看。
+
+
+？ user.js 有没有工作条？？
+-- 猜测工作条应该在插件内部；// 确实是
+-- 妈蛋，Common.UserQuery 依然看不了。
+
+if(event.which == 13){
+		...
+		framework.operate(
+				_this.options.wke_detail,   // 'Common.UserQuery'
+
+
+
+* $('#SEARCH_HEAD_SAP').user({anyInput : true});
+
+// anyInput : false,
+//是否支持任意输入，若不支持，不存在的员工自动还原
+
+if(_this.options.anyInput){
+	_this.setInputValue($(this).val(), $(this).val());
+}else{
+	_this.setInputValue(_this.lastSelectedCode, _this.lastSelectedValue);
+}
+
+
+
+
+
+
+----------------------
+
+* table 的工作条
+
+-- fillTable: 
+
+CMBAjax.remoteInvokeNew({
+		prccod : this.options.queryDefine.WkeDefine.WkeCod,
+		webcod : '102005',
+		infbdy : inputInfo
+	}, callback, null);
+
+var QueryDefine = {
+		WkeDefine : {
+			WkeCod : "Product.List"
+			...
+		},
+		InputDefine : {
+			PAG_TYP : 'PAG_TYP'
+			...
+		}
+	};
+
+
+** Product.List
+
+！ 输入查询的数据是什么？？
+-- 输入的字段好像就是 QueryDefine.InputDefine
+{PRD_LV3=0, SUB_SAP=1, PRD_LV1=2, PRD_LV2=3, PRD_CD=4, PRD_STS=5, DWN_CNT=6, HEAD_SAP=7, PRD_ROOM=8, PAG_TYP=9, DWN_STR=10, VER_DTE=11, PRD_BRN=12}
+{0=[, , , , , S, 15, , , MNT, 1, , 110000000]}
+
+
+？ 从 input 中获取某 field 的 value 的方法是什么？？
+
+-- input.getFieldList().contains("PRD_LV1")
+-- iPrdLv1 = input.getSqlString(0, "PRD_LV1");
+-- input.getInteger(0, "DWN_CNT");
+
+？ 哪一句？？
+
+
+
+
+？ iVerDte = input.getDate(0, "VER_DTE");
+-- 输出： 1900-01-01
+？ 为什么？？空值的 getDate 是 1900-01-01
+
+
+
+？ ICacheTable input = context.getInputData().get(ListX1);
+-- input 是怎么根据 ListX1 得到的？？估计要看完 context.java 才知道。
+
+
+SELECT A.PRD_CD, A.MAS_CD, A.CRG_CD, A.FUND_ND, A.PRD_NAM
+	, A.UPP_PRD, A.PRD_LVL, A.PRD_STS, A.BRN_NBR, A.ROOM
+	, A.HEAD_SAP, A.SUB_SAP, A.PRD_LV1, A.PRD_LV2, A.PRD_LV3
+	, A.CRT_DTE, A.UPD_DTE, A.QRY_CNT, A.ORDER AS L4ORDER
+FROM PRD.PRODUCT A
+	LEFT JOIN PRD.PRODUCT L1 ON A.PRD_LV1 = L1.PRD_CD
+	LEFT JOIN PRD.PRODUCT L2 ON A.PRD_LV2 = L2.PRD_CD
+	LEFT JOIN PRD.PRODUCT L3 ON A.PRD_LV3 = L3.PRD_CD
+WHERE A.PRD_LVL = 'LV4'
+	AND A.PRD_STS = 'S'
+ORDER BY L1.ORDER, L2.ORDER, L3.ORDER, L4ORDER
+
+？ 并没有输出 lv1、lv2、lv3 的产品名啊？？
+
+
+
+
+
+
+
+----------------------
+
+* 产品线的工作条：Product.Child
+
+
+
+
+
+
+
+
+
+深入理解mysql的自连接和join关联_Mysql_脚本之家
+http://www.jb51.net/article/111784.htm
+
+
