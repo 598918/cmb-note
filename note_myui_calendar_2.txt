@@ -1,0 +1,193 @@
+！ p.input 或者 p.container 被怎么使用了？？
+
+
+var p = {};
+if($this[0].tagName.toUpperCase() === "INPUT") {
+    p.input = $this;
+} else {
+    p.container = $this;
+}
+new Calendar($.extend(p, params));
+
+
+if (p.inline) {
+    p.container = $(p.pickerHTML);
+    p.container.addClass('picker-modal-inline');
+    $(p.params.container).append(p.container);
+}
+else {
+    p.container = $($.pickerModal(p.pickerHTML));
+    $(p.container)
+        .on('close', function () {
+            onPickerClose();
+        });
+}
+
+
+
+
+
+
+------------------------
+
+！ replace？？
+
+if (p.params.toolbar) {
+    toolbarHTML = p.params.toolbarTemplate
+        .replace(/{{closeText}}/g, p.params.toolbarCloseText)
+        .replace(/{{monthPicker}}/g, (p.params.monthPicker ? p.params.monthPickerTemplate : ''))
+        .replace(/{{yearPicker}}/g, (p.params.yearPicker ? p.params.yearPickerTemplate : ''));
+}
+
+
+
+
+
+
+
+------------------------
+
+* 看插件是怎么一个个的组织组件的？？
+
+
+
+* 输出周一，周二...
+
+可配置：
+
+p.params.firstDay (0: 周日, 1: 周一...)
+p.params.dayNamesShort: dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+
+var weekHeaderHTML = '';
+if (p.params.weekHeader) {
+    for (i = 0; i < 7; i++) {
+        var weekDayIndex = (i + p.params.firstDay > 6) ? (i - 7 + p.params.firstDay) : (i + p.params.firstDay);
+        var dayName = p.params.dayNamesShort[weekDayIndex];
+        weekHeaderHTML += '<div class="picker-calendar-week-day ' + ((p.params.weekendDays.indexOf(weekDayIndex) >= 0) ? 'picker-calendar-week-day-weekend' : '') + '"> ' + dayName + '</div>';
+
+    }
+    weekHeaderHTML = '<div class="picker-calendar-week-days">' + weekHeaderHTML + '</div>';
+}
+
+
+
+
+
+
+
+------------------------
+
+* 输出月份：
+
+？ 这句话有什么用？？
+var daysInPrevMonth = p.daysInMonth(new Date(date.getFullYear(), date.getMonth()).getTime() - 10 * 24 * 60 * 60 * 1000),
+
+
+！ getTime() ？？
+dayDate = new Date(month + 1 > 11 ? year + 1 : year, month + 1 > 11 ? 0 : month + 1, dayNumber).getTime();
+getTime() 方法可返回距 1970 年 1 月 1 日之间的毫秒数。
+
+-- 可以用来新建一个日期；
+-- dayDate = new Date(dayDate);
+
+
+！ getDay() 是获得当月第一个天是星期几？？
+firstDayOfMonthIndex = new Date(date.getFullYear(), date.getMonth()).getDay()
+-- 返回值是 0（周日） 到 6（周六） 之间的一个整数。
+
+
+
+year = date.getFullYear(),
+month = date.getMonth(),
+day = date.getDate();
+
+
+
+！ today = new Date().setHours(0,0,0,0)
+-- setHours(hour,min,sec,millisec)
+-- 最后一个是毫秒
+
+
+！ currentValues.indexOf(dayDate) >= 0    // currentValues 是数组；indexOf 可以对数组使用？？我一直以为是只能对字符串；
+-- 用数组试了一下，确实可以。
+
+
+
+
+
+
+
+! 为什么这样就是周末：
+if (p.params.weekendDays.indexOf(col - 1) >= 0) {
+    addClass += ' picker-calendar-day-weekend';
+}
+
+-- p.params.weekendDays = [0, 6]
+-- 确实是啊。这样定义的意思是第 0 列和第 6 列是周末；
+
+
+
+
+
+
+！ 怎么限制在当月的范围内？？
+-- 有个变量 dayIndex ++
+-- 如果 dayIndex < firstDayOfMonthIndex，说明是前一个月；
+-- 如果 dayIndex > daysInMonth，也就是当月的天数，说明是下一个月了；
+
+
+
+
+
+
+* 获取当前月份的天数
+p.daysInMonth = function (date) {
+    var d = new Date(date);
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+};
+
+
+-- date 从1开始，0 向前一天。
+
+
+
+
+
+
+
+？ 为毛点击选择月份没有消失事件？？
+
+
+
+
+
+* 左右拖动日历：
+-- 日历框跟随移动，同时结束后改变月份的值；
+
+
+
+
+* p.prevMonth
+-- 我觉得应该是往 container 插入前一个月的 html，和改变 month 的 value；
+
+
+! 在哪里设置了 month 的 value？？？
+- prevMonth() -> onMonthChangeStart(dir) -> updateCurrentMonthYear(dir)
+
+
+
+
+
+! 拖动年是怎么产生上一年下一年的 html ？？
+-- nextYearsGroup() -> onYearsChangeEnd() -> yearsGroupHTML()
+
+
+
+!  点击年份没设置成功？？
+-- 事件不是直接 on 在新建的元素上，绑在 initCalendarEvents 里了。
+-- handleYearSelector() -> p.pickYear()
+
+
+
+!  好像 p.pickYear() 只是让年份的 div 消失，没有设置 value 的代码？？
+-- 有的： setYearMonth()
