@@ -2,3 +2,165 @@
 -- $("xxx").prop("outerHTML");
 
 
+
+
+
+--------------------
+
+* 边界的 15px
+-- .row 不是顶层才能用；
+
+
+
+
+
+
+
+--------------------
+
+! 怎么让 chart 跟随 window resize 而 resize？？
+-- 始终要给 div 一个宽度；
+-- window resize 的时候让 div 重设宽高，再 chart.resize;
+
+
+
+
+
+
+--------------------
+
+！ fixed 布局的问题；
+-- -webkit-transform: translateZ(0);   // fix jumping in chrome 
+
+
+
+
+
+
+
+--------------------
+
+* open、close 使用同一个方法 绑定/解绑 事件；
+
+
+// 绑定手势事件，绑定点击事件
+pb.attachEvents = function (detach) {
+    var action = detach ? 'off' : 'on';
+    // Slide between photos
+
+    if (pb.params.zoom) {
+        var target = pb.params.loop ? pb.swiper.slides : pb.slides;
+        // Scale image
+        target[action]('gesturestart', pb.onSlideGestureStart);
+        target[action]('gesturechange', pb.onSlideGestureChange);
+        target[action]('gestureend', pb.onSlideGestureEnd);
+        // Move image
+        target[action]('touchstart', pb.onSlideTouchStart);
+        target[action]('touchmove', pb.onSlideTouchMove);
+        target[action]('touchend', pb.onSlideTouchEnd);
+    }
+    pb.container.find('.photo-browser-close-link')[action]('click', pb.close);
+};
+
+
+
+
+
+
+---------------------
+
+* technique：判断 class 元素
+
+if($(el).is(buttonSelector)) clickTarget = $(el);
+-- $('.actions-modal-label').is('.actions-modal-button')     // false
+
+
+
+
+
+
+---------------------
+
+* jq 插件基本结构
+
+var Calendar = function (params) {
+
+}
+$.fn.calendar = function (params) {
+	return this.each(function() {
+		var $this = $(this);
+		if(!$this[0]) return;
+		var p = {};
+		if($this[0].tagName.toUpperCase() === "INPUT") {
+			p.input = $this;
+		} else {
+			p.container = $this;
+		}
+		new Calendar($.extend(p, params));
+	});
+};
+
+$.initCalendar = function(content) {
+	var $content = content ? $(content) : $(document.body);
+	$content.find("[data-toggle='date']").each(function() {
+		$(this).calendar();
+	});
+};
+
+
+
+
+
+
+
+
+---------------------
+
+* 获取当月天数
+p.daysInMonth = function (date) {
+	var d = new Date(date);
+	return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+};
+
+
+
+
+
+
+
+
+
+---------------------
+
+* resizeChart() 前先获得 chart.parent 的宽高；
+-- resize container -> resize chart
+
+
+
+
+
+
+---------------------
+
+* 原生 js 删除元素：
+
+var region = document.getElementsByClassName('preloader-region')[0];
+document.body.removeChild(region);
+
+
+
+
+
+
+
+
+---------------------
+
+p.updateCurrentMonthYear = function (dir) {
+    if (typeof dir === 'undefined')
+
+
+
+
+
+
