@@ -15,3 +15,131 @@
 .mx-image img:nth-child(3){
 	align-self: flex-end;
 }
+
+
+<style>
+        html,body{
+            margin:0;
+            padding:0;
+        }
+        .mx-card {
+            margin: 0 !important;
+        }
+        .mx-card-item {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            padding: 1rem;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center
+        }
+        .home-card-title {
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+            .home-card-title .main {
+                font-size: 1.5rem;
+            }
+
+            .home-card-title .sub {
+                font-size: 1rem;
+                color: #999;
+            }
+
+            .home-card-title > p {
+                display: block;
+                line-height: 1.5;
+            }
+
+        .mn-card-item.home-floor-single-image,
+        .mn-card-item.home-floor-column-three,
+        .mx-card-item.home-floor-columx-two,
+        .mx-card-item.home-floor-right-one,
+        .mx-card-item.home-card-left-one {
+            width: 100%;
+            padding: 0;
+        }
+
+        .mx-card-item.home-floor-right-one-item {
+            padding: 0;
+            width: 100%;
+            display: -webkit-box;
+        }
+
+        .home-card-left-one-item {
+            width: 50%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+        }
+
+
+        .mx-img-test {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            /*height: 100px;*/
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+            .mx-img-test img:nth-child(1) {
+                height: 100%;
+            }
+
+            .mx-img-test img:nth-child(2) {
+                align-self: flex-start;
+            }
+
+            .mx-img-test img:nth-child(3) {
+                align-self: flex-end;
+            }
+    </style>
+    
+    
+    
+    <body>
+    <div class="mx-section" style="margin:10px 0">
+        <div class="mx-card ">
+            <div class="home-card-title">
+                <p class="main">─── 速享花样美食 轻松吃好饭 ───</p>
+                <p class="sub">速食冻品专区</p>
+            </div>
+            <div class="mx-card-item">
+                <div class="mx-img-test">
+                    <img src="http://pic2.34580.cn/group1/M00/79/AE/wKgNZVo6IRGAbottAAECGImxAdk91.jpeg">
+                    <img src="http://pic2.34580.cn/group1/M00/7B/30/wKgNZVo8YVGABWNiAAB-Nv33pQE10.jpeg">
+                    <img src="http://pic2.34580.cn/group1/M00/7B/2B/wKgNZVo8XNqARv7qAADGZBLCdAo93.jpeg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mx-section">
+        <div class="mx-card">
+            <div class="home-card-title">
+                <p class="main">缤纷零食酒水</p>
+                <p class="sub">畅享欢乐时光</p>
+            </div>
+            <div class="mx-card-item home-card-left-one">
+                <div class="home-card-left-one-item">
+                    <img src="http://pic2.34580.cn/group1/M00/7B/42/wKgNZVo8eT2ABxg6AADHWXVfZQE05.jpeg">
+                </div>
+                <div class="home-card-left-one-item">
+                    <img src="http://pic2.34580.cn/group1/M00/7A/50/wKgNZVo7HH6AGCf4AABw7H4R3Z848.jpeg">
+                    <img src="http://pic2.34580.cn/group1/M00/7B/98/wKgNZVo81cWAdoZaAABsMn2BkFo68.jpeg">
+                </div>
+            </div>
+        </div> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!---->
+    </div>
+</body>
+    
