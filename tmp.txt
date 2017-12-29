@@ -1,19 +1,22 @@
-.mx-image {
-	display:flex;
-	flex-wrap: wrap;
-	width:500px;
-	height: 500px;
-	flex-direction: column;
-	justify-content: space-between;
+mx-img-test {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 500px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: space-between;
 }
-.mx-image img:nth-child(1){
-	height: 100%;;
+.mx-img-test img:nth-child(1) {
+    height: 100%;
 }
-.mx-image img:nth-child(2){
-	align-self: flex-start;
+
+.mx-img-test img:nth-child(2) {
+    align-self: flex-start;
 }
-.mx-image img:nth-child(3){
-	align-self: flex-end;
+
+.mx-img-test img:nth-child(3) {
+    align-self: flex-end;
 }
 
 
