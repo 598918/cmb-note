@@ -1,0 +1,87 @@
+怎么获取当前用户的权限机构？？
+
+-- List<UserRole> roles = Permission.getUserRoles(context);
+-- 输出 branch: 110421, role: ""
+
+
+
+
+Set<String> brns = new HashSet<String>();
+for (UserRole role : roles) {
+	brns.add(role.getBranch());
+}
+-- brns: 110421
+
+
+？ 应该用多几个不同权限的用户进行测试；不然没法理解其中某些语句；
+
+
+
+
+？ 下面看不懂...
+
+//合并brns,100+755=100
+Set<String> mergeBrns = new HashSet<String>();
+if(!brns.contains("100")){
+    outloop: for (String brn : brns) {
+        for (String mbrn : mergeBrns) {
+            if (Branch.isBelong(brn, mbrn)) {
+                mergeBrns.remove(mbrn);
+                mergeBrns.add(brn);
+                continue outloop;
+            }
+            if (Branch.isBelong(mbrn, brn)) {
+                continue outloop;
+            }
+        }
+        mergeBrns.add(brn);
+    }
+}else{
+    mergeBrns.add("100");
+}
+
+
+
+-- 最终输出：
+
+ICacheTable brnTable = new CacheTable("QueryUserTopBrnZ1", "BRN_NBR,BRN_NAM");
+for(String brnNbr : mergeBrns){
+	 brnTable.insert(brnNbr,Branch.getName(brnNbr));
+}
+context.addOutputData(brnTable);
+return 0;
+
+
+
+
+
+
+=========================
+
+怎么用 日期+ 机构 查询数据？？
+
+
+SELECT A.*
+FROM RPT.OPR_DAT_DSP_V2 A
+WHERE a.brn_nbr = ?      // 【1】
+	AND A.DW_STAT_DT = (
+		SELECT MAX(dw_stat_dt)
+		FROM rpt.opr_dat_dsp_V2
+	)
+
+IDBTable table = new DBTable(conn, "IndexBusChartZ1", sql, params.toArray());
+
+？ 【1】 那里的 ? 就是 params.toArray() ？？
+
+
+
+
+
+=========================
+
+* 获取上级机构
+
+ICacheTable brnTable = new CacheTable("QueryUserUppBrnZ1", "BRN_NBR,BRN_NAM,UPP_BRN,UPP_BRN_NAM");
+String brnNbr = input.getString(0, "BRN_NBR");
+String uppBrn = Branch.getParent(brnNbr);
+brnTable.insert(brnNbr, Branch.getName(brnNbr), uppBrn, Branch.getName(uppBrn));
