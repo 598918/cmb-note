@@ -1,0 +1,225 @@
+？ 这就是模块化了？？怎么体现模块化的思维？？
+
+-- 不马上执行会怎样？
+-- return？？
+-- 感觉有点像 require.js 的熟悉过程；
+
+
+
+
+
+------------------------
+
+？ index 写在里面和写在外面的区别？？
+
+
+
+
+
+
+
+
+
+------------------------
+
+! 怎么获取当前机构？？
+
+callWKE(afterInitBrn, "QueryUserTopBrn", '102005', {QueryUserTopBrnX1:[]}, "", "", true);
+
+
+function afterInitBrn(rtn) {
+	if(rtn && rtn.QueryUserTopBrnZ1 && rtn.QueryUserTopBrnZ1.length > 0){
+		defaultBrn = [rtn.QueryUserTopBrnZ1[0].BRN_NBR, rtn.QueryUserTopBrnZ1[0].BRN_NAM];
+		$('#SEARCH_BRN_NBR').branch('setInputValue', defaultBrn);
+	}
+	...
+}
+
+
+-- 看看工作条；
+
+
+
+
+
+
+------------------------
+
+！ 怎么输出时段？？
+-- 一次性把所有的数据都查出来；
+
+var ChartData = {
+		AVGALLCNT : 0,// 全体柜员
+	AVGCORCNT : 0,// 会计专岗
+	AVGCPRHCNT : 0,// 综合专岗
+	AVGRTLCNT : 0,// 储蓄专岗
+	AVGSFLCNT : 0,// 金葵花柜员
+	QUECORPCT : 0,// 对公
+	QUERTLPCT : 0,// 零售
+	QUESFLPCT : 0,// 金葵花
+	QUECORPEK : 0,// 对公排队叫号峰值
+	QUERTLPEK : 0,// 零售排队叫号峰值
+	TSKCNTPEK : 0,// 业务量
+	DSKTSKPEK_AM	:0,
+	DSKTSKPEK_PM	:0,
+	DSKTSKCNT_AM	:0,
+	DSKTSKCNT_PM	:0,
+	QUERTLPEK_AM	:0,
+	QUERTLPEK_PM	:0,
+	QUERTLCNT_AM	:0,
+	QUERTLCNT_PM	:0,
+	QUECORPEK_AM	:0,
+	QUECORPEK_PM	:0,
+	QUECORCNT_AM	:0,
+	QUECORCNT_PM	:0,
+	VTMBUSPEK_AM	:0,
+	VTMBUSPEK_PM	:0,
+	VTMBUSCNT_AM	:0,
+	VTMBUSCNT_PM	:0,
+	VTMCUSTCNT_AM	:0,
+	VTMCUSTCNT_PM	:0,
+	ATMBUSPEK_AM	:0,
+	ATMBUSPEK_PM	:0,
+	ATMBUSCNT_AM	:0,
+	ATMBUSCNT_PM	:0,
+	ATMABTCNT_AM	:0,
+	ATMABTCNT_PM	:0,
+	ATMCUSTCNT_AM	:0,
+	ATMCUSTCNT_PM	:0
+};
+
+
+var dateTransObj = {
+		0 : '',
+		'830.00' : '8:30-9:30',
+		'930.00' : '9:30-10:30',
+		'1030.00' : '10:30-11:30',
+		'1130.00' : '11:30-12:30',
+		'1230.00' : '12:30-13:30',
+		'1330.00' : '13:30-14:30',
+		'1430.00' : '14:30-15:30',
+		'1530.00' : '15:30-16:30',
+		'1630.00' : '16:30-17:30'
+};
+
+for ( var i = 0; i < obj.length; i++) {
+	ChartData[obj[i].BUS_TYP] = (obj[i].BUS_TYP).indexOf("PEK") == -1 ? obj[i].DAT_VAL : dateTransObj[obj[i].DAT_VAL];
+}
+
+
+
+
+------------------------
+
+* 传入各种自定义函数；
+
+remoteObj.getData({
+	callBack : function (rtn) {
+		chartsObj.setData(rtn); 
+		setBtnSts();
+		$('#chart-catalog li:eq(0)').trigger('click')
+	},
+	showLoading : chartsObj.showLoading,
+	hideLoading : chartsObj.hideLoading
+});
+
+var remoteObj = function(){
+	var ChartData = {
+			AVGALLCNT : 0,// 全体柜员
+		};
+	
+	var config = {callBack : null,  hideLoading : null, showLoading : null};
+
+	var getData = function(settings){
+		$.extend(config, settings );
+		initData();
+	}
+	
+	var initData = function () {
+		var input = {
+				"IndexBusChartX1" : [ {
+					DATE : $("#searchDate").val(), 
+					BRN_NBR : $("#SEARCH_BRN_NBR").branch('getValue'),
+				} ]
+		};
+
+		config.showLoading && config.showLoading();
+		callWKE(afterGetData, "IndexBusChart", '102005', input, "", "", true);
+	};
+
+	var afterGetData = function (result) {
+		if (result['IndexBusChartZ1'].length > 0) {
+			...
+		} 
+		config.hideLoading && config.hideLoading();
+		config.callBack && config.callBack(ChartData);
+	}
+
+	return {
+		getData : getData
+	}
+}();
+
+
+
+
+
+------------------------
+
+var uppBrnObj = function() {
+	var index = 0;
+	var arry = [];
+	
+	function addUpBrn(brnArry) {
+		if(arry.length > 0 ){
+			if(arry[arry.length -1].code != brnArry.BRN_NBR){
+				arry = [];
+				arry.push({code:brnArry.BRN_NBR,value:brnArry.BRN_NAM},{code:brnArry.UPP_BRN,value:brnArry.UPP_BRN_NAM});
+			}else{
+				arry.push({code:brnArry.UPP_BRN,value:brnArry.UPP_BRN_NAM});
+			}
+		}else if(arry.length == 0){
+			arry.push({code:brnArry.BRN_NBR,value:brnArry.BRN_NAM},{code:brnArry.UPP_BRN,value:brnArry.UPP_BRN_NAM});
+		}
+		index = arry.length;
+	}
+	
+	function getDownBrn() {
+		index--;
+		return arry[index-1] ? [arry[index-1].code,arry[index-1].value] :[];
+	}
+	
+	function hasDownBrn() {
+		return arry[index-2];
+	}
+	
+	return {
+		addUpBrn : addUpBrn,
+		getDownBrn : getDownBrn,
+		hasDownBrn : hasDownBrn
+	}
+}();
+
+
+
+
+
+------------------------
+
+var chartsObj = function () {
+	...
+	return {
+		resizeChart : resizeChart,
+		initChart : initChart,
+		showLoading :showLoading,
+		hideLoading : hideLoading,
+		fillData  : fillData,
+		setData : setData
+	}
+}();
+
+
+
+* 把 showLoading 和 hideLoading 写到 afterInitBrn 里有点晚了
+-- 应该写在 chartsObj.initChart(); 后
+
