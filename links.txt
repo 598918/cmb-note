@@ -1,3 +1,16 @@
+* 着重研究：x坐标点怎么整的？？
+http://echarts.baidu.com/demo.html#line-sections
+
+
+
+JavaScript Module Pattern: In-Depth
+http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
+
+
+ECMAScript 6 入门 - ECMAScript 6入门
+http://es6.ruanyifeng.com/
+
+
 javascript常用数组算法总结 - front-Thinking - 博客园
 http://www.cnblogs.com/front-Thinking/p/4797440.html
 
@@ -14,9 +27,132 @@ http://www.cnblogs.com/4littleProgrammer/p/4820006.html
 
 
 
+java中List的用法和实例详解 - CSDN博客
+http://blog.csdn.net/vaniice/article/details/6102015
+
+
+
+
+java中String s=”abc“及String s=new String("abc")详解 - CSDN博客
+http://blog.csdn.net/lubiaopan/article/details/4776000/
+
+
+
+JAVA中new String[0] 和 new String[1]是怎么分配内存的？-CSDN论坛
+http://bbs.csdn.net/topics/390870195?page=1
+
+
+
+浏览器 滚动条 clientHeight、offsetHeight、scrollTop。 - 黄彪学习笔记 - ITeye博客
+http://hbiao68.iteye.com/blog/2213198
+
+
+
+mysql foreign key(外键) 说明与实例
+http://blog.51yip.com/mysql/1136.html
+
+
+Ace Editor
+https://codepen.io/Reklino/pen/yyBvoG
+
+
+SQL索引一步到位 - 老Key - 博客园
+http://www.cnblogs.com/AK2012/archive/2013/01/04/2844283.html
+
+
+SQL Server--索引 - CSDN博客
+http://blog.csdn.net/liujiahan629629/article/details/7803929
+
+
+使用requireJS加载不符合AMD规范的js文件：shim的使用方式和实现原理 - CSDN博客
+http://blog.csdn.net/aitangyong/article/details/44225859
+
+
+Web前端工程师-CSDN学院
+http://edu.csdn.net/topic/web1?utm_source=blog4
+
+
+
+
+JAVA基础知识之Collections工具类 - fysola - 博客园
+https://www.cnblogs.com/fysola/p/6021134.html
+
+
+java 中的this关键字的几种用法 - nolonely - 博客园
+https://www.cnblogs.com/nolonely/p/5916602.html
+
+
+
+51CTO博客-原创IT文章分享平台
+http://newblog.51cto.com/ityouknow/1978255
+
+
+
+Java 日期时间 | 菜鸟教程
+http://www.runoob.com/java/java-date-time.html
+
+
+深入理解Java：SimpleDateFormat安全的时间格式化 - peida - 博客园
+http://www.cnblogs.com/peida/archive/2013/05/31/3070790.html
+
+
+Java 格式化输出 printf 例子 | 菜鸟教程
+http://www.runoob.com/w3cnote/java-printf-formate-demo.html
+
+
+
+C - 索引 (Java Platform SE 6)
+http://www.runoob.com/manual/jdk1.6/
+
+
+
+
+腾讯 Web 工程师的前端书单 - 腾讯云社区 - 腾讯云
+https://www.qcloud.com/community/article/690930001489391663?fromSource=gwzcw.93262.93262.93262
+
+
+一位10年Java工作经验的架构师聊Java和工作经验 - CSDN博客
+http://blog.csdn.net/lifuxiangcaohui/article/details/48342315
+
+
+要成为一个 Java 架构师得学习哪些知识？ - 知乎
+https://www.zhihu.com/question/29031276
+
+
+Java应用一般架构 - CSDN博客
+http://blog.csdn.net/zengmingen/article/details/49741551
+
+
+Java 技术体系图 - 阿郎 - 博客园
+https://www.cnblogs.com/aipan/p/5239676.html
+
+
+
 
 
 【已读】
 
 TouchEvent里的targetTouches、touches、changedTouches的区别的具体体现是？ - JasmineOT的回答 - SegmentFault
 https://segmentfault.com/q/1010000002870710/a-1020000004869367
+
+
+
+java List<String>的初始化 的一个小问题 - 侧耳倾听的世界 - 博客园
+http://www.cnblogs.com/qianxinxu/p/7242744.html
+
+
+
+textarea接入ACE代码编辑器 - CSDN博客
+http://blog.csdn.net/cgema/article/details/72458008
+
+
+Ace Editor使用心得 - CSDN博客
+http://blog.csdn.net/jianleking/article/details/53397455
+
+
+ACE Editor接入指南-博客-云栖社区-阿里云
+https://yq.aliyun.com/articles/65260
+
+
+深入理解javascript中的立即执行函数(function(){…})()_基础知识_脚本之家
+http://www.jb51.net/article/50967.htm
