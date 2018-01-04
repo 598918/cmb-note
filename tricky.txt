@@ -116,6 +116,8 @@ $.initCalendar = function(content) {
 
 ---------------------
 
+【日期】
+
 * 获取当月天数
 p.daysInMonth = function (date) {
 	var d = new Date(date);
@@ -125,6 +127,170 @@ p.daysInMonth = function (date) {
 
 
 
+* 输出周几
+var weekHeaderHTML = '';
+if (p.params.weekHeader) {
+    for (i = 0; i < 7; i++) {
+        var weekDayIndex = (i + p.params.firstDay > 6) ? (i - 7 + p.params.firstDay) : (i + p.params.firstDay);
+        var dayName = p.params.dayNamesShort[weekDayIndex];
+        weekHeaderHTML += '<div class="picker-calendar-week-day ' + ((p.params.weekendDays.indexOf(weekDayIndex) >= 0) ? 'picker-calendar-week-day-weekend' : '') + '"> ' + dayName + '</div>';
+
+    }
+    weekHeaderHTML = '<div class="picker-calendar-week-days">' + weekHeaderHTML + '</div>';
+}
+
+
+
+
+* 替换变量：
+if (p.params.toolbar) {
+    toolbarHTML = p.params.toolbarTemplate
+        .replace(/{{closeText}}/g, p.params.toolbarCloseText)
+        .replace(/{{monthPicker}}/g, (p.params.monthPicker ? p.params.monthPickerTemplate : ''))
+        .replace(/{{yearPicker}}/g, (p.params.yearPicker ? p.params.yearPickerTemplate : ''));
+}
+
+
+
+
+* 输出 5行 5 列的年份：
+firstYear = curYear - Math.floor(yearNum/2), // 年份面板第一格年份
+yearsHTML = '';
+for (var i = 0; i < 5; i += 1) {
+    var rowHTML = '';
+    var row = i;
+    rowHTML += '<div class="picker-calendar-row">';
+    for (var j = 0; j < 5; j += 1) {
+        if (firstYear === trueYear) {
+            rowHTML += '<div class="picker-calendar-year-unit current-calendar-year-unit" data-year="'+ firstYear +'"><span>' + firstYear + '</span></div>';
+        } else if (firstYear === curYear) {
+            rowHTML += '<div class="picker-calendar-year-unit picker-calendar-year-unit-selected" data-year="'+ firstYear +'"><span>' + firstYear + '</span></div>';
+        } else {
+            rowHTML += '<div class="picker-calendar-year-unit" data-year="'+ firstYear +'"><span>' + firstYear + '</span></div>';
+        }
+        firstYear += 1;
+    }
+    rowHTML += '</div>';
+    yearsHTML += rowHTML;
+}
+
+
+
+
+
+
+
+* 输出一个月的日历：
+p.monthHTML = function (date, offset) {
+    date = new Date(date);
+    var year = date.getFullYear(),
+        month = date.getMonth(),
+        day = date.getDate();
+    if (offset === 'next') {
+        if (month === 11) date = new Date(year + 1, 0);
+        else date = new Date(year, month + 1, 1);
+    }
+    if (offset === 'prev') {
+        if (month === 0) date = new Date(year - 1, 11);
+        else date = new Date(year, month - 1, 1);
+    }
+    if (offset === 'next' || offset === 'prev') {
+        month = date.getMonth();
+        year = date.getFullYear();
+    }
+    var daysInPrevMonth = p.daysInMonth(new Date(date.getFullYear(), date.getMonth()).getTime() - 10 * 24 * 60 * 60 * 1000),
+        daysInMonth = p.daysInMonth(date),
+        firstDayOfMonthIndex = new Date(date.getFullYear(), date.getMonth()).getDay();
+    if (firstDayOfMonthIndex === 0) firstDayOfMonthIndex = 7;
+
+    var dayDate, currentValues = [], i, j,
+        rows = 6, cols = 7,
+        monthHTML = '',
+        dayIndex = 0 + (p.params.firstDay - 1),
+        today = new Date().setHours(0,0,0,0),
+        minDate = p.params.minDate ? new Date(p.params.minDate).getTime() : null,
+        maxDate = p.params.maxDate ? new Date(p.params.maxDate).getTime() : null;
+
+    if (p.value && p.value.length) {
+        for (i = 0; i < p.value.length; i++) {
+            currentValues.push(new Date(p.value[i]).setHours(0,0,0,0));
+        }
+    }
+
+    for (i = 1; i <= rows; i++) {
+        var rowHTML = '';
+        var row = i;
+        for (j = 1; j <= cols; j++) {
+            var col = j;
+            dayIndex ++;
+            var dayNumber = dayIndex - firstDayOfMonthIndex;
+            var addClass = '';
+            if (dayNumber < 0) {
+                dayNumber = daysInPrevMonth + dayNumber + 1;
+                addClass += ' picker-calendar-day-prev';
+                dayDate = new Date(month - 1 < 0 ? year - 1 : year, month - 1 < 0 ? 11 : month - 1, dayNumber).getTime();
+            }
+            else {
+                dayNumber = dayNumber + 1;
+                if (dayNumber > daysInMonth) {
+                    dayNumber = dayNumber - daysInMonth;
+                    addClass += ' picker-calendar-day-next';
+                    dayDate = new Date(month + 1 > 11 ? year + 1 : year, month + 1 > 11 ? 0 : month + 1, dayNumber).getTime();
+                }
+                else {
+                    dayDate = new Date(year, month, dayNumber).getTime();
+                }
+            }
+            // Today
+            if (dayDate === today) addClass += ' picker-calendar-day-today';
+            // Selected
+            if (currentValues.indexOf(dayDate) >= 0) addClass += ' picker-calendar-day-selected';
+            // Weekend
+            if (p.params.weekendDays.indexOf(col - 1) >= 0) {
+                addClass += ' picker-calendar-day-weekend';
+            }
+            // Disabled
+            if ((minDate && dayDate < minDate) || (maxDate && dayDate > maxDate)) {
+                addClass += ' picker-calendar-day-disabled';
+            }
+
+            dayDate = new Date(dayDate);
+            var dayYear = dayDate.getFullYear();
+            var dayMonth = dayDate.getMonth();
+            rowHTML += '<div data-year="' + dayYear + '" data-month="' + dayMonth + '" data-day="' + dayNumber + '" class="picker-calendar-day' + (addClass) + '" data-date="' + (dayYear + '-' + dayMonth + '-' + dayNumber) + '"><span>'+dayNumber+'</span></div>';
+        }
+        monthHTML += '<div class="picker-calendar-row">' + rowHTML + '</div>';
+    }
+    monthHTML = '<div class="picker-calendar-month" data-year="' + year + '" data-month="' + month + '">' + monthHTML + '</div>';
+    return monthHTML;
+};
+
+
+
+
+
+* 输出一个月有多少天：
+p.daysInMonth = function (date) {
+    var d = new Date(date);
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+};
+
+
+
+
+
+* 输出前12个月；
+var yms = function() {  
+    var d = new Date();  
+    var result = [];  
+    for(var i = 0; i < 12; i++) {  
+        d.setMonth(d.getMonth() - 1);  
+        var m = d.getMonth() + 1;  
+        m = m < 10 ? "0" + m : m;  
+        result.push(d.getFullYear() + "-" + m);  
+    }  
+    return result.reverse();  
+}();
 
 
 
@@ -163,4 +329,26 @@ p.updateCurrentMonthYear = function (dir) {
 
 
 
+
+---------------------
+
+! lastDate 被切换成当月的数据？？	
+-- 妈的 e.preventDefault(); 没写；
+
+
+
+
+
+---------------------
+
+D:\apache-maven-3.3.9\conf\settings.xml
+
+
+
+
+
+---------------------
+
+body不包含下级元素的 margin
+-- 设置 body:padding-top 或者 border-top 可以解决问题；
 
