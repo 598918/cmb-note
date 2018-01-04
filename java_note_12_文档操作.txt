@@ -1,0 +1,169 @@
+* 写
+
+BufferedWriter out = new BufferedWriter(new FileWriter("runoob.txt"));
+out.write("菜鸟教程");
+out.close();
+
+
+构造方法：
+BufferedWriter(Writer out) 
+Creates a buffered character-output stream that uses a default-sized output buffer
+
+？ buffered 是缓冲的意思？还是受保护的？？
+
+-- 它的参数是一个 writer 对象；
+
+
+
+PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("foo.out")));
+
+
+
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+do {
+       c = (char) br.read();
+       System.out.println(c);
+} while(c != 'q');
+
+
+
+
+
+
+
+
+-----------------
+
+-- 控制台的输出由 print( ) 和 println() 完成。
+-- 这些方法都由类 PrintStream 定义，System.out 是该类对象的一个引用。 
+-- PrintStream 继承了 OutputStream类，并且实现了方法 write()。这样，write() 也可以用来往控制台写操作。 
+
+System.out.println("Enter 'end' to quit.");
+System.out.write(b);
+
+
+
+
+
+
+
+-----------------
+
+* 读
+
+BufferedReader in = new BufferedReader(new FileReader("test.log"));    // 需要根目录存在该文件
+String str;
+while ((str = in.readLine()) != null) {
+    System.out.println(str);
+}
+
+？ BufferedReader.read 的返回值是个 int，不知道有什么鬼用？？
+
+
+
+2.1 可以使用字符串类型的文件名来创建一个输入流对象来读取文件：
+InputStream f = new FileInputStream("C:/java/hello");
+
+
+2.2 也可以使用一个文件对象来创建一个输入流对象来读取文件。我们首先得使用 File() 方法来创建一个文件对象： 
+File f = new File("C:/java/hello");
+InputStream out = new FileInputStream(f);
+
+
+
+
+
+
+
+-----------------
+
+* File
+-- createNewFile()、exists()、isFile()、length()、renameTo()、setReadOnly()、canWrite()、getPath()、createTempFile()、
+-- 比较路径：file1.compareTo(file2)
+
+
+！ 新建文件失败？？
+-- File file = new File("c:\\test.txt");
+-- 不是，这是读文件，不是写文件。
+-- 需要手动在 c 盘建个文件；
+
+File file = new File("c:\\test.txt");
+// file.createNewFile();      就可以不用手动新建了？
+if(file.delete()){
+    System.out.println(file.getName() + " 文件已被删除！");
+}else{
+    System.out.println("文件删除失败！");
+}
+
+
+
+
+
+File(String pathname) 
+Creates a new File instance by converting the given pathname string into an abstract pathname. 
+
+File(URI uri)  
+Creates a new File instance by converting the given file: URI into an abstract pathname.
+
+？ 这两个构造方法有什么不一样？？
+？ uri 是什么数据类型？？
+
+
+
+
+
+-----------------
+
+BufferedWriter out1 = new BufferedWriter(new FileWriter("srcfile"));  // 新建
+out1.write("string to be copied\n");
+out1.close();
+InputStream in = new FileInputStream(new File("srcfile"));            // 读
+OutputStream out = new FileOutputStream(new File("destnfile"));       // 写
+byte[] buf = new byte[1024];
+int len;
+while ((len = in.read(buf)) > 0) {
+    out.write(buf, 0, len);
+}
+in.close();
+out.close();
+BufferedReader in1 = new BufferedReader(new FileReader("destnfile"));  // 读
+String str;
+while ((str = in1.readLine()) != null) {
+    System.out.println(str);
+}
+in1.close();
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
