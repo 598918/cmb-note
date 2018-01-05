@@ -114,6 +114,8 @@ Creates a new File instance by converting the given file: URI into an abstract p
 
 -----------------
 
+* 复制文件
+
 BufferedWriter out1 = new BufferedWriter(new FileWriter("srcfile"));  // 新建
 out1.write("string to be copied\n");
 out1.close();
@@ -138,32 +140,138 @@ in1.close();
 
 
 
+=================
+
+【目录操作】
+
+* 好像用的都是 File 对象；
+-- mkdirs()、isHidden()、getParent()、getName()、listRoots()
+
+
+String directories = "D:\\a\\b\\c\\d\\e\\f\\g\\h\\i";
+File file = new File(directories);
+boolean result = file.mkdirs();
+
+
 
 -----------------
 
+* 删除目录
+-- 需要删除目录下的内容
+-- delete()
+
+public static void main(String[] args) throws Exception {
+	// 删除当前目录下的 test 目录
+    deleteDir(new File("./test"));
+}
+public static boolean deleteDir(File dir) {
+    if (dir.isDirectory()) {
+        String[] children = dir.list();
+        for (int i = 0; i < children.length; i++) {
+            deleteDir(new File(dir, children[i]));
+        }
+    }
+    if(dir.delete()) {
+        System.out.println("目录已被删除！");
+        return true;
+    } else {
+        System.out.println("目录删除失败！");
+        return false;
+    }
+}
+
+
+
+
+
+-----------------
+
+* isDirectory() -> list() -> length
+
+
+
+
+？ ./test vs ../test 
 
 
 
 
 
 
+-----------------
+
+* 输出目录下全部内容
+
+public static void main(String[] a)throws IOException{
+    showDir(1, new File("d:\\rolin"));
+}
+static void showDir(int indent, File file) throws IOException {
+    for (int i = 0; i < indent; i++)
+        System.out.print('-');
+    System.out.println(file.getName());
+    if (file.isDirectory()) {
+        File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++)
+            showDir(indent + 4, files[i]);
+    }
+}
+
+
+？ listFiles() 返回文件对象集合，list() 返回文件名称集合？？
+
+
+
+
+
+ 
+
+-----------------
+
+* 只获取下级目录
+-- 这个方法就是用了一个 filter 函数；
+
+File dir = new File("D:\\");
+File[] files = dir.listFiles();
+FileFilter fileFilter = new FileFilter() {    // ？？ 这个函数怎么用？
+     public boolean accept(File file) {
+        return file.isDirectory();
+     }
+};
+files = dir.listFiles(fileFilter);
+System.out.println(files.length);
+if (files.length == 0) {
+     System.out.println("目录不存在或它不是一个目录");
+}
+else {
+     for (int i=0; i< files.length; i++) {
+        File filename = files[i];
+        System.out.println(filename.toString());
+     }
+}
 
 
 
 
 
 
+-----------------
+
+* FilenameFilter
+
+FilenameFilter filter = new FilenameFilter() {
+         public boolean accept
+         (File dir, String name) {
+            return name.startsWith("b");
+        }
+};
 
 
 
 
 
+-----------------
 
+* 应用根目录
 
-
-
-
-
-
-
-
+String curDir = System.getProperty("user.dir");
+System.out.println("你当前的工作目录为 :" + curDir);
