@@ -1,0 +1,32 @@
+$(function(){
+	bindEvent();
+	init();
+})
+
+
+$.ajax(); -> callback
+
+if(obj){
+	for(var i = 0; i < obj.length; i++) {
+		var task = '';
+	}
+	$('').append(task);
+}
+
+[
+  {
+    "time": "2017-12-25",
+    "name": "wamp",
+    "start": "2017-12-25",
+    "end": "2017-12-26",
+    "childrem": {
+      "name": "wamp-child-1"
+    }
+  },
+  {
+    "time": "2017-12-24",
+    "name": "java",
+    "start": "2017-12-24",
+    "end": "2017-12-25"
+  }
+]
