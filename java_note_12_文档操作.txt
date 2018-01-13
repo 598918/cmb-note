@@ -259,8 +259,7 @@ else {
 * FilenameFilter
 
 FilenameFilter filter = new FilenameFilter() {
-         public boolean accept
-         (File dir, String name) {
+         public boolean accept (File dir, String name) {
             return name.startsWith("b");
         }
 };
@@ -275,3 +274,15 @@ FilenameFilter filter = new FilenameFilter() {
 
 String curDir = System.getProperty("user.dir");
 System.out.println("你当前的工作目录为 :" + curDir);
+
+
+
+？？System.getProperty("user.dir")
+-- 没有看到 user.dir 这个文件。
+-- user.dir 是一个属性？？
+
+
+
+
+
+
