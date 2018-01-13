@@ -1,0 +1,198 @@
+e.getMessage()、getLocalizedMessage()、printStackTrace()
+
+
+？ e.printStackTrace(); 可以追寻到出错的位置？？
+java.lang.Exception: My Exception
+	at com.cmb.bus.product.util.Test.main(Test.java:9)
+
+
+
+
+
+
+---------------------
+
+! 自定义类 vs 自定义方法？？
+
+class Demo  
+{  
+	...
+}  
+
+public class Test {
+	public static void main(String[] args){
+		Demo d = new Demo();  
+
+		deleteDir(new File("./test"));
+	}
+	public static boolean deleteDir(File dir) {
+		...
+	}
+
+}
+
+
+
+
+
+
+
+---------------------
+
+catch (ArithmeticException e)  
+{  
+    System.out.println(e.toString());  
+}  
+catch (ArrayIndexOutOfBoundsException e)  
+{  
+    System.out.println(e.toString());  
+}  
+
+
+
+
+
+
+
+---------------------
+
+public static void main(String[] argv) {
+	      new Test().doTheWork();
+	   }
+   public void doTheWork() {
+      Object o = null;
+      for (int i=0; i<5; i++) {
+         try {
+            o = makeObj(i);
+         }
+         catch (IllegalArgumentException e) {
+            System.err.println("Error: ("+ e.getMessage()+").");
+        return;    // 这里会跳出循环
+     }
+     finally {
+        System.err.println("都已执行完毕");
+            if (o==null)
+            System.exit(0);
+        }
+        System.out.println(o); 
+      }
+   }
+   public Object makeObj(int type) throws IllegalArgumentException {
+      if (type == 1) throw new IllegalArgumentException("不是指定的类型： " + type);
+      return new Object();
+   }
+
+
+
+
+
+
+
+---------------------
+
+？ 怎么让线程 sleep 后重新启动？？
+
+？ Caught it 没有捕获到...
+
+class MyThread extends Thread{
+    public void run(){
+        System.out.println("Throwing in " +"MyThread");
+        throw new RuntimeException();
+    }
+}
+
+public class Test {
+	   public static void main(String[] argv) {
+		   MyThread t = new MyThread();
+	        t.start();
+	        int n = 0;
+	        try{
+	            Thread.sleep(1000);
+	        }
+	        catch (Exception x){
+	            System.out.println("Caught it" + x);
+	        }
+	        System.out.println("Exiting main");
+	   }
+
+}
+
+
+
+
+
+
+
+
+
+---------------------
+
+？ 说明我对 while 操作符不熟...
+
+？ while (!theStack.isEmpty()) 
+-- [+, *, ,,,,,,,] 什么时候会变 empty ？？难道 theStack.pop() 会消除 theStack 里面的值吗？？
+
+
+Java 实例 – 利用堆栈将中缀表达式转换成后缀表达式 | 菜鸟教程
+http://www.runoob.com/java/data-intopost.html
+
+
+
+
+
+
+
+---------------------
+
+* stack（栈）感觉有点像数组；
+
+[42, 66, 99]
+
+
+
+
+
+
+---------------------
+
+* LinkedList
+--  addFirst("0")、addLast("6")、getFirst()、getLast()、removeFirst()
+
+1, 2, 3, 4, 5
+0, 1, 2, 3, 4, 5
+0, 1, 2, 3, 4, 5, 6
+
+
+
+
+？ subList()、clear()
+-- LinkedList.subList(2, 4).clear();
+
+[1, 8, 6, 4, 5]
+[1, 8, 5]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
