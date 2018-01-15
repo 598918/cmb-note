@@ -56,6 +56,8 @@ catch (ArrayIndexOutOfBoundsException e)
 
 ---------------------
 
+？ 为什么会执行两遍 "都已执行完毕" ？？
+
 public static void main(String[] argv) {
 	      new Test().doTheWork();
 	   }
@@ -67,7 +69,7 @@ public static void main(String[] argv) {
          }
          catch (IllegalArgumentException e) {
             System.err.println("Error: ("+ e.getMessage()+").");
-        return;    // 这里会跳出循环
+        return;               // 这里会跳出循环
      }
      finally {
         System.err.println("都已执行完毕");
@@ -156,7 +158,8 @@ http://www.runoob.com/java/data-intopost.html
 ---------------------
 
 * LinkedList
---  addFirst("0")、addLast("6")、getFirst()、getLast()、removeFirst()
+-- addFirst("0")、addLast("6")、getFirst()、getLast()、removeFirst()、indexOf()、lastIndesOf()
+-- set(2, "M");
 
 1, 2, 3, 4, 5
 0, 1, 2, 3, 4, 5
@@ -170,6 +173,68 @@ http://www.runoob.com/java/data-intopost.html
 
 [1, 8, 6, 4, 5]
 [1, 8, 5]
+
+
+
+
+
+
+
+---------------------
+
+Collections.sort(v);
+Collections.binarySearch(v, "D");
+Collections.swap();
+
+
+
+？ 看看是不是 Vector 这种类型才可以用？？
+
+
+
+
+
+
+
+---------------------
+
+？ 就这样可以了？？不用 stackArray[top--].remove()？？
+
+public long pop() {
+      return stackArray[top--];
+}
+
+-- 利用 stack 来实现 reverse
+
+
+
+
+
+
+
+---------------------
+
+* Queue
+
+-- 允许在表的前端进行删除操作，而在表的后端进行插入操作。
+-- 想象成排队就行了。
+
+poll()       //返回第一个元素，并在队列中删除
+element()    //返回第一个元素 
+peek()       //同上
+
+？ 那为什么要写两个方法呢？？
+
+
+
+
+
+
+
+
+
+
+
 
 
 
