@@ -185,6 +185,14 @@ http://www.runoob.com/java/data-intopost.html
 Collections.sort(v);
 Collections.binarySearch(v, "D");
 Collections.swap();
+Collections.reverse(l);
+size()
+Collections.shuffle(list); // 打乱顺序
+collection.remove(str2);
+Collections.unmodifiableList(list)
+Collections.replaceAll(list, "one", "hundrea");  // 用后面的替换掉前面的；
+Collections.indexOfSubList(list, sublist));      // 查找子列表位置
+Collections.lastIndexOfSubList(list, sublist)    // 倒序
 
 
 
@@ -192,6 +200,9 @@ Collections.swap();
 
 
 
+Collections.rotate(list, 3);
+-- List :[one, Two, three, Four, five, six]
+-- rotate: [Four, five, six, one, Two, three]
 
 
 
@@ -205,6 +216,45 @@ public long pop() {
 }
 
 -- 利用 stack 来实现 reverse
+
+
+
+
+
+
+
+
+---------------------
+
+【TreeMap】
+
+-- keySet()、values()、get(5)、firstKey()、lastKey()、
+
+
+
+
+
+
+
+
+---------------------
+
+？ list 可以直接 print，array 只能循环 print？？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -231,6 +281,70 @@ peek()       //同上
 
 
 
+---------------------
+
+【set】
+
+-- add()、
+-- Collections.min(set)、Collections.max(set)
+
+Set<String> set = new TreeSet<String>();
+
+
+
+
+
+
+
+---------------------
+
+HashMap< String, String> hMap = new HashMap< String, String>();
+hMap.put("1", "1st");
+hMap.put("2", "2nd");
+hMap.put("3", "3rd");
+
+Collection cl = hMap.values();  // Collection ？？
+Iterator itr = cl.iterator();   // Iterator ？？
+while (itr.hasNext()) {
+	System.out.println(itr.next());
+}
+
+
+3rd
+2nd
+1st
+
+
+
+
+
+
+？ collection 不能直接输出 value，要通过 collection.iterator() 来输出？？
+
+collection.add(str1);    
+collection.add(str2);   
+collection.add(str3);   
+collection.add(str4);
+iterator = collection.iterator();   
+
+
+
+
+！注意上面是 hashMap，这里是 hashSet
+
+HashSet collection = new HashSet ();
+String str1 = "Yellow", str2 = "White", str3 = "Green", str4 = "Blue";  
+Iterator iterator;
+collection.add(str1);    
+collection.add(str2);   
+collection.add(str3);   
+collection.add(str4);
+System.out.print("集合数据: ");  
+iterator = collection.iterator();     
+while (iterator.hasNext()){
+	System.out.print(iterator.next() + " ");  
+}
+System.out.println();
 
 
 
@@ -240,6 +354,52 @@ peek()       //同上
 
 
 
+---------------------
+
+从Collection接口延伸出的List、Set和以键值对形式作存储的Map类型的集合
+
+
+
+
+
+
+---------------------
+
+？ 为什么输出的顺序跟预期的不一样？？
+
+  Set<String> set = new HashSet<String>();
+  set.add("JAVA");
+  set.add("C");
+  set.add("C++");
+  
+  // 重复数据添加失败
+  set.add("JAVA");   // 所以 set 是不能重复的咯
+  
+  set.add("JAVASCRIPT");
+ 
+      // 使用iterator遍历set集合
+  Iterator<String> it = set.iterator();
+  while (it.hasNext()) {
+     String value = it.next();
+     System.out.println(value);
+  }
+  
+  // 使用增强for循环遍历set集合
+  for(String s: set){
+     System.out.println(s);
+  }
+
+
+
+C
+JAVASCRIPT
+JAVA
+C++
+
+C
+JAVASCRIPT
+JAVA
+C++
 
 
 
@@ -247,16 +407,18 @@ peek()       //同上
 
 
 
+---------------------
 
+？ while 为什么要输出 next，当前的会被删除吗？？
 
-
-
-
-
-
-
-
-
+Hashtable ht = new Hashtable();
+ht.put("1", "One");
+ht.put("2", "Two");
+ht.put("3", "Three");
+Enumeration e = ht.keys();
+while (e.hasMoreElements()){
+	System.out.println(e.nextElement());
+}
 
 
 
