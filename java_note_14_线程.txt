@@ -1,0 +1,444 @@
+？ 怎么理解线程？？ 跟 js 有啥不一样？？
+
+
+
+？ main 的进程后是 Thread，为什么？？
+
+public void run() {
+	for (int i = 0; i < 10; i++) {
+		printMsg();
+	}
+}
+
+public void printMsg() {
+	Thread t = Thread.currentThread();
+	String name = t.getName();
+	System.out.println("name=" + name);
+}
+
+public static void main(String[] args) {
+	Test tt = new Test();
+	tt.setName("Thread");
+	System.out.println("before start(), tt.isAlive()=" + tt.isAlive());
+	tt.start();
+	System.out.println("just after start(), tt.isAlive()=" + tt.isAlive());
+	for (int i = 0; i < 10; i++) {
+		tt.printMsg();
+	}
+	System.out.println("The end of main(), tt.isAlive()=" + tt.isAlive());
+}
+
+
+before start(), tt.isAlive()=false
+just after start(), tt.isAlive()=true
+name=main
+name=main
+name=main
+name=main
+name=main
+name=Thread
+name=main
+name=main
+name=main
+name=main
+name=main
+name=Thread
+name=Thread
+name=Thread
+The end of main(), tt.isAlive()=true
+name=Thread
+name=Thread
+name=Thread
+name=Thread
+name=Thread
+name=Thread
+
+
+
+
+
+
+--------------------
+
+？ 演示怎么打印线程的状态，和怎么干扰线程的状态，但是看不太懂...
+
+Java 实例 – 状态监测 | 菜鸟教程
+http://www.runoob.com/java/thread-monitor.html
+
+
+
+
+
+
+
+
+？ 什么鬼？？
+
+   private int countDown = 5;
+   private volatile double d = 0; 
+   public Test(int priority) {
+      setPriority(priority);
+      start();
+   }
+   public String toString() {
+      return super.toString() + ": " + countDown;
+   }
+   public void run() {
+      while(true) {
+         for(int i = 1; i < 100000; i++)
+         d = d + (Math.PI + Math.E) / (double)i;
+         System.out.println(this);
+         if(--countDown == 0) return;
+      }
+   }
+   public static void main(String[] args) {
+      new Test(Thread.MAX_PRIORITY);
+      for(int i = 0; i < 5; i++)
+      new Test(Thread.MIN_PRIORITY);
+   }
+
+
+
+
+Thread[Thread-2,1,main]: 5
+Thread[Thread-1,1,main]: 5
+Thread[Thread-0,10,main]: 5
+Thread[Thread-3,1,main]: 5
+Thread[Thread-5,1,main]: 5
+Thread[Thread-1,1,main]: 4
+Thread[Thread-0,10,main]: 4
+Thread[Thread-1,1,main]: 3
+Thread[Thread-3,1,main]: 4
+Thread[Thread-1,1,main]: 2
+Thread[Thread-1,1,main]: 1
+Thread[Thread-5,1,main]: 4
+Thread[Thread-5,1,main]: 3
+Thread[Thread-5,1,main]: 2
+Thread[Thread-5,1,main]: 1
+Thread[Thread-3,1,main]: 3
+Thread[Thread-4,1,main]: 5
+Thread[Thread-0,10,main]: 3
+Thread[Thread-3,1,main]: 2
+Thread[Thread-0,10,main]: 2
+Thread[Thread-3,1,main]: 1
+Thread[Thread-0,10,main]: 1
+Thread[Thread-4,1,main]: 4
+Thread[Thread-4,1,main]: 3
+Thread[Thread-2,1,main]: 4
+Thread[Thread-4,1,main]: 2
+Thread[Thread-2,1,main]: 3
+Thread[Thread-4,1,main]: 1
+Thread[Thread-2,1,main]: 2
+Thread[Thread-2,1,main]: 1
+
+
+
+
+
+
+
+
+？ synchronized() 锁定资源？？
+
+-- A锁不了obj2，B锁不了 obj1；
+
+class LockA implements Runnable{
+   public void run() {
+      try {
+         System.out.println(new Date().toString() + " LockA 开始执行");
+         while(true){
+            synchronized (Test.obj1) {
+               System.out.println(new Date().toString() + " LockA 锁住 obj1");
+               Thread.sleep(3000); // 此处等待是给B能锁住机会
+               synchronized (Test.obj2) {
+                  System.out.println(new Date().toString() + " LockA 锁住 obj2");
+                  Thread.sleep(60 * 1000); // 为测试，占用了就不放
+               }
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+}
+
+class LockB implements Runnable{
+   public void run() {
+      try {
+         System.out.println(new Date().toString() + " LockB 开始执行");
+         while(true){
+            synchronized (Test.obj2) {
+               System.out.println(new Date().toString() + " LockB 锁住 obj2");
+               Thread.sleep(3000); // 此处等待是给A能锁住机会
+               synchronized (Test.obj1) {
+                  System.out.println(new Date().toString() + " LockB 锁住 obj1");
+                  Thread.sleep(60 * 1000); // 为测试，占用了就不放
+               }
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+}
+
+public class Test extends Thread {
+   public static String obj1 = "obj1";
+   public static String obj2 = "obj2";
+   public static void main(String[] args) {
+      LockA la = new LockA();
+      new Thread(la).start();
+      LockB lb = new LockB();
+      new Thread(lb).start();
+   }
+}
+
+
+
+Sat Jan 20 17:30:40 CST 2018 LockA 开始执行
+Sat Jan 20 17:30:40 CST 2018 LockB 开始执行
+Sat Jan 20 17:30:40 CST 2018 LockA 锁住 obj1
+Sat Jan 20 17:30:40 CST 2018 LockB 锁住 obj2
+
+
+
+
+
+---------------------
+
+* 跟上面的比就是多了一个尝试的机制：Test.a1.tryAcquire(1, TimeUnit.SECONDS)
+-- 还有资源释放：Test.a1.release();
+
+class LockAa implements Runnable {
+   public void run() {
+      try {
+         System.out.println(new Date().toString() + " LockA 开始执行");
+         while (true) {
+            if (Test.a1.tryAcquire(1, TimeUnit.SECONDS)) {
+               System.out.println(new Date().toString() + " LockA 锁住 obj1");
+               if (Test.a2.tryAcquire(1, TimeUnit.SECONDS)) {
+                  System.out.println(new Date().toString() + " LockA 锁住 obj2");
+                  Thread.sleep(60 * 1000); // do something
+               }else{
+                  System.out.println(new Date().toString() + "LockA 锁 obj2 失败");
+               }
+            }else{
+               System.out.println(new Date().toString() + "LockA 锁 obj1 失败");
+            }
+            Test.a1.release(); // 释放
+            Test.a2.release();
+            Thread.sleep(1000); // 马上进行尝试，现实情况下do something是不确定的
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+}
+class LockBb implements Runnable {
+   public void run() {
+      try {
+         System.out.println(new Date().toString() + " LockB 开始执行");
+         while (true) {
+            if (Test.a2.tryAcquire(1, TimeUnit.SECONDS)) {
+               System.out.println(new Date().toString() + " LockB 锁住 obj2");
+               if (Test.a1.tryAcquire(1, TimeUnit.SECONDS)) {
+                  System.out.println(new Date().toString() + " LockB 锁住 obj1");
+                  Thread.sleep(60 * 1000); // do something
+               }else{
+                  System.out.println(new Date().toString() + "LockB 锁 obj1 失败");
+               }
+            }else{
+               System.out.println(new Date().toString() + "LockB 锁 obj2 失败");
+            }
+            Test.a1.release(); // 释放
+            Test.a2.release();
+            Thread.sleep(10 * 1000); // 这里只是为了演示，所以tryAcquire只用1秒，而且B要给A让出能执行的时
+
+间，否则两个永远是死锁
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+}
+
+public class Test extends Thread {
+	   public static String obj1 = "obj1";
+	   public static final Semaphore a1 = new Semaphore(1);
+	   public static String obj2 = "obj2";
+	   public static final Semaphore a2 = new Semaphore(1);
+	 
+	   public static void main(String[] args) {
+	      LockAa la = new LockAa();
+	      new Thread(la).start();
+	      LockBb lb = new LockBb();
+	      new Thread(lb).start();
+	   }
+
+}
+
+Sat Jan 20 17:42:37 CST 2018 LockA 开始执行
+Sat Jan 20 17:42:37 CST 2018 LockB 开始执行
+Sat Jan 20 17:42:37 CST 2018 LockA 锁住 obj1
+Sat Jan 20 17:42:37 CST 2018 LockB 锁住 obj2
+Sat Jan 20 17:42:38 CST 2018LockA 锁 obj2 失败
+Sat Jan 20 17:42:38 CST 2018 LockB 锁住 obj1
+Sat Jan 20 17:42:40 CST 2018LockA 锁 obj1 失败
+Sat Jan 20 17:42:41 CST 2018 LockA 锁住 obj1
+Sat Jan 20 17:42:41 CST 2018 LockA 锁住 obj2
+Sat Jan 20 17:43:42 CST 2018 LockA 锁住 obj1
+Sat Jan 20 17:43:42 CST 2018 LockA 锁住 obj2
+Sat Jan 20 17:43:48 CST 2018 LockB 锁住 obj2
+Sat Jan 20 17:43:48 CST 2018 LockB 锁住 obj1
+...
+
+
+
+
+
+
+
+
+---------------------
+
+？ 怎么产生的 threadId
+
+？ 输出是 ThreadID.print()，还是 Test.print()
+
+
+class ThreadID extends ThreadLocal {
+	  private int nextID;
+	 
+	  public ThreadID() {
+	    nextID = 10001;
+	  }
+	 
+	  private synchronized Integer getNewID() {
+	    Integer id = new Integer(nextID);
+	    nextID++;
+	    return id;
+	  }
+	 
+	 
+	  protected Object initialValue() {
+	    print("in initialValue()");
+	    return getNewID();
+	  }
+	 
+	  public int getThreadID() {
+	    Integer id = (Integer) get();
+	    return id.intValue();
+	  }
+	 
+	  private static void print(String msg) {
+	    String name = Thread.currentThread().getName();
+	    System.out.println(name + ": " + msg);
+	  }
+	}
+
+
+public class Test extends Thread {
+	private ThreadID var;
+	 
+	  public Test(ThreadID v) {
+	    this.var = v;
+	  }
+	 
+	  public void run() {
+	    try {
+	      print("var getThreadID =" + var.getThreadID());
+	      Thread.sleep(2000);
+	      print("var getThreadID =" + var.getThreadID());
+	    } catch (InterruptedException x) {
+	    }
+	  }
+	 
+	  private static void print(String msg) {
+	    String name = Thread.currentThread().getName();
+	    System.out.println(name + ": " + msg);
+	  }
+	 
+	  public static void main(String[] args) {
+	    ThreadID tid = new ThreadID();
+	    Test shared = new Test(tid);
+	 
+	    try {
+	      Thread threadA = new Thread(shared, "threadA");
+	      threadA.start();
+	 
+	      Thread.sleep(500);
+	 
+	      Thread threadB = new Thread(shared, "threadB");
+	      threadB.start();
+	 
+	      Thread.sleep(500);
+	 
+	      Thread threadC = new Thread(shared, "threadC");
+	      threadC.start();
+	    } catch (InterruptedException x) {
+	    }
+	  }
+
+}
+
+
+
+threadA: in initialValue()
+threadA: var getThreadID =10001
+threadB: in initialValue()
+threadB: var getThreadID =10002
+threadC: in initialValue()
+threadC: var getThreadID =10003
+threadA: var getThreadID =10001
+threadB: var getThreadID =10002
+threadC: var getThreadID =10003
+...
+
+
+
+
+
+
+
+---------------------
+
+* 好像是每100毫秒就--；
+
+？ join(); 
+
+？ 线程是怎么被挂起的？？
+
+   private int countDown = 5;
+   private static int threadCount = 0;
+   public Test() {
+      super("" + ++threadCount);
+      start();
+   }
+   public String toString() { 
+      return "#" + getName() + ": " + countDown;
+   }
+   public void run() {
+      while (true) {
+         System.out.println(this);
+         if (--countDown == 0)
+            return;
+         try {
+            sleep(100);
+         }
+         catch (InterruptedException e) {
+            throw new RuntimeException(e);
+         }
+      }
+   }
+   public static void main(String[] args) throws InterruptedException {
+      for (int i = 0; i < 5; i++)
+      new Test().join();
+      System.out.println("线程已被挂起");
+   }
+
+
+
+
+
+
+
