@@ -1,8 +1,110 @@
 ？ 怎么理解线程？？ 跟 js 有啥不一样？？
 
 
+1. 创建Thread子类的一个实例并重写run方法
+2. 创建类的时候实现Runnable接口
 
-？ main 的进程后是 Thread，为什么？？
+
+
+【1】
+public class MyThread extends Thread {
+   public void run(){
+     System.out.println("MyThread running");
+   }
+}
+
+// 运行：
+MyThread myThread = new MyThread();
+myTread.start();
+
+
+
+【2】
+public class MyRunnable implements Runnable {
+   public void run(){
+    System.out.println("MyRunnable running");
+   }
+}
+
+
+// 运行：
+Thread thread = new Thread(new MyRunnable());   // 就这里有点不同，需要传入一个 runnable 接口实例；
+thread.start();
+
+
+
+
+
+
+--------------------
+
+匿名：
+
+【1】
+Thread thread = new Thread(){
+   public void run(){
+     System.out.println("Thread Running");
+   }
+};
+thread.start();
+
+
+【2】
+Runnable myRunnable = new Runnable(){
+   public void run(){
+     System.out.println("Runnable running");
+   }
+}
+Thread thread = new Thread(myRunnable);
+thread.start();
+
+
+
+
+
+
+--------------------
+
+【线程名】
+
+MyRunnable runnable = new MyRunnable(); 
+Thread thread = new Thread(runnable, "New Thread"); 
+thread.start(); 
+System.out.println(thread.getName()); 
+
+
+
+需要注意的是，因为MyRunnable并非Thread的子类，所以MyRunnable类并没有getName()方法。
+可以通过以下方式得到当前线程的引用：
+
+Thread.currentThread(); 
+
+因此，通过如下代码可以得到当前线程的名字：
+
+String threadName = Thread.currentThread().getName(); 
+
+
+
+
+
+
+
+
+--------------------
+
+-- 一旦线程启动后start方法就会立即返回，而不会等待到run方法执行完毕才返回。
+-- 就好像run方法是在另外一个cpu上执行一样。
+
+
+
+
+
+
+
+--------------------
+
+! main 的进程后是 Thread，为什么？？
+-- main 线程是肯定存在的。如果需要另外新建线程，需要程序员自己写；
 
 public void run() {
 	for (int i = 0; i < 10; i++) {
@@ -136,11 +238,23 @@ Thread[Thread-2,1,main]: 1
 
 
 
+=========================
+
+！ synchronized() 
+-- 同步锁，是一个修饰符，而不是一个函数；
+-- 就是 synchronized() {} 括起来的代码，必须等一个线程把 synchronized 里的代码搞完了，才轮到下一个线程来继续耍；
+-- 但是实例两个对象的话，就可以大家一起搞了；
+
+？ 有很多未看完，看文末的引用；
 
 
-？ synchronized() 锁定资源？？
 
--- A锁不了obj2，B锁不了 obj1；
+
+
+
+
+
+* A锁不了obj2，B锁不了 obj1；
 
 class LockA implements Runnable{
    public void run() {
@@ -204,6 +318,15 @@ Sat Jan 20 17:30:40 CST 2018 LockB 锁住 obj2
 
 
 
+
+
+
+
+
+
+
+
+
 ---------------------
 
 * 跟上面的比就是多了一个尝试的机制：Test.a1.tryAcquire(1, TimeUnit.SECONDS)
@@ -252,9 +375,7 @@ class LockBb implements Runnable {
             }
             Test.a1.release(); // 释放
             Test.a2.release();
-            Thread.sleep(10 * 1000); // 这里只是为了演示，所以tryAcquire只用1秒，而且B要给A让出能执行的时
-
-间，否则两个永远是死锁
+            Thread.sleep(10 * 1000); // 这里只是为了演示，所以tryAcquire只用1秒，而且B要给A让出能执行的时间，否则两个永远是死锁
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -441,4 +562,12 @@ threadC: var getThreadID =10003
 
 
 
+=========================
 
+如何创建并运行java线程 | 并发编程网 – ifeve.com
+http://ifeve.com/creating-and-starting-java-threads/
+
+
+
+Java中synchronized的用法 - ImportNew
+http://www.importnew.com/21866.html
