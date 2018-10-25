@@ -1,0 +1,214 @@
+？ 最终的目的是怎么简单的把 ln 的 svg 画出来？？
+
+
+？ svg 天气
+
+
+3. svg 星空闪烁
+
+
+？ 实现 cover 页面添加 pattern 作为背景；
+
+
+
+
+
+
+
+
+-------------
+
+？ 搞不懂下面的 pattern 是怎么回事？？
+
+var svg = Snap("#svg");
+var p = svg.paper.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
+    fill: "none",
+    stroke: "#beceeb",
+    strokeWidth: 5
+}).pattern(0, 0, 10, 10),
+c = svg.paper.circle(120, 120, 100);
+c.attr({
+    fill: p
+});
+
+
+
+
+
+--------------
+
+？ <use> 用来干嘛的？？
+
+var svg = Snap("#svg");
+var c = svg.paper.el("circle", {
+    cx: 50,
+    cy: 50,
+    r: 40	
+});
+
+c.use();
+
+
+
+
+
+
+--------------
+
+* circle(x,y,r)  // x轴坐标点，y轴坐标点，半径
+* append()
+
+var svg1 = Snap("#svg1"), svg2 = Snap("#svg2");
+var c1 = svg1.paper.circle(50, 50, 40).attr({
+    fill: "#f00"	// 红色
+});
+var c2 = svg2.paper.circle(50, 50, 30).attr({
+    fill: "#00f"	// 蓝色
+});
+
+// 事件
+document.querySelector("#button").addEventListener("click", function() {
+    svg1.append(c2);
+    this.value = "蹭饭成功";
+});
+
+
+
+
+
+
+
+
+--------------
+
+-- Snap("#svg") 是一个容器，c1，c2 是里面的子元素；
+
+
+var svg = Snap("#svg");
+var c1 = svg.paper.circle(50, 50, 40).attr({
+    fill: "#f00"	// 红色
+});
+var c2 = svg.paper.circle(100, 50, 40).attr({
+    fill: "#00f"	// 蓝色
+});
+
+// 事件
+document.querySelector("#button").addEventListener("click", function() {
+    c2.after(c1);	
+});
+
+
+
+
+
+
+
+--------
+
+* asPX()
+-- 返回某个属性的值，以 px 为单位；
+
+
+var c = svg.paper.circle(50, 50, 40);
+console.log(c.asPX("cx"));    // 50
+
+
+
+
+
+--------
+
+* 圆角矩形
+
+var c = svg.paper.rect(50, 30, 120, 80, 15);
+-- <rect x="50" y="30" width="120" height="80" rx="15" ry="15"></rect>
+
+
+
+
+
+
+
+
+
+
+--------
+
+* 画一条路径
+
+Element.marker(x, y, width, height, refX, refY)
+
+参数
+x 数值。创建的标记元素的x位置。
+y 数值。创建的标记元素的y位置。
+width 数值。创建的标记元素的高度。
+height 数值。创建的标记元素的宽度。
+refX 数值。参考点的x位置。也就是<marker>内部的坐标。以后会作为路径的起止点等。
+refY 数值。参考点的y位置。
+<marker>元素需要配合marker-start, marker-end, marker-mid, 以及marker属性使用。marker属性可以替换路径上的所有点，marker-mid可以替换处起止点以外的所有点。
+
+
+var svg = Snap("#svg");
+// 圈圈
+var c1 = svg.paper.circle(5, 5, 3);
+// 三角
+var p1 = svg.paper.path("M2,2 L2,11 L10,6 L2,2").attr({
+    fill: "#000"      
+});
+
+// 变身标记
+var m1 = c1.marker(0, 0, 8, 8, 5, 5), m2 = p1.marker(0, 0, 13, 13, 2, 6);
+
+// 添加一个路径
+var p2 = svg.paper.path("M10,10 L150,10 L150,90").attr({
+    // 描边
+    stroke: "#00f",
+    strokeWidth: 1,
+    fill: "none",
+    // 起始标记
+    markerStart: m1,
+    // 结束标记
+    "marker-end": m2
+});
+
+
+
+
+
+
+--------
+
+getElementByPoint()
+-- 返回给定点最上面一个元素。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+snap.svg.js
+https://www.zhangxinxu.com/GitHub/demo-Snap.svg/demo/basic/Element.add.php
+
+
+路径
+https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+
+
+
+学习了，CSS中内联SVG图片有比Base64更好的形式
+https://www.zhangxinxu.com/wordpress/2018/08/css-svg-background-image-base64-encode/
+
+
+
+zSlide-基于CSS3/HTML5演示文档jQuery插件
+https://www.zhangxinxu.com/wordpress/2012/01/zslide-jquery-plugin-css3-html5-slide/
