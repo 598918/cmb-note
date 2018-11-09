@@ -1,0 +1,159 @@
+
+requestAnimationFrame(drawCircles);
+
+var circles = [{
+		radius:80, degree:0, 'reverse':false
+	}, {
+		radius:60, degree:120, 'reverse':false
+	},{
+		radius:40, degree:240, 'reverse':false
+	}];
+
+function drawCircles() {
+	for(var i=0; i < circles.length; i++) {
+		var r = circles[i]['radius'];
+		if(circles[i]['degree'] > 359) {
+			circles[i]['degree'] = 0.1;
+			circles[i]['reverse'] = !circles[i]['reverse'];
+		}
+		
+		//if(!Snap('#arc'+i)) {
+            //Snap('#svg').path().attr({id: 'arc'+i});   
+		//}
+		
+		if(!document.getElementById('arc'+i)) {
+			var p = document.createElement("path");
+			p.setAttribute('id', 'arc'+i);
+			document.getElementById('svg').appendChild(p);
+		}
+		
+		var percent = !circles[i]['reverse'] ? circles[i]['degree']/360 : circles[i]['degree']*2/360;
+		var x0 = Math.sin(percent * Math.PI * 2)*r + r;
+		var y0 = Math.cos(Math.PI-2*Math.PI*percent)*r + r;
+		
+		percent = !circles[i]['reverse'] ? circles[i]['degree']*2/360 : circles[i]['degree']/360;
+		var x1 = Math.sin(percent * Math.PI * 2)*r + r;
+		var y1 = Math.cos(Math.PI-2*Math.PI*percent)*r + r;
+		
+		var lenghty;
+		if(!circles[i]['reverse']) {
+			lenghty = circles[i]['degree'] > 180 ? 1 : 0;   
+		} else {
+			lenghty = circles[i]['degree'] > 180 ? 0 : 1;
+		}
+		
+		var path = 'M' + x0 + ' ' + y0 + ' A' + r + ' ' + r + ' 0 ' + lenghty + ' 1 ' + x1 + ' ' + y1;
+		//document.getElementById('arc'+i).setAttribute('d')
+		Snap('#arc'+i).attr({
+			d:path,
+			stroke:'#525adc',
+			strokeWidth:5,
+			fill:'none'
+		}).transform('t' + (125-circles[i]['radius']) + ',' + (125-circles[i]['radius']));
+
+		Math.ceil(circles[i]['degree']);
+		circles[i]['degree']++;
+	}
+	
+	requestAnimationFrame(drawCircles);
+}
+
+
+
+
+
+
+
+--------------------
+
+？ animateTransform 提供了什么动画？？
+
+
+？ 圆圈自转和指针自传不同的地方在哪？？
+-- 其实没什么不同。都是围绕中心点来转。
+
+<circle fill="none" stroke="#fff" stroke-width="6" stroke-miterlimit="15" stroke-dasharray="14.2472,14.2472" cx="50" cy="50" r="47" transform="rotate(257.289 50 50)">
+	<animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="5s" from="0 50 50" to="360 50 50" repeatCount="indefinite">
+	</animateTransform>
+</circle>
+
+<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5" transform="rotate(31.0675 50 50)">
+	<animateTransform attributeName="transform" dur="2s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite">
+	</animateTransform>
+</line>
+
+
+
+
+
+		
+		
+================
+
+var path = document.getElementById('ring');
+var r=100;
+
+var progress=0.1666;
+
+//将path平移到我们需要的坐标位置
+ring.setAttribute('transform', 'translate('+r+','+r+')');
+
+// 计算当前的进度对应的角度值
+var degrees = progress * 360;  
+
+// 计算当前角度对应的弧度值
+var rad = degrees* (Math.PI / 180);
+
+//极坐标转换成直角坐标
+var x = (Math.sin(rad) * r).toFixed(2);
+var y = -(Math.cos(rad) * r).toFixed(2);
+
+//大于180度时候画大角度弧，小于180度的画小角度弧，(deg > 180) ? 1 : 0
+var lenghty = window.Number(degrees > 180);
+
+//path 属性
+var descriptions = ['M', 0, -r, 'A', r, r, 0, lenghty, 1, x, y];
+
+// 给path 设置属性
+path.setAttribute('d', descriptions.join(' '));
+
+================
+		
+		
+
+// 位移、旋转复合动画
+var rect = svg.paper.rect({x: 10, y: 100, width: 50, height: 30, fill: '#f00'});
+var g = svg.paper.group(rect)
+
+
+; // 创建了一个分组节点g作为位移动画节点
+var anim_rotate = function() { // 节点旋转部分
+	Snap.animate(0, 250, function(val) {
+		var m = new Snap.Matrix();
+		m.rotate((val/250)*360, 10+25, 100+15); // 注意，后面两位数是旋转中心点，属于绝对坐标，svg里节点的变换中心都是绝对坐标，和CSS的transform-origin取值不太一样
+		rect.transform(m);
+		}, 500, mina.easeout(), function() {
+		anim_rotate();
+	});
+};
+anim_rotate();
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+
+* 使用 Snap.svg 制作动画
+http://web.jobbole.com/90456/
+
+
+* SVG 动画（animate、animateTransform、animateMotion）
+https://blog.csdn.net/chy555chy/article/details/53535581
